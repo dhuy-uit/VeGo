@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "shield_check" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <path
+        android:pathData="M16.5005 21.9991L20.1668 25.6659L27.4994 18.3323M36.6651 23.8334C36.6651 33.0003 30.2491 37.5838 22.6232 40.2422C22.2239 40.3776 21.7901 40.3711 21.395 40.2239C13.7507 37.5838 7.33472 33.0003 7.33472 23.8334V10.9996C7.33472 10.5134 7.52785 10.047 7.87163 9.7032C8.21542 9.35937 8.68169 9.16621 9.16787 9.16621C12.8342 9.16621 17.417 6.96614 20.6067 4.17938C20.9951 3.84753 21.4891 3.66521 21.9999 3.66521C22.5107 3.66521 23.0047 3.84753 23.3931 4.17938C26.6011 6.98447 31.1657 9.16621 34.832 9.16621C35.3181 9.16621 35.7844 9.35937 36.1282 9.7032C36.472 10.047 36.6651 10.5134 36.6651 10.9996V23.8334Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

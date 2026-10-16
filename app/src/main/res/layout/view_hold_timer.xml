@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanh đếm ngược thời gian giữ ghế (Xác nhận, Thanh toán, Thanh toán thất bại) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hold_timer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_hold_timer"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_timer" />
+
+    <TextView
+        style="@style/VeGo.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:lineHeight="19sp"
+        android:text="@string/hold_timer_label"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_hold_time"
+        style="@style/VeGo.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_bold"
+        android:textColor="@color/vego_orange_text"
+        android:textSize="16sp"
+        tools:text="05:00" />
+</LinearLayout>

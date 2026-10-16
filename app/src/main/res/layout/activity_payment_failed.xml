@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Thanh toán thất bại" (node 4:63351) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.PaymentFailedActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/result_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_16"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:showDividers="middle">
+
+                <ImageView
+                    android:id="@+id/iv_result"
+                    style="@style/VeGo.ResultIcon"
+                    android:background="@drawable/bg_result_warning"
+                    android:src="@drawable/ic_circle_x" />
+
+                <TextView
+                    style="@style/VeGo.Text.ResultTitle"
+                    android:text="@string/failed_heading" />
+
+                <TextView
+                    android:id="@+id/tv_failed_body"
+                    style="@style/VeGo.Text.ResultBody"
+                    tools:text="Giao dịch MoMo không hoàn tất. Bạn chưa có vé được xác nhận." />
+            </LinearLayout>
+
+            <TextView
+                style="@style/VeGo.Badge.Danger"
+                android:text="@string/failed_badge" />
+
+            <include
+                android:id="@+id/hold_timer"
+                layout="@layout/view_hold_timer" />
+
+            <LinearLayout style="@style/VeGo.Card">
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_trip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_trip"
+                    app:irValue="TP. Hồ Chí Minh → Đà Lạt" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_depart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_depart"
+                    app:irValue="22:00 · 18/10/2026" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_holding_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_holding_seat"
+                    app:irValue="A05" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/label_amount_due"
+                    app:irValue="320.000đ" />
+            </LinearLayout>
+
+            <!-- Cảnh báo nền cam -->
+            <LinearLayout
+                style="@style/VeGo.InfoBox"
+                android:background="@drawable/bg_info_warning">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_circle_alert" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/failed_info_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/failed_info_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_retry"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/failed_retry" />
+
+            <TextView
+                android:id="@+id/btn_other_method"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/failed_other_method" />
+
+            <TextView
+                android:id="@+id/btn_cancel_hold"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/confirm_cancel_hold"
+                android:textColor="@color/vego_danger" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

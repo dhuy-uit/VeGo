@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một đoạn văn trong bong bóng trợ lý -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.Text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:lineHeight="21sp"
+    android:textIsSelectable="true"
+    android:textSize="14sp"
+    tools:text="Mình chưa thể xác nhận việc hoàn tiền khi hủy trước giờ chạy 2 tiếng." />

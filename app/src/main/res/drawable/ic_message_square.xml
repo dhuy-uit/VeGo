@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "message_square" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:pathData="M16.0612 13.8107C16.3425 13.5294 16.5006 13.1479 16.5006 12.75V3.75001C16.5006 3.35218 16.3425 2.97065 16.0612 2.68934C15.7799 2.40804 15.3983 2.25 15.0005 2.25H2.99951C2.60165 2.25 2.22009 2.40804 1.93876 2.68934C1.65744 2.97065 1.49939 3.35218 1.49939 3.75001V15.9646C1.4994 16.0699 1.53064 16.1728 1.58916 16.2604C1.64768 16.3479 1.73085 16.4162 1.82815 16.4565C1.92545 16.4968 2.03251 16.5073 2.13581 16.4868C2.2391 16.4662 2.33399 16.4155 2.40846 16.3411L4.06009 14.6896C4.34136 14.4082 4.72286 14.2501 5.12068 14.2501H15.0005C15.3983 14.2501 15.7799 14.092 16.0612 13.8107Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tiện ích · Đổi xu lấy voucher" (node 2003:2752) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".wallet.VoucherActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/voucher_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Page">
+
+            <LinearLayout style="@style/VeGo.Stack">
+
+                <!-- Số xu hiện có -->
+                <LinearLayout
+                    style="@style/VeGo.Card"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/VeGo.Coin"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:divider="@drawable/space_2"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <TextView
+                            style="@style/VeGo.Text.Caption"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/voucher_balance_label" />
+
+                        <TextView
+                            android:id="@+id/tv_voucher_balance"
+                            style="@style/VeGo.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:lineHeight="38sp"
+                            android:textColor="@color/vego_primary"
+                            android:textSize="26sp"
+                            tools:text="1.250 xu" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Danh sách voucher -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_12"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.CardTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/voucher_list_title" />
+
+                    <LinearLayout
+                        android:id="@+id/list_vouchers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/space_12"
+                        android:orientation="vertical"
+                        android:showDividers="middle" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/VeGo.PageSpacer" />
+
+            <TextView
+                style="@style/VeGo.Text.CenterCaption"
+                android:text="@string/voucher_footnote" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

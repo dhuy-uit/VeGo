@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chữ trên ghế: đã đặt (xám) / đang chọn (trắng) / còn trống (xanh) -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/vego_seat_booked_text" android:state_enabled="false" />
+    <item android:color="@color/white" android:state_selected="true" />
+    <item android:color="@color/vego_primary" />
+</selector>

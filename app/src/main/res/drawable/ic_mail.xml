@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "mail" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:pathData="M16.5006 5.25039L9.7568 9.54521C9.52795 9.6781 9.26801 9.7481 9.00336 9.7481C8.73872 9.7481 8.47878 9.6781 8.24993 9.54521L1.49939 5.25039M2.99951 3.00061H15.0005C15.829 3.00061 16.5006 3.67212 16.5006 4.50046V13.4996C16.5006 14.3279 15.829 14.9994 15.0005 14.9994H2.99951C2.17102 14.9994 1.49939 14.3279 1.49939 13.4996V4.50046C1.49939 3.67212 2.17102 3.00061 2.99951 3.00061Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

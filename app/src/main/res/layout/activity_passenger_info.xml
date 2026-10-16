@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Thông tin hành khách" (node 4:63162) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.PassengerInfoActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/passenger_title" />
+
+            <TextView
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/passenger_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <TextView
+                android:id="@+id/tv_route_badge"
+                style="@style/VeGo.Badge.Mint"
+                tools:text="TP. Hồ Chí Minh → Đà Lạt · 18/10" />
+
+            <!-- Tóm tắt chuyến -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_operator"
+                    app:irValue="Phương Trang" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_departure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_departure"
+                    app:irValue="22:00 · 18/10/2026" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/seat_current"
+                    app:irValue="A05 · 320.000đ" />
+            </LinearLayout>
+
+            <!-- Họ và tên -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_passenger_name"
+                    android:text="@string/label_passenger_name" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <EditText
+                        android:id="@+id/et_passenger_name"
+                        style="@style/VeGo.InputText"
+                        android:autofillHints="name"
+                        android:hint="@string/hint_full_name"
+                        android:inputType="textPersonName|textCapWords" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Số điện thoại -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_passenger_phone"
+                    android:text="@string/label_contact_phone" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_phone"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_phone" />
+
+                    <EditText
+                        android:id="@+id/et_passenger_phone"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_phone"
+                        android:autofillHints="phone"
+                        android:hint="@string/hint_phone"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Điểm đón: bấm để chọn -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_pickup" />
+
+                <RelativeLayout
+                    android:id="@+id/field_pickup"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_pickup"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_chevron_down" />
+
+                    <TextView
+                        android:id="@+id/tv_pickup"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_pickup"
+                        android:paddingEnd="10dp"
+                        tools:text="Bến xe Miền Đông mới" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_pickup_hint"
+                    style="@style/VeGo.Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Có mặt lúc 21:30 ngày 18/10/2026." />
+            </LinearLayout>
+
+            <!-- Điểm trả: bấm để chọn -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_dropoff" />
+
+                <RelativeLayout
+                    android:id="@+id/field_dropoff"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_dropoff"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_chevron_down" />
+
+                    <TextView
+                        android:id="@+id/tv_dropoff"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_dropoff"
+                        android:paddingEnd="10dp"
+                        tools:text="Bến xe Đà Lạt" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_dropoff_hint"
+                    style="@style/VeGo.Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Dự kiến đến 05:00 ngày 19/10/2026." />
+            </LinearLayout>
+
+            <!-- Lời nhắc -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/passenger_info_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/passenger_info_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_continue"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/passenger_continue" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

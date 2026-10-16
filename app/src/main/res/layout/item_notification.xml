@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một thông báo: icon + tiêu đề + nội dung + thời gian + trạng thái đọc -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_notification_unread"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:padding="18dp">
+
+    <ImageView
+        android:id="@+id/iv_notification_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:importantForAccessibility="no"
+        tools:src="@drawable/ic_clock" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:divider="@drawable/space_7"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_notification_title"
+            style="@style/VeGo.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:lineHeight="22sp"
+            android:textSize="15sp"
+            tools:text="Nhắc lịch: xe chạy lúc 22:00" />
+
+        <TextView
+            android:id="@+id/tv_notification_body"
+            style="@style/VeGo.Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineHeight="19sp"
+            android:textSize="13sp"
+            tools:text="Chuyến TP. Hồ Chí Minh → Đà Lạt ngày 18/10." />
+
+        <TextView
+            android:id="@+id/tv_notification_time"
+            style="@style/VeGo.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineHeight="16sp"
+            android:textColor="@color/vego_text_secondary"
+            android:textSize="11sp"
+            tools:text="Lịch nhắc · 18/10/2026, 20:00" />
+
+        <TextView
+            android:id="@+id/tv_notification_state"
+            style="@style/VeGo.Badge.Mint"
+            tools:text="Chưa đọc" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dot_unread"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_dot" />
+</LinearLayout>

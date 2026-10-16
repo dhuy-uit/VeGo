@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Hiệu ứng xu và tia sáng" (node 2003:2713) — vầng sáng, tia sáng, hạt sáng -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="144dp"
+    android:viewportWidth="240"
+    android:viewportHeight="144">
+    <path android:fillColor="#E4F4F1" android:pathData="M120,12 A61,61 0 1,1 119.99,12 Z" />
+    <group android:translateX="33" android:translateY="24">
+        <path android:fillColor="#007F78" android:pathData="M9,0L12,8L18,11L12,14L9,22L6,14L0,11L6,8L9,0Z" />
+    </group>
+    <group android:translateX="188" android:translateY="98">
+        <path android:fillColor="#A65A21" android:pathData="M9,0L12,8L18,11L12,14L9,22L6,14L0,11L6,8L9,0Z" />
+    </group>
+    <path android:fillColor="#A65A21" android:pathData="M70.5,17 A2.5,2.5 0 1,1 70.49,17 Z" />
+    <path android:fillColor="#007F78" android:pathData="M169.5,118 A2.5,2.5 0 1,1 169.49,118 Z" />
+</vector>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Thanh toán thành công" (node 4:63306) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.PaymentSuccessActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/result_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Kết quả giao dịch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_16"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:showDividers="middle">
+
+                <ImageView
+                    android:id="@+id/iv_result"
+                    style="@style/VeGo.ResultIcon"
+                    android:background="@drawable/bg_result_success"
+                    android:src="@drawable/ic_circle_check_large" />
+
+                <TextView
+                    style="@style/VeGo.Text.ResultTitle"
+                    android:text="@string/success_heading" />
+
+                <TextView
+                    style="@style/VeGo.Text.ResultBody"
+                    android:text="@string/success_body" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_success_badge"
+                style="@style/VeGo.Badge.Mint"
+                tools:text="Đã thanh toán · A05 đã đặt" />
+
+            <!-- Thông tin vé -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_ticket_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/label_ticket_code"
+                    app:irValue="VG18102605" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_passenger"
+                    app:irValue="Nguyễn Minh Anh" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_payment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_payment"
+                    app:irValue="MoMo · 320.000đ" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_service_fee"
+                    app:irValue="0đ" />
+            </LinearLayout>
+
+            <include
+                android:id="@+id/card_trip"
+                layout="@layout/view_trip_card" />
+
+            <TextView
+                android:id="@+id/btn_view_ticket"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/success_view_ticket" />
+
+            <TextView
+                android:id="@+id/btn_go_home"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/success_go_home" />
+
+            <TextView
+                style="@style/VeGo.Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/success_note" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tài khoản · Đăng nhập" (node 4:62519) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".auth.LoginActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/login_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Lời chào -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_16"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+                android:paddingBottom="12dp"
+                android:showDividers="middle">
+
+                <ImageView
+                    android:layout_width="115dp"
+                    android:layout_height="36dp"
+                    android:contentDescription="@string/cd_logo"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/logo_vego" />
+
+                <TextView
+                    style="@style/VeGo.Text.H1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_welcome" />
+
+                <TextView
+                    style="@style/VeGo.Text.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_subtitle" />
+            </LinearLayout>
+
+            <!-- Số điện thoại hoặc email -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_account"
+                    android:text="@string/label_phone_or_email" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_account"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_user_round" />
+
+                    <EditText
+                        android:id="@+id/et_account"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_account"
+                        android:autofillHints="emailAddress"
+                        android:hint="@string/hint_phone_or_email"
+                        android:inputType="textEmailAddress"
+                        android:paddingEnd="10dp"
+                        android:text="minhanh@gmail.com" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Mật khẩu -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_password"
+                    android:text="@string/label_password" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/btn_toggle_password"
+                        style="@style/VeGo.InputIconButton"
+                        android:contentDescription="@string/cd_toggle_password"
+                        android:src="@drawable/ic_eye_off" />
+
+                    <EditText
+                        android:id="@+id/et_password"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/btn_toggle_password"
+                        android:autofillHints="password"
+                        android:hint="@string/hint_password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:paddingEnd="2dp"
+                        android:text="vego123456" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_forgot_password"
+                style="@style/VeGo.Text.Link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_forgot" />
+
+            <TextView
+                android:id="@+id/btn_login"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/login_button" />
+
+            <TextView
+                android:id="@+id/tv_register_link"
+                style="@style/VeGo.Text.CenterLink"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:text="@string/login_no_account"
+                android:textColor="@color/vego_text_secondary" />
+
+            <TextView
+                android:id="@+id/btn_create_account"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/login_create_account" />
+
+            <!-- Thông tin hướng dẫn -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_info_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_info_body" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

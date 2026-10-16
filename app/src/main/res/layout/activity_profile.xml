@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tài khoản · Thông tin cá nhân" (node 4:62675) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".account.ProfileActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/profile_title" />
+    </LinearLayout>
+
+    <!-- Thanh điều hướng dưới -->
+    <include
+        android:id="@+id/bottom_nav"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_alignParentBottom="true" />
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_above="@id/bottom_nav"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Hồ sơ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_10"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <RelativeLayout style="@style/VeGo.Avatar">
+
+                    <TextView
+                        android:id="@+id/tv_avatar_initials"
+                        style="@style/VeGo.AvatarInitials"
+                        tools:text="MA" />
+
+                    <ImageView
+                        android:id="@+id/iv_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:importantForAccessibility="no"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_full_name"
+                    style="@style/VeGo.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center_horizontal"
+                    android:lineHeight="33sp"
+                    android:textSize="23sp"
+                    tools:text="Nguyễn Minh Anh" />
+
+                <TextView
+                    style="@style/VeGo.Text.Body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/profile_member_since" />
+            </LinearLayout>
+
+            <!-- Thông tin cá nhân -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Text.CardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_personal_info" />
+
+                <LinearLayout style="@style/VeGo.InfoRow">
+
+                    <TextView
+                        style="@style/VeGo.InfoRowLabel"
+                        android:text="@string/profile_label_phone" />
+
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        style="@style/VeGo.InfoRowValue"
+                        tools:text="090 123 4567" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/VeGo.InfoRow">
+
+                    <TextView
+                        style="@style/VeGo.InfoRowLabel"
+                        android:text="@string/profile_label_email" />
+
+                    <TextView
+                        android:id="@+id/tv_email"
+                        style="@style/VeGo.InfoRowValue"
+                        tools:text="minhanh@gmail.com" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/VeGo.InfoRow">
+
+                    <TextView
+                        style="@style/VeGo.InfoRowLabel"
+                        android:text="@string/profile_label_status" />
+
+                    <TextView
+                        style="@style/VeGo.InfoRowValue"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="@string/profile_verified"
+                        android:textColor="@color/vego_primary" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_edit_profile"
+                    style="@style/VeGo.Button.Outline"
+                    android:text="@string/profile_edit" />
+            </LinearLayout>
+
+            <!-- Tiện ích -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Text.CardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_utilities" />
+
+                <LinearLayout
+                    android:id="@+id/row_wallet"
+                    style="@style/VeGo.MenuRow">
+
+                    <ImageView
+                        style="@style/VeGo.MenuIcon"
+                        android:src="@drawable/ic_wallet" />
+
+                    <TextView
+                        style="@style/VeGo.MenuTitle"
+                        android:text="@string/profile_wallet" />
+
+                    <TextView
+                        android:id="@+id/tv_wallet_balance"
+                        style="@style/VeGo.Text.BodyStrong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/profile_wallet_balance"
+                        android:textColor="@color/vego_primary" />
+
+                    <ImageView style="@style/VeGo.MenuChevron" />
+                </LinearLayout>
+
+                <View style="@style/VeGo.Divider" />
+
+                <LinearLayout
+                    android:id="@+id/row_ai_support"
+                    style="@style/VeGo.MenuRow"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            style="@style/VeGo.MenuIcon"
+                            android:src="@drawable/ic_bell" />
+
+                        <TextView
+                            style="@style/VeGo.MenuTitle"
+                            android:text="@string/profile_ai_support" />
+
+                        <ImageView style="@style/VeGo.MenuChevron" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_ai_support_desc" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Tài khoản -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <LinearLayout
+                    android:id="@+id/row_change_password"
+                    style="@style/VeGo.MenuRow">
+
+                    <ImageView
+                        style="@style/VeGo.MenuIcon"
+                        android:src="@drawable/ic_lock_keyhole" />
+
+                    <TextView
+                        style="@style/VeGo.MenuTitle"
+                        android:text="@string/profile_change_password" />
+
+                    <ImageView style="@style/VeGo.MenuChevron" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row_notifications"
+                    style="@style/VeGo.MenuRow">
+
+                    <ImageView
+                        style="@style/VeGo.MenuIcon"
+                        android:src="@drawable/ic_bell" />
+
+                    <TextView
+                        style="@style/VeGo.MenuTitle"
+                        android:text="@string/profile_notifications" />
+
+                    <ImageView style="@style/VeGo.MenuChevron" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row_help"
+                    style="@style/VeGo.MenuRow">
+
+                    <ImageView
+                        style="@style/VeGo.MenuIcon"
+                        android:src="@drawable/ic_headset" />
+
+                    <TextView
+                        style="@style/VeGo.MenuTitle"
+                        android:text="@string/profile_help" />
+
+                    <ImageView style="@style/VeGo.MenuChevron" />
+                </LinearLayout>
+
+                <View style="@style/VeGo.Divider" />
+
+                <TextView
+                    android:id="@+id/tv_terms"
+                    style="@style/VeGo.Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:text="@string/profile_terms" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_logout"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/profile_logout"
+                android:textColor="@color/vego_danger" />
+
+            <TextView
+                style="@style/VeGo.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineHeight="16sp"
+                android:text="@string/profile_version"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

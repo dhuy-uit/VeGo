@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một lựa chọn có nút tròn: tiêu đề + mô tả (điểm đón ở màn Tìm chuyến) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.OptionRow">
+
+    <ImageView
+        android:id="@+id/iv_radio"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_circle" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:divider="@drawable/space_4"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_option_title"
+            style="@style/VeGo.Text.BodyStrong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Bến xe Miền Đông mới" />
+
+        <TextView
+            android:id="@+id/tv_option_subtitle"
+            style="@style/VeGo.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="501 Hoàng Hữu Nam, TP. Thủ Đức" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Bộ lọc chuyến" (node 4:62904) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.TripFilterActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_title" />
+
+            <TextView
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Giờ khởi hành: 4 khung giờ, xếp 2 hàng như Figma -->
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_time" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_10"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_10"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:id="@+id/chip_time_0"
+                        style="@style/VeGo.Chip"
+                        android:text="00:00–06:00" />
+
+                    <TextView
+                        android:id="@+id/chip_time_1"
+                        style="@style/VeGo.Chip"
+                        android:text="06:00–12:00" />
+
+                    <TextView
+                        android:id="@+id/chip_time_2"
+                        style="@style/VeGo.Chip"
+                        android:text="12:00–18:00" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/chip_time_3"
+                    style="@style/VeGo.Chip"
+                    android:text="18:00–24:00" />
+            </LinearLayout>
+
+            <!-- Nhà xe: các dòng có ô vuông được thêm trong TripFilterActivity -->
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_operator" />
+
+            <LinearLayout
+                android:id="@+id/list_operators"
+                style="@style/VeGo.Card" />
+
+            <!-- Loại xe -->
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_bus_type" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_10"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <TextView
+                    android:id="@+id/chip_bus_limousine"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/bus_limousine" />
+
+                <TextView
+                    android:id="@+id/chip_bus_sleeper"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/bus_sleeper" />
+
+                <TextView
+                    android:id="@+id/chip_bus_seater"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/bus_seater" />
+            </LinearLayout>
+
+            <!-- Khoảng giá vé -->
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_price" />
+
+            <com.example.vego.common.widget.InfoRowView
+                android:id="@+id/row_min_price"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:irLabel="@string/filter_min_price"
+                app:irValue="200.000đ" />
+
+            <SeekBar
+                android:id="@+id/seek_max_price"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:paddingStart="11dp"
+                android:paddingEnd="11dp"
+                android:progressDrawable="@drawable/seekbar_track"
+                android:splitTrack="false"
+                android:thumb="@drawable/seekbar_thumb" />
+
+            <com.example.vego.common.widget.InfoRowView
+                android:id="@+id/row_max_price"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:irLabel="@string/filter_max_price"
+                app:irValue="400.000đ" />
+
+            <TextView
+                android:id="@+id/btn_apply"
+                style="@style/VeGo.Button.Primary"
+                tools:text="Áp dụng · 2 chuyến phù hợp" />
+
+            <TextView
+                android:id="@+id/btn_clear"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/filter_clear" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

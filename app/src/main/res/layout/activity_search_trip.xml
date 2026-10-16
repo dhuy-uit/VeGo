@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Tìm chuyến" (node 4:62779) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.SearchTripActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_title" />
+
+            <TextView
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Điểm đi -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_from"
+                    android:text="@string/label_from" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_from"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_map_pin" />
+
+                    <EditText
+                        android:id="@+id/et_from"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_from"
+                        android:hint="@string/hint_from"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapWords"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Điểm đến -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_to"
+                    android:text="@string/label_to" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_to"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_map_pin" />
+
+                    <EditText
+                        android:id="@+id/et_to"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_to"
+                        android:hint="@string/hint_to"
+                        android:imeOptions="actionDone"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapWords"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Ngày đi -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_depart_date" />
+
+                <RelativeLayout
+                    android:id="@+id/field_date"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_date"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_calendar_days" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_date"
+                        android:paddingEnd="10dp"
+                        tools:text="Chủ nhật, 18/10/2026" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_pickup_title" />
+
+            <TextView
+                style="@style/VeGo.Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineHeight="19sp"
+                android:text="@string/search_pickup_subtitle"
+                android:textSize="13sp" />
+
+            <!-- Danh sách điểm đón: các dòng được thêm trong SearchTripActivity -->
+            <LinearLayout
+                android:id="@+id/list_pickup"
+                style="@style/VeGo.Card" />
+
+            <TextView
+                style="@style/VeGo.Badge.Mint"
+                android:text="@string/search_passenger_badge" />
+
+            <TextView
+                android:id="@+id/btn_search"
+                style="@style/VeGo.Button.Primary"
+                tools:text="Tìm chuyến ngày 18/10" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

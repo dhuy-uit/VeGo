@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dòng thông tin "Nhãn  ·  Giá trị" (InfoRowView) -->
+    <declare-styleable name="InfoRowView">
+        <attr name="irLabel" format="string" />
+        <attr name="irValue" format="string" />
+        <!-- true: giá trị in đậm màu xanh (vd tổng tiền, trạng thái) -->
+        <attr name="irHighlight" format="boolean" />
+    </declare-styleable>
+</resources>

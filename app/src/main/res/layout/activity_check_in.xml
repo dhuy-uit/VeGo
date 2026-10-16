@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tiện ích · Điểm danh" (node 2003:2574) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".wallet.CheckInActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/check_in_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Page">
+
+            <LinearLayout style="@style/VeGo.Stack">
+
+                <!-- Lời nhắc -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_8"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Greeting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/check_in_heading" />
+
+                    <TextView
+                        android:id="@+id/tv_streak"
+                        style="@style/VeGo.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Bạn đã điểm danh 3 ngày liên tiếp. Tiếp tục hôm nay để nhận thêm xu nhé!" />
+                </LinearLayout>
+
+                <!-- Phần thưởng hôm nay -->
+                <LinearLayout style="@style/VeGo.Card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/coin_today"
+                            style="@style/VeGo.Coin"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:textSize="25sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:divider="@drawable/space_4"
+                            android:orientation="vertical"
+                            android:showDividers="middle">
+
+                            <TextView
+                                android:id="@+id/tv_reward_label"
+                                style="@style/VeGo.Text.Caption"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="Phần thưởng hôm nay · 18/10" />
+
+                            <TextView
+                                android:id="@+id/tv_reward_amount"
+                                style="@style/VeGo.Text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
+                                android:lineHeight="38sp"
+                                android:textColor="@color/vego_primary"
+                                android:textSize="26sp"
+                                tools:text="+20 xu" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_reward_note"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/check_in_reward_note" />
+                </LinearLayout>
+
+                <!-- Lịch 7 ngày -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_12"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.CardTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/check_in_week" />
+
+                    <!-- 7 ô ngày, thêm bằng code -->
+                    <LinearLayout
+                        android:id="@+id/row_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:divider="@drawable/space_7"
+                        android:orientation="horizontal"
+                        android:showDividers="middle" />
+                </LinearLayout>
+
+                <!-- Thưởng chuỗi ngày -->
+                <LinearLayout style="@style/VeGo.Card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_gift" />
+
+                        <TextView
+                            style="@style/VeGo.Text.BodyStrong"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:text="@string/check_in_bonus_title" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/VeGo.Text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineHeight="19sp"
+                        android:text="@string/check_in_bonus_body"
+                        android:textColor="@color/vego_text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/VeGo.PageSpacer" />
+
+            <LinearLayout style="@style/VeGo.Stack.Actions">
+
+                <TextView
+                    android:id="@+id/tv_check_in_state"
+                    style="@style/VeGo.Text.CenterCaption"
+                    tools:text="Hôm nay bạn chưa điểm danh." />
+
+                <TextView
+                    android:id="@+id/btn_check_in_now"
+                    style="@style/VeGo.Button.Primary"
+                    tools:text="Điểm danh ngay" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

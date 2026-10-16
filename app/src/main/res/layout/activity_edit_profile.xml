@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tài khoản · Chỉnh sửa cá nhân" (node 4:62734) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".account.EditProfileActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/edit_profile_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Thay ảnh đại diện -->
+            <LinearLayout
+                android:id="@+id/group_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_12"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <RelativeLayout
+                    android:id="@+id/avatar"
+                    style="@style/VeGo.Avatar"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/tv_avatar_initials"
+                        style="@style/VeGo.AvatarInitials"
+                        tools:text="MA" />
+
+                    <ImageView
+                        android:id="@+id/iv_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:importantForAccessibility="no"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_change_avatar"
+                    style="@style/VeGo.Text.Link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_profile_change_avatar" />
+
+                <TextView
+                    style="@style/VeGo.Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/edit_profile_avatar_rule" />
+            </LinearLayout>
+
+            <!-- Họ và tên -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_full_name"
+                    android:text="@string/label_full_name" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <EditText
+                        android:id="@+id/et_full_name"
+                        style="@style/VeGo.InputText"
+                        android:autofillHints="name"
+                        android:hint="@string/hint_full_name"
+                        android:inputType="textPersonName|textCapWords" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Số điện thoại -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_phone"
+                    android:text="@string/label_phone" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_phone"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_phone" />
+
+                    <EditText
+                        android:id="@+id/et_phone"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_phone"
+                        android:autofillHints="phone"
+                        android:hint="@string/hint_phone"
+                        android:inputType="phone"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Email -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_email"
+                    android:text="@string/label_email" />
+
+                <RelativeLayout style="@style/VeGo.InputBox">
+
+                    <ImageView
+                        android:id="@+id/ic_email"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_mail" />
+
+                    <EditText
+                        android:id="@+id/et_email"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_email"
+                        android:autofillHints="emailAddress"
+                        android:hint="@string/hint_email"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Ngày sinh: bấm để mở lịch -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_birth_date" />
+
+                <RelativeLayout
+                    android:id="@+id/field_birth_date"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_birth_date"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_calendar_days" />
+
+                    <TextView
+                        android:id="@+id/tv_birth_date"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_birth_date"
+                        android:paddingEnd="10dp"
+                        tools:text="12/05/1998" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Thông tin hướng dẫn -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_profile_info_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_profile_info_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_save"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/edit_profile_save" />
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/edit_profile_cancel" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

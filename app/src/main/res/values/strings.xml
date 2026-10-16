@@ -1,0 +1,591 @@
+<resources>
+    <string name="app_name">VéGo</string>
+
+    <!-- Chung -->
+    <string name="cd_back">Quay lại</string>
+    <string name="cd_logo">Logo VéGo</string>
+    <string name="cd_toggle_password">Hiện hoặc ẩn mật khẩu</string>
+    <string name="cd_notifications">Thông báo</string>
+    <string name="label_phone_or_email">Số điện thoại hoặc email</string>
+    <string name="label_password">Mật khẩu</string>
+    <string name="hint_phone_or_email">Nhập số điện thoại hoặc email</string>
+    <string name="hint_password">Nhập mật khẩu</string>
+    <string name="error_required">Vui lòng nhập thông tin này</string>
+    <string name="coming_soon">Màn hình \"%1$s\" sẽ được làm ở bước tiếp theo</string>
+
+    <!-- Đăng nhập -->
+    <string name="login_title">Đăng nhập</string>
+    <string name="login_welcome">Chào mừng bạn trở lại!</string>
+    <string name="login_subtitle">Đăng nhập để đặt vé và quản lý hành trình của bạn.</string>
+    <string name="login_forgot">Quên mật khẩu?</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="login_no_account">Chưa có tài khoản? Đăng ký ngay</string>
+    <string name="login_create_account">Tạo tài khoản mới</string>
+    <string name="login_info_title">Đặt vé an tâm</string>
+    <string name="login_info_body">Thông tin của bạn được bảo mật và chỉ dùng để hỗ trợ hành trình.</string>
+
+    <!-- Đăng ký -->
+    <string name="register_title">Tạo tài khoản</string>
+    <string name="register_heading">Hành trình mới bắt đầu</string>
+    <string name="register_subtitle">Chỉ vài thông tin để đồng hành cùng VéGo.</string>
+    <string name="label_full_name">Họ và tên</string>
+    <string name="label_phone">Số điện thoại</string>
+    <string name="label_email">Email</string>
+    <string name="label_confirm_password">Xác nhận mật khẩu</string>
+    <string name="hint_full_name">Nhập họ và tên</string>
+    <string name="hint_phone">Nhập số điện thoại</string>
+    <string name="hint_email">Nhập email</string>
+    <string name="hint_confirm_password">Nhập lại mật khẩu</string>
+    <string name="register_password_rule">Tối thiểu 8 ký tự, gồm chữ và số.</string>
+    <string name="register_terms_title">Điều khoản sử dụng</string>
+    <string name="register_terms_body">Bằng việc đăng ký, bạn đồng ý với Điều khoản sử dụng và Chính sách bảo mật của VéGo.</string>
+    <string name="register_button">Đăng ký</string>
+    <string name="register_have_account">Đã có tài khoản? Đăng nhập</string>
+    <string name="register_error_password_rule">Mật khẩu cần tối thiểu 8 ký tự, gồm chữ và số</string>
+    <string name="register_error_password_match">Mật khẩu xác nhận chưa khớp</string>
+    <string name="register_success">Đăng ký thành công! Mời bạn đăng nhập.</string>
+
+    <!-- Quên mật khẩu -->
+    <string name="forgot_title">Quên mật khẩu</string>
+    <string name="forgot_heading">Đừng lo, VéGo giúp bạn</string>
+    <string name="forgot_subtitle">Nhập số điện thoại hoặc email đã đăng ký. Chúng tôi sẽ gửi hướng dẫn khôi phục mật khẩu.</string>
+    <string name="forgot_button">Gửi hướng dẫn khôi phục</string>
+    <string name="forgot_info_title">Kiểm tra hộp thư của bạn</string>
+    <string name="forgot_info_body">Liên kết khôi phục có hiệu lực trong 15 phút. Nếu chưa nhận được, hãy kiểm tra mục thư rác.</string>
+    <string name="forgot_back_to_login">Quay lại đăng nhập</string>
+    <string name="forgot_sent">Đã gửi hướng dẫn khôi phục tới %1$s</string>
+
+    <!-- Trang chủ -->
+    <string name="home_greeting">Chào %1$s, đi đâu nào?</string>
+    <string name="home_greeting_sub">Đặt vé dễ dàng, an tâm mọi hành trình.</string>
+    <string name="label_from">Điểm đi</string>
+    <string name="label_to">Điểm đến</string>
+    <string name="label_departure_date">Ngày khởi hành</string>
+    <string name="hint_from">Chọn điểm đi</string>
+    <string name="hint_to">Chọn điểm đến</string>
+    <string name="home_search_button">Tìm chuyến xe</string>
+    <string name="home_promo_badge">MÙA THU THẢNH THƠI</string>
+    <string name="home_promo_title" formatted="false">Đà Lạt gọi, giảm 15%</string>
+    <string name="home_promo_code">Mã VEGIN15 · Tối đa 50.000đ</string>
+    <string name="home_promo_note">Ưu đãi minh họa · Chưa áp dụng vào vé mẫu</string>
+    <string name="home_popular_routes">Tuyến phổ biến</string>
+    <string name="home_route_from_hcm">Từ TP. Hồ Chí Minh</string>
+    <string name="home_suggested_trip">Chuyến phù hợp với bạn</string>
+    <string name="error_same_place">Điểm đi và điểm đến cần khác nhau</string>
+
+    <!-- Thanh điều hướng dưới -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_tickets">Vé của tôi</string>
+    <string name="nav_suggest">Gợi ý</string>
+    <string name="nav_account">Tài khoản</string>
+
+    <!-- Tên các màn hình chưa làm (dùng cho thông báo "sẽ làm ở bước sau") -->
+    <string name="screen_search_trip">Tìm chuyến</string>
+    <string name="screen_seat_select">Chọn ghế</string>
+    <string name="screen_notifications">Thông báo</string>
+
+    <!-- Tài khoản -->
+    <string name="profile_title">Tài khoản</string>
+    <string name="profile_member_since">Thành viên từ tháng 08/2026</string>
+    <string name="profile_personal_info">Thông tin cá nhân</string>
+    <string name="profile_label_phone">"Số điện thoại  ·  "</string>
+    <string name="profile_label_email">"Email  ·  "</string>
+    <string name="profile_label_status">"Tình trạng  ·  "</string>
+    <string name="profile_verified">Đã xác minh</string>
+    <string name="profile_edit">Chỉnh sửa thông tin</string>
+    <string name="profile_utilities">Tiện ích</string>
+    <string name="profile_wallet">Ví xu</string>
+    <string name="profile_wallet_balance">1.250 xu</string>
+    <string name="profile_ai_support">Hỗ trợ khách hàng AI</string>
+    <string name="profile_ai_support_desc">Giải đáp thắc mắc về vé xe ngay lập tức, 24/7</string>
+    <string name="profile_change_password">Đổi mật khẩu</string>
+    <string name="profile_notifications">Thông báo</string>
+    <string name="profile_help">Trợ giúp &amp; hỗ trợ</string>
+    <string name="profile_terms">Điều khoản sử dụng · Chính sách bảo mật</string>
+    <string name="profile_logout">Đăng xuất</string>
+    <string name="profile_version">VéGo · Phiên bản 1.0.0</string>
+    <string name="profile_logout_confirm_title">Đăng xuất khỏi VéGo?</string>
+    <string name="profile_logout_confirm_message">Bạn sẽ cần đăng nhập lại để đặt vé và xem vé của mình.</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="screen_help">Trợ giúp &amp; hỗ trợ</string>
+    <string name="screen_terms">Điều khoản sử dụng</string>
+
+    <!-- Chỉnh sửa hồ sơ -->
+    <string name="edit_profile_title">Chỉnh sửa hồ sơ</string>
+    <string name="edit_profile_change_avatar">Thay ảnh đại diện</string>
+    <string name="edit_profile_avatar_rule">JPG hoặc PNG · Tối đa 5 MB</string>
+    <string name="label_birth_date">Ngày sinh</string>
+    <string name="edit_profile_info_title">Luôn nhận được thông tin chuyến</string>
+    <string name="edit_profile_info_body">Số điện thoại và email được dùng để gửi vé, nhắc lịch và hỗ trợ khi cần.</string>
+    <string name="edit_profile_save">Lưu thay đổi</string>
+    <string name="edit_profile_cancel">Hủy thay đổi</string>
+    <string name="edit_profile_saved">Đã lưu thông tin cá nhân</string>
+    <string name="error_invalid_email">Email chưa đúng định dạng</string>
+    <string name="error_invalid_phone">Số điện thoại cần 10 chữ số</string>
+
+    <!-- Đổi mật khẩu -->
+    <string name="change_password_title">Đổi mật khẩu</string>
+    <string name="change_password_heading">Bảo mật hành trình của bạn</string>
+    <string name="change_password_subtitle">Dùng mật khẩu riêng cho tài khoản VéGo.</string>
+    <string name="label_current_password">Mật khẩu hiện tại</string>
+    <string name="label_new_password">Mật khẩu mới</string>
+    <string name="label_confirm_new_password">Xác nhận mật khẩu mới</string>
+    <string name="hint_current_password">Nhập mật khẩu hiện tại</string>
+    <string name="hint_new_password">Nhập mật khẩu mới</string>
+    <string name="change_password_rule">Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường và số.</string>
+    <string name="change_password_info_title">Mật khẩu mới phải khác mật khẩu cũ</string>
+    <string name="change_password_info_body">Không chia sẻ mật khẩu hoặc mã xác thực với bất kỳ ai.</string>
+    <string name="change_password_button">Cập nhật mật khẩu</string>
+    <string name="change_password_back">Quay lại tài khoản</string>
+    <string name="change_password_error_rule">Mật khẩu mới cần tối thiểu 8 ký tự, gồm chữ hoa, chữ thường và số</string>
+    <string name="change_password_error_same">Mật khẩu mới phải khác mật khẩu hiện tại</string>
+    <string name="error_wrong_password">Mật khẩu hiện tại chưa đúng</string>
+    <string name="change_password_success">Đã cập nhật mật khẩu</string>
+
+    <!-- Màn hình thuộc các nhóm sau -->
+    <string name="screen_wallet">Ví xu</string>
+    <string name="screen_ai_support">Hỗ trợ khách hàng AI</string>
+
+    <!-- ===== Nhóm 03: Đặt vé ===== -->
+    <string name="hold_timer_label">Ghế đang được giữ cho bạn</string>
+
+    <!-- Tìm chuyến -->
+    <string name="search_title">Tìm chuyến xe</string>
+    <string name="search_subtitle">Chọn hành trình của bạn</string>
+    <string name="label_depart_date">Ngày đi</string>
+    <string name="search_pickup_title">Chọn bến xe / điểm đón</string>
+    <string name="search_pickup_subtitle">Chúng tôi sẽ ưu tiên các chuyến đi qua điểm này.</string>
+    <string name="search_passenger_badge">1 hành khách · Vé một chiều</string>
+    <string name="search_button">Tìm chuyến ngày %1$s</string>
+
+    <!-- Danh sách chuyến -->
+    <string name="list_subtitle">%1$s · 1 hành khách</string>
+    <string name="list_count">%1$d chuyến phù hợp</string>
+    <string name="list_filter">Bộ lọc</string>
+    <string name="list_filter_active">Bộ lọc · %1$d</string>
+    <string name="sort_departure">Giờ khởi hành ↑</string>
+    <string name="sort_price">Giá thấp nhất</string>
+    <string name="sort_rating">Đánh giá cao</string>
+    <string name="list_choose_trip">Chọn chuyến %1$s</string>
+    <string name="list_show_more">Đang hiển thị %1$d/%2$d chuyến · Xem thêm chuyến</string>
+    <string name="list_showing_all">Đang hiển thị tất cả %1$d chuyến</string>
+    <string name="list_empty_title">Không có chuyến phù hợp</string>
+    <string name="list_empty_body">Thử bỏ bớt điều kiện trong Bộ lọc để thấy thêm chuyến.</string>
+
+    <!-- Bộ lọc -->
+    <string name="filter_title">Bộ lọc chuyến</string>
+    <string name="filter_subtitle">Thu hẹp lựa chọn cho hành trình của bạn</string>
+    <string name="filter_time">Giờ khởi hành</string>
+    <string name="filter_operator">Nhà xe</string>
+    <string name="filter_bus_type">Loại xe</string>
+    <string name="filter_price">Khoảng giá vé</string>
+    <string name="filter_min_price">Giá tối thiểu</string>
+    <string name="filter_max_price">Giá tối đa</string>
+    <string name="bus_limousine">Limousine</string>
+    <string name="bus_sleeper">Giường nằm</string>
+    <string name="bus_seater">Ghế ngồi</string>
+    <string name="filter_apply">Áp dụng · %1$d chuyến phù hợp</string>
+    <string name="filter_clear">Xóa tất cả bộ lọc</string>
+
+    <!-- Chi tiết chuyến -->
+    <string name="detail_title">Chi tiết chuyến xe</string>
+    <string name="amenity_wifi">Wi-Fi</string>
+    <string name="amenity_usb">Cổng sạc USB</string>
+    <string name="amenity_blanket">Chăn &amp; nước</string>
+    <string name="detail_stops">Điểm đón &amp; trả</string>
+    <string name="detail_info_title">Có mặt trước 30 phút</string>
+    <string name="detail_info_body">Mang theo vé điện tử và giấy tờ tùy thân. Thời gian đến dự kiến có thể thay đổi theo giao thông.</string>
+    <string name="detail_choose_seat">Chọn ghế · %1$s</string>
+
+    <!-- Chọn ghế -->
+    <string name="seat_title">Chọn ghế</string>
+    <string name="seat_heading">Chọn chỗ cho hành trình của bạn</string>
+    <string name="seat_legend_free">Còn trống</string>
+    <string name="seat_legend_booked">Đã đặt</string>
+    <string name="seat_legend_selected">Đang chọn</string>
+    <string name="seat_lower_deck">Tầng dưới · 17 ghế</string>
+    <string name="seat_upper_deck">Tầng trên · 17 ghế</string>
+    <string name="seat_front">ĐẦU XE ↑</string>
+    <string name="seat_selected_title">%1$s đang chọn · Chưa đặt vé</string>
+    <string name="seat_none_title">Chưa chọn ghế</string>
+    <string name="seat_info_body">Ghế chỉ chuyển sang đã đặt sau khi thanh toán thành công.</string>
+    <string name="seat_none_body">Chạm vào một ghế còn trống để chọn chỗ.</string>
+    <string name="seat_current">Ghế đang chọn</string>
+    <string name="seat_total">Tổng tiền · 1 ghế</string>
+    <string name="seat_lower">Tầng dưới</string>
+    <string name="seat_upper">Tầng trên</string>
+    <string name="seat_continue">Tiếp tục</string>
+    <string name="seat_booked_toast">Ghế %1$s đã có người đặt</string>
+    <string name="seat_required">Vui lòng chọn 1 ghế</string>
+
+    <!-- Thông tin hành khách -->
+    <string name="passenger_title">Thông tin hành khách</string>
+    <string name="passenger_subtitle">Bước 2/3 · Hoàn thiện thông tin</string>
+    <string name="label_operator">Nhà xe</string>
+    <string name="label_departure">Giờ khởi hành</string>
+    <string name="label_passenger_name">Họ và tên hành khách</string>
+    <string name="label_contact_phone">Số điện thoại liên hệ</string>
+    <string name="label_pickup">Điểm đón</string>
+    <string name="label_dropoff">Điểm trả</string>
+    <string name="passenger_pickup_hint">Có mặt lúc %1$s ngày %2$s.</string>
+    <string name="passenger_dropoff_hint">Dự kiến đến %1$s ngày %2$s.</string>
+    <string name="passenger_info_title">Kiểm tra số điện thoại</string>
+    <string name="passenger_info_body">Nhà xe sẽ liên hệ số này để xác nhận điểm đón. Chỉ có 1 hành khách trong đơn đặt vé.</string>
+    <string name="passenger_continue">Tiếp tục · Xác nhận đặt vé</string>
+
+    <!-- Xác nhận đặt vé -->
+    <string name="confirm_title">Xác nhận đặt vé</string>
+    <string name="confirm_subtitle">Bước 3/3 · Kiểm tra trước khi thanh toán</string>
+    <string name="confirm_hold_badge">%1$s đang giữ · Chưa thanh toán</string>
+    <string name="confirm_booking_info">Thông tin đặt vé</string>
+    <string name="confirm_passenger">Hành khách</string>
+    <string name="confirm_seat_qty">Ghế / số lượng</string>
+    <string name="confirm_seat_qty_value">%1$s · 1 hành khách</string>
+    <string name="confirm_stops">Điểm đón / điểm trả</string>
+    <string name="label_fare_fee">Giá vé / phí</string>
+    <string name="label_total">Tổng thanh toán</string>
+    <string name="confirm_terms">Khi tiếp tục, bạn đồng ý với điều kiện vận chuyển và chính sách hủy vé của nhà xe.</string>
+    <string name="confirm_pay">Thanh toán · %1$s</string>
+    <string name="confirm_cancel_hold">Hủy giữ chỗ</string>
+    <string name="hold_released">Đã hủy giữ chỗ, ghế đã được giải phóng</string>
+
+    <!-- Thanh toán -->
+    <string name="payment_title">Thanh toán</string>
+    <string name="payment_subtitle">An toàn · Nhanh chóng · Tiện lợi</string>
+    <string name="label_depart">Khởi hành</string>
+    <string name="label_fare">Giá vé</string>
+    <string name="label_service_fee">Phí dịch vụ</string>
+    <string name="payment_choose_method">Chọn phương thức thanh toán</string>
+    <string name="payment_momo_desc">Ví điện tử · Mở ứng dụng để xác nhận</string>
+    <string name="payment_vnpay_desc">Quét mã QR hoặc ứng dụng ngân hàng</string>
+    <string name="payment_card_label">Thẻ ngân hàng</string>
+    <string name="payment_card_desc">Thẻ nội địa / Visa / Mastercard</string>
+    <string name="payment_info_title">Thanh toán bằng %1$s</string>
+    <string name="payment_info_momo">Bạn sẽ được chuyển sang MoMo. Vé chỉ xác nhận sau khi giao dịch thành công; không cung cấp mã OTP cho người khác.</string>
+    <string name="payment_info_vnpay">Quét mã QR VNPay bằng ứng dụng ngân hàng. Vé chỉ xác nhận sau khi giao dịch thành công.</string>
+    <string name="payment_info_card">Nhập thông tin thẻ trên cổng thanh toán bảo mật. Không cung cấp mã OTP cho người khác.</string>
+    <string name="payment_pay">Thanh toán %1$s · %2$s</string>
+    <string name="payment_hold_note">%1$s đang giữ, chưa chuyển thành ghế đã đặt.</string>
+    <string name="payment_sim_title">Mô phỏng cổng %1$s</string>
+    <string name="payment_sim_message">Bản prototype chưa kết nối cổng thanh toán thật. Chọn kết quả giao dịch để xem màn hình tương ứng.</string>
+    <string name="payment_sim_success">Giao dịch thành công</string>
+    <string name="payment_sim_fail">Giao dịch thất bại</string>
+
+    <!-- Kết quả -->
+    <string name="result_title">Kết quả thanh toán</string>
+    <string name="success_heading">Đặt vé thành công!</string>
+    <string name="success_body">Vé của bạn đã sẵn sàng. Chúc bạn có một hành trình thật thoải mái.</string>
+    <string name="success_badge">Đã thanh toán · %1$s đã đặt</string>
+    <string name="label_ticket_code">Mã vé</string>
+    <string name="label_passenger">Hành khách</string>
+    <string name="label_payment">Thanh toán</string>
+    <string name="success_view_ticket">Xem vé điện tử</string>
+    <string name="success_go_home">Về trang chủ</string>
+    <string name="success_note">Vé cũng được lưu trong mục “Vé của tôi”.</string>
+    <string name="screen_eticket">Vé điện tử</string>
+
+    <string name="failed_heading">Thanh toán chưa thành công</string>
+    <string name="failed_body">Giao dịch %1$s không hoàn tất. Bạn chưa có vé được xác nhận.</string>
+    <string name="failed_badge">Chưa thanh toán · Chưa phát hành vé</string>
+    <string name="label_trip">Chuyến xe</string>
+    <string name="label_holding_seat">Ghế đang giữ</string>
+    <string name="label_amount_due">Số tiền cần trả</string>
+    <string name="failed_info_title">Không phát sinh thanh toán thành công</string>
+    <string name="failed_info_body">Bạn có thể thử lại trong thời gian giữ chỗ. Nếu ngân hàng đã ghi nợ, liên hệ hỗ trợ để kiểm tra giao dịch.</string>
+    <string name="failed_retry">Thử thanh toán lại</string>
+    <string name="failed_other_method">Chọn phương thức khác</string>
+
+    <string name="expired_title">Hết thời gian giữ chỗ</string>
+    <string name="expired_heading">Thời gian giữ chỗ đã hết</string>
+    <string name="expired_body">Ghế %1$s đã được giải phóng. Đơn đặt vé chưa được xác nhận và bạn không bị tính tiền.</string>
+    <string name="expired_badge">00:00 · Ghế đã giải phóng</string>
+    <string name="label_route">Hành trình</string>
+    <string name="label_previous_seat">Ghế trước đó</string>
+    <string name="expired_seat_value">%1$s · Không còn giữ</string>
+    <string name="label_paid">Đã thanh toán</string>
+    <string name="expired_info_title">Bạn vẫn có thể đặt chuyến mới</string>
+    <string name="expired_info_body">Chọn lại chuyến và ghế còn trống. Giá %1$s/ghế chỉ là giá của chuyến vừa chọn, chưa phát sinh thanh toán.</string>
+    <string name="expired_back_to_list">Quay lại chọn chuyến</string>
+    <string name="expired_new_search">Tìm hành trình khác</string>
+
+    <!-- ===== Pop-up dùng chung ===== -->
+    <string name="action_ok">Đã hiểu</string>
+    <string name="action_close">Đóng</string>
+    <string name="welcome_back">Chào mừng trở lại, %1$s!</string>
+    <string name="forgot_sent_title">Đã gửi hướng dẫn</string>
+    <string name="forgot_sent_message">Kiểm tra hộp thư %1$s. Liên kết khôi phục có hiệu lực trong 15 phút.</string>
+    <string name="register_success_title">Tạo tài khoản thành công</string>
+    <string name="register_success_message">Chào mừng %1$s đến với VéGo! Đăng nhập để bắt đầu đặt vé.</string>
+    <string name="register_go_login">Đăng nhập ngay</string>
+    <string name="change_password_success_title">Đã đổi mật khẩu</string>
+    <string name="change_password_success_message">Lần đăng nhập sau, hãy dùng mật khẩu mới của bạn.</string>
+    <string name="edit_profile_discard_title">Bỏ thay đổi?</string>
+    <string name="edit_profile_discard_message">Những gì bạn vừa sửa sẽ không được lưu.</string>
+    <string name="edit_profile_discard">Bỏ thay đổi</string>
+    <string name="edit_profile_keep">Tiếp tục sửa</string>
+    <string name="cancel_hold_title">Hủy giữ chỗ?</string>
+    <string name="cancel_hold_message">Ghế %1$s sẽ được giải phóng cho hành khách khác.</string>
+    <string name="cancel_hold_keep">Giữ ghế</string>
+    <string name="hold_one_minute">Chỉ còn 1 phút giữ ghế %1$s. Hoàn tất thanh toán để không mất chỗ.</string>
+    <string name="filter_applied">Đã áp dụng bộ lọc · %1$d chuyến phù hợp</string>
+    <string name="filter_cleared">Đã xóa tất cả bộ lọc</string>
+    <string name="trip_list_sorted">Đã sắp xếp theo %1$s</string>
+    <string name="passenger_pickup_changed">Đã chọn điểm đón: %1$s</string>
+
+    <!-- ===== Nhóm 04: Vé & sau chuyến ===== -->
+    <string name="my_tickets_title">Vé của tôi</string>
+    <string name="tab_upcoming">Sắp đi (%1$d)</string>
+    <string name="tab_completed">Đã đi (%1$d)</string>
+    <string name="tab_cancelled">Đã hủy (%1$d)</string>
+    <string name="ticket_badge_upcoming">Sắp đi · Đã thanh toán</string>
+    <string name="ticket_badge_completed">Đã đi · Hoàn thành</string>
+    <string name="ticket_badge_reviewed">Đã đi · Đã đánh giá %1$d★</string>
+    <string name="ticket_badge_cancelled">Đã hủy · Đã hoàn %1$s</string>
+    <string name="label_code_seat">Mã vé / ghế</string>
+    <string name="label_amount">Thành tiền</string>
+    <string name="my_tickets_history">Lịch sử gần đây</string>
+    <string name="my_tickets_review">Đánh giá nhà xe</string>
+    <string name="my_tickets_empty_upcoming">Bạn chưa có chuyến sắp đi. Tìm chuyến và đặt vé ngay ở Trang chủ.</string>
+    <string name="my_tickets_empty_completed">Chưa có chuyến nào đã hoàn thành.</string>
+    <string name="my_tickets_empty_cancelled">Bạn chưa hủy vé nào.</string>
+    <string name="my_tickets_book_now">Đặt vé ngay</string>
+
+    <string name="eticket_title">Vé điện tử</string>
+    <string name="eticket_subtitle">Xuất trình khi lên xe</string>
+    <string name="eticket_badge_paid">Đã thanh toán · %1$s đã đặt</string>
+    <string name="eticket_badge_cancelled">Vé đã hủy · Không còn hiệu lực</string>
+    <string name="eticket_badge_completed">Chuyến đã hoàn thành</string>
+    <string name="eticket_qr_caption">Đưa mã QR này cho nhân viên nhà xe khi lên xe</string>
+    <string name="label_paid_amount">Đã thanh toán</string>
+    <string name="eticket_info_title">Có mặt lúc %1$s ngày %2$s</string>
+    <string name="eticket_info_body">Điểm đón: %1$s. Mang theo giấy tờ tùy thân và xuất trình mã vé cho nhân viên.</string>
+    <string name="eticket_save">Lưu vé vào thiết bị</string>
+    <string name="eticket_cancel">Yêu cầu hủy vé</string>
+    <string name="eticket_saved">Đã lưu vé vào thư viện ảnh (Pictures/VeGo)</string>
+    <string name="eticket_save_failed">Không lưu được vé, vui lòng thử lại</string>
+    <string name="eticket_cannot_cancel">Chuyến đã khởi hành nên không thể hủy vé</string>
+
+    <string name="cancel_title">Xác nhận hủy vé</string>
+    <string name="cancel_heading">Bạn muốn hủy hành trình này?</string>
+    <string name="cancel_subtitle">Vé vẫn còn hiệu lực cho đến khi bạn xác nhận hủy.</string>
+    <string name="cancel_badge">Đã thanh toán · Chưa hủy</string>
+    <string name="label_booked_seat">Ghế đã đặt</string>
+    <string name="cancel_policy_title">Chính sách hoàn tiền minh họa</string>
+    <string name="cancel_policy_body" formatted="false">Hủy trước giờ khởi hành trên 24 giờ: hoàn 80% giá vé, phí hủy 20%. Hủy trong vòng 24 giờ: hoàn 50%. Điều kiện này chỉ dùng cho thiết kế mẫu.</string>
+    <string name="cancel_refund_title">Dự kiến hoàn tiền</string>
+    <string name="label_paid_fare">Giá vé đã trả</string>
+    <string name="label_cancel_fee">Phí hủy · %1$d%%</string>
+    <string name="label_refund">Số tiền hoàn · %1$d%%</string>
+    <string name="cancel_refund_note">Hoàn về %1$s trong 3–5 ngày làm việc. Giá trị và thời hạn hoàn tiền là minh họa.</string>
+    <string name="cancel_confirm">Xác nhận hủy vé</string>
+    <string name="cancel_keep">Quay lại · Giữ vé của tôi</string>
+    <string name="cancel_dialog_title">Hủy vé %1$s?</string>
+    <string name="cancel_dialog_message">Bạn sẽ được hoàn %1$s. Thao tác này không thể hoàn tác.</string>
+    <string name="cancel_dialog_confirm">Hủy vé</string>
+    <string name="cancel_dialog_keep">Giữ vé</string>
+    <string name="cancel_done_title">Đã hủy vé</string>
+    <string name="cancel_done_message">%1$s sẽ được hoàn về %2$s trong 3–5 ngày làm việc.</string>
+    <string name="cancel_notify_title">Vé %1$s đã được hủy</string>
+    <string name="cancel_notify_body">Đã hoàn %1$s về %2$s. Ghế %3$s đã được giải phóng.</string>
+
+    <string name="review_title">Đánh giá nhà xe</string>
+    <string name="review_trip_done">Chuyến đã hoàn thành</string>
+    <string name="review_question">Hành trình của bạn thế nào?</string>
+    <string name="review_rating_1">1/5 · Rất tệ</string>
+    <string name="review_rating_2">2/5 · Chưa hài lòng</string>
+    <string name="review_rating_3">3/5 · Bình thường</string>
+    <string name="review_rating_4">4/5 · Hài lòng</string>
+    <string name="review_rating_5">5/5 · Rất hài lòng</string>
+    <string name="review_rating_none">Chạm vào ngôi sao để chấm điểm</string>
+    <string name="review_tag_clean">Xe sạch sẽ</string>
+    <string name="review_tag_ontime">Đúng giờ</string>
+    <string name="review_tag_staff">Nhân viên thân thiện</string>
+    <string name="review_comment_label">Nhận xét của bạn</string>
+    <string name="review_comment_hint">Chia sẻ trải nghiệm của bạn với nhà xe…</string>
+    <string name="review_info_title">Đánh giá từ hành khách thực tế</string>
+    <string name="review_info_body">Nhận xét được gắn với chuyến đã đi ngày %1$s.</string>
+    <string name="review_submit">Gửi đánh giá</string>
+    <string name="review_need_rating">Vui lòng chọn số sao trước khi gửi</string>
+    <string name="review_done_title">Cảm ơn bạn đã đánh giá!</string>
+    <string name="review_done_message">Đánh giá %1$d★ của bạn giúp %2$s phục vụ tốt hơn.</string>
+    <string name="cd_star">%1$d sao</string>
+
+    <string name="notifications_title">Thông báo</string>
+    <string name="notifications_unread">%1$d chưa đọc</string>
+    <string name="notifications_all_read">Đã đọc hết</string>
+    <string name="notifications_mark_all">Đánh dấu đã đọc</string>
+    <string name="notification_unread">Chưa đọc</string>
+    <string name="notification_read">Đã đọc</string>
+    <string name="notifications_marked">Đã đánh dấu tất cả là đã đọc</string>
+    <string name="notifications_promo_title">Mã VEGIN15</string>
+    <string name="notifications_promo_message" formatted="false">Giảm 15%, tối đa 50.000đ cho chuyến đi Đà Lạt. Ưu đãi minh họa, chưa áp dụng vào vé mẫu.</string>
+    <string name="booking_notify_title">Vé của bạn đã được xác nhận</string>
+    <string name="booking_notify_body">Mã vé %1$s · Ghế %2$s. Thanh toán %3$s thành công: %4$s.</string>
+    <string name="review_notify_title">Đã gửi đánh giá cho %1$s</string>
+    <string name="review_notify_body">Cảm ơn bạn đã chấm %1$d★ cho chuyến ngày %2$s.</string>
+
+    <!-- Nhóm 05: Khám phá · Đề xuất chuyến -->
+    <string name="suggest_title">Dành riêng cho bạn</string>
+    <string name="suggest_badge">Tính năng nâng cao · Đề xuất cá nhân hóa</string>
+    <string name="suggest_heading">%1$s, thêm một lần nữa?</string>
+    <string name="suggest_heading_new">Khám phá %1$s cùng VéGo</string>
+    <string name="suggest_reason_title">Vì sao bạn thấy chuyến này?</string>
+    <string name="suggest_reason_body">Bạn đã đi tuyến %1$s → %2$s ngày %3$s và thường chọn %4$s, khởi hành %5$s.</string>
+    <string name="suggest_reason_new">Bạn chưa có chuyến đã đi nào, đây là chuyến được hành khách đánh giá cao nhất.</string>
+    <string name="suggest_match_badge">Phù hợp sở thích</string>
+    <string name="suggest_view_trip">Xem chuyến · %1$s</string>
+    <string name="suggest_more_title">Thêm lựa chọn cho bạn</string>
+    <string name="suggest_footnote">Gợi ý dựa trên lịch sử đặt vé. Giá và số ghế có thể thay đổi khi bạn tìm chuyến.</string>
+
+    <!-- Nhóm 06: Ví xu -->
+    <string name="xu_amount">%1$s xu</string>
+    <string name="xu_plus">+%1$s xu</string>
+    <string name="xu_minus">−%1$s xu</string>
+    <string name="wallet_title">Ví xu</string>
+    <string name="wallet_balance_label">Số dư xu của bạn</string>
+    <string name="wallet_balance_hint">Tích xu mỗi ngày, tiết kiệm cho chuyến đi.</string>
+    <string name="wallet_check_in">Điểm danh hôm nay</string>
+    <string name="wallet_checked_in">Đã điểm danh hôm nay ✓</string>
+    <string name="wallet_play_game">Chơi game kiếm xu</string>
+    <string name="wallet_history_title">Lịch sử giao dịch xu</string>
+    <string name="wallet_show_all">Xem tất cả %1$d giao dịch</string>
+    <string name="wallet_show_less">Thu gọn</string>
+    <string name="wallet_redeem">Đổi xu lấy voucher</string>
+    <string name="wallet_booking_reward">Bạn nhận %1$d xu từ vé vừa đặt</string>
+
+    <!-- Điểm danh -->
+    <string name="check_in_title">Điểm danh</string>
+    <string name="check_in_heading">Mỗi ngày một chút xu</string>
+    <string name="check_in_streak_pending">Bạn đã điểm danh %1$d ngày liên tiếp. Tiếp tục hôm nay để nhận thêm xu nhé!</string>
+    <string name="check_in_streak_done">Tuyệt vời! Chuỗi điểm danh của bạn đã lên %1$d ngày liên tiếp.</string>
+    <string name="check_in_reward_label">Phần thưởng hôm nay · %1$s</string>
+    <string name="check_in_reward_note">Xu sẽ được cộng vào Ví xu sau khi điểm danh.</string>
+    <string name="check_in_reward_note_done">Đã cộng vào Ví xu. Số dư hiện tại: %1$s xu.</string>
+    <string name="check_in_week">Tuần của bạn</string>
+    <string name="check_in_day">Ngày %1$d</string>
+    <string name="check_in_today">Hôm nay</string>
+    <string name="check_in_bonus_title">Ngày thứ 7, nhận 50 xu</string>
+    <string name="check_in_bonus_body">Điểm danh đủ 7 ngày liên tiếp để nhận phần thưởng đặc biệt vào ngày cuối.</string>
+    <string name="check_in_state_pending">Hôm nay bạn chưa điểm danh.</string>
+    <string name="check_in_state_done">Bạn đã điểm danh hôm nay. Hẹn gặp lại ngày mai nhé!</string>
+    <string name="check_in_now">Điểm danh ngay</string>
+    <string name="check_in_done_button">Đã điểm danh hôm nay</string>
+    <string name="check_in_done_title">Điểm danh thành công!</string>
+    <string name="check_in_done_message">Bạn nhận được %1$d xu. Chuỗi điểm danh: %2$d ngày liên tiếp, còn %3$d ngày nữa là tới phần thưởng 50 xu.</string>
+    <string name="check_in_locked">Ngày %1$s chưa tới, quay lại vào hôm đó để điểm danh nhé</string>
+
+    <!-- Game -->
+    <string name="game_intro_title">Chơi game kiếm xu</string>
+    <string name="game_name">Khủng long phiêu lưu</string>
+    <string name="game_tagline">Nhảy thật khéo, gom xu cho chuyến đi!</string>
+    <string name="game_how_to">Cách chơi</string>
+    <string name="game_rule_jump_title">Chạm để nhảy</string>
+    <string name="game_rule_jump_body">Giúp khủng long vượt qua chướng ngại vật.</string>
+    <string name="game_rule_coins_title">Chạy xa, nhận thêm xu</string>
+    <string name="game_rule_coins_body">Mỗi 10 điểm đổi thành 1 xu, tối đa 100 xu/lượt.</string>
+    <string name="game_start">Bắt đầu chơi</string>
+    <string name="game_turns_left">Còn %1$d lượt chơi hôm nay</string>
+    <string name="game_no_turns">Bạn đã hết lượt chơi hôm nay</string>
+    <string name="game_no_turns_title">Hết lượt chơi hôm nay</string>
+    <string name="game_no_turns_message">Mỗi ngày có %1$d lượt chơi. Quay lại vào ngày mai, hoặc điểm danh để nhận thêm xu nhé!</string>
+    <string name="game_go_check_in">Đi điểm danh</string>
+    <string name="game_hud_score">Điểm</string>
+    <string name="game_hud_coins">Xu nhận được</string>
+    <string name="game_hud_best">Kỷ lục</string>
+    <string name="game_hint">Chạm vào khung để nhảy · Giữ lâu để nhảy cao hơn</string>
+    <string name="cd_game_stage">Khung chơi game, chạm để nhảy</string>
+    <string name="game_tap_to_start">Chạm để bắt đầu</string>
+    <string name="game_over">Va chạm rồi!</string>
+    <string name="game_paused">Tạm dừng</string>
+    <string name="game_tap_to_continue">Chạm để chơi tiếp</string>
+    <string name="game_quit_title">Kết thúc lượt chơi?</string>
+    <string name="game_quit_message">Lượt này sẽ kết thúc, số điểm hiện tại (%1$d điểm) vẫn được đổi thành xu.</string>
+    <string name="game_quit_confirm">Kết thúc</string>
+    <string name="game_quit_continue">Chơi tiếp</string>
+    <string name="game_quit_ready_title">Rời game?</string>
+    <string name="game_quit_ready_message">Bạn chưa bắt đầu chạy. Rời đi lúc này sẽ không mất lượt chơi.</string>
+    <string name="game_quit_ready_confirm">Rời đi</string>
+
+    <!-- Kết quả game -->
+    <string name="game_result_title">Kết quả chơi game</string>
+    <string name="game_result_great">Chạy hay lắm!</string>
+    <string name="game_result_ok">Khởi động tốt!</string>
+    <string name="game_result_low">Cố lên lần sau nhé!</string>
+    <string name="game_result_body">Bạn vừa hoàn thành một lượt chơi. Xu thưởng đã được cộng vào Ví xu.</string>
+    <string name="game_result_body_zero">Bạn cần ít nhất 10 điểm để nhận xu. Thử lại và nhảy thật khéo nhé!</string>
+    <string name="game_result_score_label">Số điểm đạt được</string>
+    <string name="game_result_new_best">Kỷ lục mới!</string>
+    <string name="game_result_coins_label">Xu nhận được</string>
+    <string name="game_result_rule">10 điểm = 1 xu · Thưởng cho lượt chơi này</string>
+    <string name="game_result_rule_capped">10 điểm = 1 xu · Đã đạt tối đa 100 xu/lượt</string>
+    <string name="game_result_balance_label">Số dư Ví xu mới</string>
+    <string name="game_play_again">Chơi lại</string>
+    <string name="game_back_wallet">Về Ví xu</string>
+
+    <!-- Đổi voucher -->
+    <string name="voucher_title">Đổi xu lấy voucher</string>
+    <string name="voucher_balance_label">Số xu hiện có</string>
+    <string name="voucher_list_title">Ưu đãi cho hành trình của bạn</string>
+    <string name="voucher_name">Giảm %1$s vé xe</string>
+    <string name="voucher_condition">Áp dụng cho vé từ %1$s</string>
+    <string name="voucher_valid">Dùng trong 30 ngày</string>
+    <string name="voucher_owned">Đã có %1$d · Dùng trong 30 ngày</string>
+    <string name="voucher_need_more">Cần thêm %1$s xu</string>
+    <string name="voucher_redeem">Đổi ngay</string>
+    <string name="voucher_footnote">Voucher sau khi đổi được lưu trong tài khoản. Mỗi voucher áp dụng cho một lần đặt vé.</string>
+    <string name="voucher_confirm_title">Đổi %1$s xu?</string>
+    <string name="voucher_confirm_message">Bạn sẽ nhận voucher giảm %1$s cho vé từ %2$s, dùng trong 30 ngày. Số dư còn lại: %3$s xu.</string>
+    <string name="voucher_confirm_ok">Đổi ngay</string>
+    <string name="voucher_confirm_later">Để sau</string>
+    <string name="voucher_done_title">Đổi voucher thành công!</string>
+    <string name="voucher_done_message">Mã voucher của bạn: %1$s\nVoucher đã được lưu vào tài khoản, áp dụng khi thanh toán vé.</string>
+    <string name="voucher_not_enough">Bạn cần thêm %1$s xu để đổi voucher này</string>
+
+    <!-- Nhóm 07: Hỗ trợ AI -->
+    <string name="chat_title">Hỗ trợ AI</string>
+    <string name="chat_subtitle">Trợ lý VéGo · Hỗ trợ về vé xe</string>
+    <string name="chat_subtitle_typing">Trợ lý VéGo đang trả lời…</string>
+    <string name="chat_welcome_title">Xin chào! Mình có thể giúp gì về vé xe của bạn?</string>
+    <string name="chat_welcome_body">Mình là trợ lý VéGo. Bạn có thể hỏi về hành trình, vé xe hoặc chính sách nhà xe.</string>
+    <string name="chat_quick_title">BẠN CÓ THỂ BẮT ĐẦU VỚI</string>
+    <string name="chat_quick_cancel">Chính sách hủy vé &amp; hoàn tiền</string>
+    <string name="chat_quick_luggage">Quy định hành lý</string>
+    <string name="chat_quick_ticket">Kiểm tra vé của tôi</string>
+    <string name="chat_quick_change">Cách đổi giờ/chuyến</string>
+    <string name="chat_disclaimer">Trợ lý AI có thể sai sót. Với vấn đề quan trọng, vui lòng liên hệ nhân viên.</string>
+    <string name="chat_hint">Nhập tin nhắn của bạn...</string>
+    <string name="cd_send">Gửi tin nhắn</string>
+    <string name="chat_today">Hôm nay · %1$s</string>
+    <string name="chat_you_time">Bạn · %1$s</string>
+    <string name="chat_bot_name">Trợ lý VéGo</string>
+    <string name="chat_typing">Trợ lý đang soạn câu trả lời</string>
+    <string name="chat_helpful">Hữu ích</string>
+    <string name="chat_not_helpful">Không hữu ích</string>
+    <string name="chat_thanks_helpful">Cảm ơn bạn! Góp ý giúp trợ lý trả lời tốt hơn</string>
+    <string name="chat_thanks_not_helpful">Cảm ơn góp ý. Bạn có thể hỏi lại cách khác hoặc liên hệ nhân viên</string>
+    <string name="chat_contact_staff">Liên hệ nhân viên</string>
+    <string name="chat_ticket_paid">Đã thanh toán</string>
+    <string name="chat_ticket_arrive">Đến nơi: %1$s</string>
+    <string name="chat_ticket_passenger">%1$s · 1 hành khách</string>
+    <string name="chat_staff_title">Để nhân viên hỗ trợ bạn</string>
+    <string name="chat_staff_eta">Dự kiến: 15–30 phút (minh họa)</string>
+    <string name="chat_call_hotline">Gọi hotline</string>
+    <string name="chat_send_request">Gửi yêu cầu cho nhân viên</string>
+    <string name="chat_request_sent">Đã gửi yêu cầu</string>
+    <string name="chat_staff_note">Thời gian trên là ví dụ ước tính, không phải cam kết phản hồi. Nếu chuyến sắp khởi hành, hãy ưu tiên gọi hotline.</string>
+    <string name="chat_hotline_title">Gọi hotline VéGo?</string>
+    <string name="chat_hotline_message">Số tổng đài %1$s (số minh họa cho bản thiết kế). Ứng dụng Điện thoại sẽ mở sẵn số để bạn bấm gọi.</string>
+    <string name="chat_hotline_call">Mở trình gọi</string>
+    <string name="chat_hotline_number">1900 0000</string>
+    <string name="chat_request_title">Gửi yêu cầu cho nhân viên?</string>
+    <string name="chat_request_message">Nhân viên sẽ đọc lại cuộc trò chuyện này và liên hệ bạn qua số %1$s.</string>
+    <string name="chat_request_confirm">Gửi yêu cầu</string>
+    <string name="chat_request_done_title">Đã gửi yêu cầu!</string>
+    <string name="chat_request_done_message">Mã yêu cầu: %1$s\nNhân viên VéGo sẽ liên hệ bạn sớm. Bạn có thể tiếp tục trò chuyện với trợ lý trong lúc chờ.</string>
+    <string name="chat_empty_message">Bạn nhập câu hỏi trước khi gửi nhé</string>
+    <string name="chat_leave_title">Rời cuộc trò chuyện?</string>
+    <string name="chat_leave_message">Nội dung trò chuyện sẽ không được lưu lại ở bản thử nghiệm này.</string>
+    <string name="chat_leave_confirm">Rời đi</string>
+    <string name="chat_leave_stay">Ở lại</string>
+    <string name="chat_no_dialer">Máy này không có ứng dụng gọi điện. Số hotline: %1$s</string>
+</resources>

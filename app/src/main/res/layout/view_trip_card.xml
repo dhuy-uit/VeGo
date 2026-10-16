@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ chuyến xe dùng chung: Danh sách, Chi tiết, Xác nhận, Thanh toán thành công.
+     Nội dung được gắn bằng TripCardBinder. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.Card">
+
+    <!-- Nhà xe -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_bus_front" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_operator"
+                style="@style/VeGo.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:lineHeight="22sp"
+                android:textSize="15sp"
+                tools:text="Phương Trang" />
+
+            <TextView
+                android:id="@+id/tv_bus_name"
+                style="@style/VeGo.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineHeight="16sp"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp"
+                tools:text="Limousine giường nằm 34 chỗ" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_rating"
+            style="@style/VeGo.Badge.Mint"
+            tools:text="4,8 ★" />
+    </LinearLayout>
+
+    <!-- Lịch trình -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_depart_time"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:lineHeight="31sp"
+                android:textSize="25sp"
+                tools:text="22:00" />
+
+            <TextView
+                android:id="@+id/tv_origin"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineHeight="14sp"
+                android:textSize="11sp"
+                tools:text="TP. Hồ Chí Minh" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_duration"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp"
+                tools:text="7 giờ" />
+
+            <TextView
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="────→"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_arrive_time"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:lineHeight="31sp"
+                android:textSize="25sp"
+                tools:text="05:00" />
+
+            <TextView
+                android:id="@+id/tv_destination"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineHeight="14sp"
+                android:textSize="11sp"
+                tools:text="Đà Lạt · +1 ngày" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_trip_date"
+        style="@style/VeGo.Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Ngày đi: 18/10/2026" />
+
+    <View style="@style/VeGo.Divider" />
+
+    <!-- Giá và tình trạng -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_price"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/vego_primary"
+                android:textSize="21sp"
+                tools:text="320.000đ" />
+
+            <TextView
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text=" / ghế"
+                android:textColor="@color/vego_primary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_trip_badge"
+            style="@style/VeGo.Badge.Orange"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            tools:text="Còn 12 ghế" />
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "clock" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="25dp"
+    android:height="25dp"
+    android:viewportWidth="25"
+    android:viewportHeight="25">
+    <path
+        android:pathData="M12.5 6.24952V12.5L16.667 14.5835M22.9175 12.5C22.9175 18.2534 18.2534 22.9175 12.5 22.9175C6.74659 22.9175 2.08252 18.2534 2.08252 12.5C2.08252 6.74659 6.74659 2.08252 12.5 2.08252C18.2534 2.08252 22.9175 6.74659 22.9175 12.5Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

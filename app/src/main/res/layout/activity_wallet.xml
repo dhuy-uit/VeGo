@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tiện ích · Ví xu" (node 2003:2500) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".wallet.WalletActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/wallet_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Page">
+
+            <LinearLayout style="@style/VeGo.Stack">
+
+                <!-- Số dư -->
+                <LinearLayout style="@style/VeGo.Card">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:layout_weight="1"
+                            android:divider="@drawable/space_2"
+                            android:orientation="vertical"
+                            android:showDividers="middle">
+
+                            <TextView
+                                style="@style/VeGo.Text.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/wallet_balance_label" />
+
+                            <TextView
+                                android:id="@+id/tv_balance"
+                                style="@style/VeGo.Text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
+                                android:lineHeight="50sp"
+                                android:textColor="@color/vego_primary"
+                                android:textSize="40sp"
+                                tools:text="1.250 xu" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/VeGo.Coin"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:textSize="23sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallet_balance_hint" />
+                </LinearLayout>
+
+                <!-- Kiếm thêm xu -->
+                <LinearLayout style="@style/VeGo.Stack.Actions">
+
+                    <TextView
+                        android:id="@+id/btn_check_in"
+                        style="@style/VeGo.Button.Primary"
+                        android:text="@string/wallet_check_in" />
+
+                    <TextView
+                        android:id="@+id/btn_play_game"
+                        style="@style/VeGo.Button.Outline"
+                        android:text="@string/wallet_play_game" />
+                </LinearLayout>
+
+                <!-- Lịch sử giao dịch xu -->
+                <LinearLayout style="@style/VeGo.Card">
+
+                    <TextView
+                        style="@style/VeGo.Text.CardTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallet_history_title" />
+
+                    <LinearLayout
+                        android:id="@+id/list_transactions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider_inset_12"
+                        android:orientation="vertical"
+                        android:showDividers="middle" />
+
+                    <TextView
+                        android:id="@+id/tv_show_all"
+                        style="@style/VeGo.Text.CenterLink"
+                        android:visibility="gone"
+                        tools:text="Xem tất cả 7 giao dịch"
+                        tools:visibility="visible" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View style="@style/VeGo.PageSpacer" />
+
+            <TextView
+                android:id="@+id/btn_vouchers"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/wallet_redeem" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "circle_x" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <path
+        android:pathData="M27.5005 16.4996L16.4996 27.5005M16.4996 16.4996L27.5005 27.5005M40.3349 22.0001C40.3349 32.1261 32.1261 40.3349 22.0001 40.3349C11.8741 40.3349 3.66528 32.1261 3.66528 22.0001C3.66528 11.8741 11.8741 3.66528 22.0001 3.66528C32.1261 3.66528 40.3349 11.8741 40.3349 22.0001Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#BB6B2B"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

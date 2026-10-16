@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Khoảng cách 7dp giữa các phần tử (dùng với android:divider + showDividers) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <size android:width="7dp" android:height="7dp" />
+    <solid android:color="@android:color/transparent" />
+</shape>

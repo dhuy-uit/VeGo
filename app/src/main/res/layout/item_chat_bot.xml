@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tin nhắn trợ lý (bên trái): tên + bong bóng + nguồn + đánh giá -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/space_10"
+    android:orientation="vertical"
+    android:paddingEnd="28dp"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_circle_mint"
+            android:importantForAccessibility="no"
+            android:padding="7dp"
+            android:src="@drawable/ic_bot" />
+
+        <TextView
+            style="@style/VeGo.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/chat_bot_name"
+            android:textColor="@color/vego_text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Bong bóng: các đoạn văn, nút, vé được thêm bằng code -->
+    <LinearLayout
+        android:id="@+id/bubble"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bubble_bot"
+        android:divider="@drawable/space_12"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:showDividers="middle" />
+
+    <TextView
+        android:id="@+id/tv_source"
+        style="@style/VeGo.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineHeight="16sp"
+        android:textColor="@color/vego_text_secondary"
+        android:textSize="11sp"
+        android:visibility="gone"
+        tools:text="Theo Chính sách hủy vé"
+        tools:visibility="visible" />
+
+    <!-- Đánh giá câu trả lời -->
+    <LinearLayout
+        android:id="@+id/row_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/space_8"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:id="@+id/btn_helpful"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_feedback"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="7dp">
+
+            <ImageView
+                android:id="@+id/iv_helpful"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_thumbs_up" />
+
+            <TextView
+                android:id="@+id/tv_helpful"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/chat_helpful"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_not_helpful"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_feedback"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="7dp">
+
+            <ImageView
+                android:id="@+id/iv_not_helpful"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_thumbs_down" />
+
+            <TextView
+                android:id="@+id/tv_not_helpful"
+                style="@style/VeGo.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/chat_not_helpful"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

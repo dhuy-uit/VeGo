@@ -1,0 +1,19 @@
+# Gradle / Android Studio
+.gradle/
+.kotlin/
+build/
+/captures
+.externalNativeBuild
+.cxx
+*.iml
+.idea/
+local.properties
+
+# Bản build xuất ra
+*.apk
+*.aab
+/app/release
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db

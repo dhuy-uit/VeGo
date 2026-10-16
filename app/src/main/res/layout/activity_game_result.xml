@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Tiện ích · Kết quả chơi game" (node 2003:2702) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".wallet.GameResultActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/game_result_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Page">
+
+            <LinearLayout style="@style/VeGo.Stack">
+
+                <!-- Chúc mừng -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_10"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="4dp"
+                    android:showDividers="middle">
+
+                    <!-- Hiệu ứng xu và tia sáng: vị trí theo Figma (240 × 144) -->
+                    <RelativeLayout
+                        android:id="@+id/group_reward_fx"
+                        android:layout_width="240dp"
+                        android:layout_height="144dp">
+
+                        <ImageView
+                            android:id="@+id/iv_reward_fx"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/img_reward_fx" />
+
+                        <TextView
+                            android:id="@+id/coin_small_left"
+                            style="@style/VeGo.Coin"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="29dp"
+                            android:layout_marginTop="50dp"
+                            android:rotation="-16"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/coin_small_right"
+                            style="@style/VeGo.Coin"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="160dp"
+                            android:layout_marginTop="28dp"
+                            android:rotation="14"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/coin_big"
+                            style="@style/VeGo.Coin"
+                            android:layout_width="78dp"
+                            android:layout_height="78dp"
+                            android:layout_marginStart="81dp"
+                            android:layout_marginTop="31dp"
+                            android:textSize="35sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_result_heading"
+                        style="@style/VeGo.Text.ResultTitle"
+                        tools:text="Chạy hay lắm!" />
+
+                    <TextView
+                        android:id="@+id/tv_result_body"
+                        style="@style/VeGo.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        tools:text="Bạn vừa hoàn thành một lượt chơi. Xu thưởng đã được cộng vào Ví xu." />
+                </LinearLayout>
+
+                <!-- Điểm và xu -->
+                <LinearLayout
+                    style="@style/VeGo.Card"
+                    android:divider="@drawable/space_16">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/space_4"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <TextView
+                            style="@style/VeGo.Text.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/game_result_score_label" />
+
+                        <TextView
+                            android:id="@+id/tv_result_score"
+                            style="@style/VeGo.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:lineHeight="58sp"
+                            android:textSize="40sp"
+                            tools:text="860" />
+
+                        <TextView
+                            android:id="@+id/tv_new_best"
+                            style="@style/VeGo.Badge.Orange"
+                            android:text="@string/game_result_new_best"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/vego_border" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/VeGo.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/inter_semibold"
+                            android:text="@string/game_result_coins_label"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tv_result_coins"
+                            style="@style/VeGo.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:fontFamily="@font/inter_bold"
+                            android:lineHeight="38sp"
+                            android:textColor="@color/vego_primary"
+                            android:textSize="26sp"
+                            tools:text="+86 xu" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tv_result_rule"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/game_result_rule" />
+                </LinearLayout>
+
+                <!-- Số dư mới -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card"
+                    android:padding="18dp">
+
+                    <TextView
+                        style="@style/VeGo.Text.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/game_result_balance_label" />
+
+                    <TextView
+                        android:id="@+id/tv_result_balance"
+                        style="@style/VeGo.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/inter_bold"
+                        android:lineHeight="29sp"
+                        android:textColor="@color/vego_primary"
+                        android:textSize="20sp"
+                        tools:text="1.336 xu" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View style="@style/VeGo.PageSpacer" />
+
+            <LinearLayout style="@style/VeGo.Stack.Actions">
+
+                <TextView
+                    android:id="@+id/tv_result_turns"
+                    style="@style/VeGo.Text.CenterCaption"
+                    tools:text="Còn 1 lượt chơi hôm nay" />
+
+                <TextView
+                    android:id="@+id/btn_play_again"
+                    style="@style/VeGo.Button.Primary"
+                    android:text="@string/game_play_again" />
+
+                <TextView
+                    android:id="@+id/btn_back_wallet"
+                    style="@style/VeGo.Button.Outline"
+                    android:text="@string/game_back_wallet" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

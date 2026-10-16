@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ vé sắp đi (Vé của tôi) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.Card">
+
+    <TextView
+        android:id="@+id/tv_ticket_badge"
+        style="@style/VeGo.Badge.Mint"
+        android:text="@string/ticket_badge_upcoming" />
+
+    <TextView
+        android:id="@+id/tv_ticket_route"
+        style="@style/VeGo.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_bold"
+        android:lineHeight="28sp"
+        android:textSize="19sp"
+        tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+    <TextView
+        android:id="@+id/tv_ticket_operator"
+        style="@style/VeGo.Text.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineHeight="19sp"
+        android:textSize="13sp"
+        tools:text="Phương Trang · Limousine 34 chỗ" />
+
+    <View style="@style/VeGo.Divider" />
+
+    <com.example.vego.common.widget.InfoRowView
+        android:id="@+id/row_ticket_depart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:irLabel="@string/label_depart"
+        app:irValue="22:00 · 18/10/2026" />
+
+    <com.example.vego.common.widget.InfoRowView
+        android:id="@+id/row_ticket_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:irHighlight="true"
+        app:irLabel="@string/label_code_seat"
+        app:irValue="VG18102605 · A05" />
+
+    <com.example.vego.common.widget.InfoRowView
+        android:id="@+id/row_ticket_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:irLabel="@string/label_amount"
+        app:irValue="320.000đ" />
+
+    <TextView
+        android:id="@+id/btn_view_eticket"
+        style="@style/VeGo.Button.Primary"
+        android:text="@string/success_view_ticket" />
+</LinearLayout>

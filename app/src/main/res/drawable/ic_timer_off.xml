@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "timer_off" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <path
+        android:pathData="M18.3331 3.66528H25.667M8.43232 20.1652C7.32159 22.835 7.02486 25.7735 7.57944 28.6113C8.13401 31.4492 9.51514 34.0599 11.5492 36.1152C13.6047 38.1491 16.2156 39.5301 19.0537 40.0846C21.8918 40.6392 24.8305 40.3425 27.5005 39.2318M13.5659 13.5649C16.4208 11.5842 19.8862 10.6814 23.3447 11.0171C26.8032 11.3529 30.0302 12.9054 32.4507 15.3982C34.869 17.8304 36.3583 21.0332 36.6598 24.4496C36.9613 27.866 36.0558 31.2801 34.1009 34.0981M3.66528 3.66528L40.3349 40.3318M22.0001 21.9986V18.3319"
+        android:fillColor="#00000000"
+        android:strokeColor="#BB6B2B"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

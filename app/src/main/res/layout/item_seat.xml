@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Một ô giường trong sơ đồ ghế. Trạng thái: enabled=false (đã đặt), selected (đang chọn). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="0dp"
+    android:layout_height="48dp"
+    android:layout_weight="1"
+    android:background="@drawable/bg_seat"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tv_seat_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:textColor="@color/seat_text"
+        android:textSize="11sp"
+        tools:text="A05" />
+
+    <View
+        android:layout_width="20dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/bg_seat_pillow"
+        android:duplicateParentState="true" />
+</LinearLayout>

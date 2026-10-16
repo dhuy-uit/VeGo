@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "credit_card" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="26dp"
+    android:height="26dp"
+    android:viewportWidth="26"
+    android:viewportHeight="26">
+    <path
+        android:pathData="M2.16577 10.8331H23.8342M4.33261 5.41577H21.6673C22.864 5.41577 23.8342 6.38593 23.8342 7.58269V18.4173C23.8342 19.614 22.864 20.5842 21.6673 20.5842H4.33261C3.1359 20.5842 2.16577 19.614 2.16577 18.4173V7.58269C2.16577 6.38593 3.1359 5.41577 4.33261 5.41577Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

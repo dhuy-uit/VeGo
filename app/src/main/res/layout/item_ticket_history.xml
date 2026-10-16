@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ vé đã đi / đã hủy (Lịch sử gần đây). Bấm vào thẻ để xem lại vé điện tử. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.Card"
+    android:background="@drawable/bg_card_clickable"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/tv_ticket_badge"
+        style="@style/VeGo.Badge.Grey"
+        tools:text="Đã đi · Hoàn thành" />
+
+    <TextView
+        android:id="@+id/tv_ticket_route"
+        style="@style/VeGo.Text.BodyStrong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+    <TextView
+        android:id="@+id/tv_ticket_meta"
+        style="@style/VeGo.Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Phương Trang · 22:00 · 20/09/2026" />
+
+    <com.example.vego.common.widget.InfoRowView
+        android:id="@+id/row_ticket_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:irLabel="@string/label_code_seat"
+        app:irValue="VG20092608 · B08" />
+
+    <TextView
+        android:id="@+id/btn_review"
+        style="@style/VeGo.Button.Outline"
+        android:text="@string/my_tickets_review"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>

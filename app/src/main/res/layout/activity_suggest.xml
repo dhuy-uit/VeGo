@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Khám phá · Đề xuất chuyến" (node 4:63643) — tab Gợi ý -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".explore.SuggestActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/suggest_title" />
+    </LinearLayout>
+
+    <!-- Thanh điều hướng dưới -->
+    <include
+        android:id="@+id/bottom_nav"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_alignParentBottom="true" />
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_above="@id/bottom_nav"
+        android:layout_below="@id/header">
+
+        <LinearLayout
+            android:id="@+id/content"
+            style="@style/VeGo.Content">
+
+            <TextView
+                style="@style/VeGo.Badge.Mint"
+                android:text="@string/suggest_badge" />
+
+            <!-- Ảnh minh họa điểm đến -->
+            <ImageView
+                android:id="@+id/iv_destination"
+                android:layout_width="match_parent"
+                android:layout_height="152dp"
+                android:background="@drawable/bg_photo"
+                android:clipToOutline="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_dalat_ho" />
+
+            <TextView
+                android:id="@+id/tv_suggest_heading"
+                style="@style/VeGo.Text.Greeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Đà Lạt, thêm một lần nữa?" />
+
+            <!-- Vì sao bạn thấy chuyến này -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/suggest_reason_title" />
+
+                    <TextView
+                        android:id="@+id/tv_suggest_reason"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Bạn đã đi tuyến TP. Hồ Chí Minh → Đà Lạt ngày 20/09 và thường chọn Phương Trang, khởi hành buổi tối." />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Chuyến gợi ý chính -->
+            <include
+                android:id="@+id/card_main"
+                layout="@layout/view_trip_card" />
+
+            <TextView
+                android:id="@+id/btn_view_trip"
+                style="@style/VeGo.Button.Primary"
+                tools:text="Xem chuyến · 18/10/2026" />
+
+            <TextView
+                android:id="@+id/tv_more_title"
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/suggest_more_title" />
+
+            <!-- Các lựa chọn thêm, thêm bằng code -->
+            <LinearLayout
+                android:id="@+id/list_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_20"
+                android:orientation="vertical"
+                android:showDividers="middle" />
+
+            <TextView
+                style="@style/VeGo.Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/suggest_footnote" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

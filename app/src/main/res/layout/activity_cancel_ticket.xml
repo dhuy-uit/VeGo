@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Vé & sau chuyến · Xác nhận hủy vé" (node 4:63504) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".tickets.CancelTicketActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/cancel_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <TextView
+                style="@style/VeGo.Text.H2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_heading" />
+
+            <TextView
+                style="@style/VeGo.Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_subtitle" />
+
+            <!-- Thông tin vé -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Badge.Mint"
+                    android:text="@string/cancel_badge" />
+
+                <TextView
+                    android:id="@+id/tv_route"
+                    style="@style/VeGo.Text.BodyStrong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_ticket_code"
+                    app:irValue="VG18102605" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_operator"
+                    app:irValue="Phương Trang" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_depart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_depart"
+                    app:irValue="22:00 · 18/10/2026" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_passenger"
+                    app:irValue="Nguyễn Minh Anh" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_booked_seat"
+                    app:irValue="A05" />
+            </LinearLayout>
+
+            <!-- Chính sách hoàn tiền (nền cam) -->
+            <LinearLayout
+                style="@style/VeGo.InfoBox"
+                android:background="@drawable/bg_info_warning">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_circle_alert" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel_policy_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel_policy_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Dự kiến hoàn tiền -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Text.CardTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel_refund_title" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_paid_fare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_paid_fare"
+                    app:irValue="320.000đ" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_cancel_fee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="Phí hủy · 20%"
+                    app:irValue="64.000đ" />
+
+                <View style="@style/VeGo.Divider" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_refund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="Số tiền hoàn · 80%"
+                    app:irValue="256.000đ" />
+
+                <TextView
+                    android:id="@+id/tv_refund_note"
+                    style="@style/VeGo.Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Hoàn về MoMo trong 3–5 ngày làm việc." />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_confirm_cancel"
+                style="@style/VeGo.Button.Danger"
+                android:text="@string/cancel_confirm" />
+
+            <TextView
+                android:id="@+id/btn_keep"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/cancel_keep" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

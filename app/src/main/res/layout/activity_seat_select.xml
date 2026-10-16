@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Chọn ghế" (node 4:63006) — sơ đồ xe giường nằm 34 chỗ, 2 tầng -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.SeatSelectActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/seat_title" />
+
+            <TextView
+                android:id="@+id/tv_trip_subtitle"
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Phương Trang · 22:00 · 18/10/2026" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/seat_heading" />
+
+            <!-- Chú giải -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <TextView
+                    style="@style/VeGo.Badge.Mint"
+                    android:text="@string/seat_legend_free" />
+
+                <TextView
+                    style="@style/VeGo.Badge.Grey"
+                    android:text="@string/seat_legend_booked" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button_primary"
+                    android:includeFontPadding="false"
+                    android:padding="7dp"
+                    android:text="@string/seat_legend_selected"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Sơ đồ 2 tầng: các hàng giường được thêm trong SeatSelectActivity -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:divider="@drawable/space_12"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <LinearLayout
+                    android:id="@+id/deck_lower"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card"
+                    android:divider="@drawable/space_12"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/seat_lower_deck" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="6dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentStart="true"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_circle_gauge" />
+
+                        <TextView
+                            style="@style/VeGo.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="@string/seat_front"
+                            android:textColor="@color/vego_text_secondary"
+                            android:textSize="10sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/deck_upper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card"
+                    android:divider="@drawable/space_12"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="@string/seat_upper_deck" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="6dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_alignParentStart="true"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_circle_gauge" />
+
+                        <TextView
+                            style="@style/VeGo.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="@string/seat_front"
+                            android:textColor="@color/vego_text_secondary"
+                            android:textSize="10sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Lời nhắc về ghế đang chọn -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:id="@+id/tv_seat_info_title"
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="A05 đang chọn · Chưa đặt vé" />
+
+                    <TextView
+                        android:id="@+id/tv_seat_info_body"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/seat_info_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Tóm tắt + Tiếp tục -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_selected_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/seat_current"
+                    app:irValue="A05 · Tầng dưới" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_seat_total"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/seat_total"
+                    app:irValue="320.000đ" />
+
+                <TextView
+                    android:id="@+id/btn_continue"
+                    style="@style/VeGo.Button.Primary"
+                    android:text="@string/seat_continue" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

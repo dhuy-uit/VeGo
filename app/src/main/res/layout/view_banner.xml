@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thanh thông báo nhanh trượt xuống từ trên (dùng qua VeGoBanner) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_banner"
+    android:clickable="true"
+    android:elevation="8dp"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="52dp"
+    android:orientation="horizontal"
+    android:paddingStart="14dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <ImageView
+        android:id="@+id/banner_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:importantForAccessibility="no"
+        tools:src="@drawable/ic_circle_check" />
+
+    <TextView
+        android:id="@+id/banner_text"
+        style="@style/VeGo.Text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/inter_medium"
+        android:lineHeight="19sp"
+        android:textSize="13sp"
+        tools:text="Đã lưu vé vào thư viện ảnh" />
+</LinearLayout>

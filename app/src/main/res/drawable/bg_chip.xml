@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chip lựa chọn (sắp xếp, khung giờ, loại xe) -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/vego_ripple_primary">
+    <item>
+        <selector>
+            <item android:state_selected="true">
+                <shape android:shape="rectangle">
+                    <corners android:radius="8dp" />
+                    <solid android:color="@color/vego_mint" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="8dp" />
+                    <solid android:color="@color/vego_chip_bg" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+</ripple>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "bot" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="46dp"
+    android:height="46dp"
+    android:viewportWidth="46"
+    android:viewportHeight="46">
+    <path
+        android:pathData="M22.88 15.2543V7.62842H15.2527M3.8118 26.6932H7.62544M38.1345 26.6932H41.9482M28.6004 24.7867V28.5997M17.1595 24.7867V28.5997M11.4391 15.2543H34.3209C36.4271 15.2543 38.1345 16.9614 38.1345 19.0673V34.3191C38.1345 36.4249 36.4271 38.132 34.3209 38.132H11.4391C9.33286 38.132 7.62544 36.4249 7.62544 34.3191V19.0673C7.62544 16.9614 9.33286 15.2543 11.4391 15.2543Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

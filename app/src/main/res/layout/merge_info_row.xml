@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nội dung của InfoRowView: "Nhãn  ·  Giá trị" -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        android:id="@+id/info_label"
+        style="@style/VeGo.InfoRowLabel" />
+
+    <TextView
+        android:id="@+id/info_value"
+        style="@style/VeGo.InfoRowValue" />
+</merge>

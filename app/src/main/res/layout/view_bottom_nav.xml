@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Điều hướng chính" — dùng chung cho Trang chủ, Vé của tôi, Gợi ý, Tài khoản.
+     Mục đang chọn được tô màu trong BaseActivity.setupBottomNav(). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_nav"
+    android:layout_width="match_parent"
+    android:layout_height="76dp"
+    android:background="@drawable/bg_bottom_nav"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingTop="1dp"
+    android:paddingEnd="12dp">
+
+    <LinearLayout
+        android:id="@+id/nav_home"
+        style="@style/VeGo.NavItem">
+
+        <LinearLayout
+            android:id="@+id/nav_home_pill"
+            style="@style/VeGo.NavPill">
+
+            <ImageView
+                android:id="@+id/nav_home_icon"
+                style="@style/VeGo.NavIcon"
+                android:src="@drawable/ic_house"
+                android:tint="@color/vego_text_secondary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/nav_home_label"
+            style="@style/VeGo.NavLabel"
+            android:text="@string/nav_home" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_tickets"
+        style="@style/VeGo.NavItem"
+        android:layout_marginStart="4dp">
+
+        <LinearLayout
+            android:id="@+id/nav_tickets_pill"
+            style="@style/VeGo.NavPill">
+
+            <ImageView
+                android:id="@+id/nav_tickets_icon"
+                style="@style/VeGo.NavIcon"
+                android:src="@drawable/ic_ticket"
+                android:tint="@color/vego_text_secondary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/nav_tickets_label"
+            style="@style/VeGo.NavLabel"
+            android:text="@string/nav_tickets" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_suggest"
+        style="@style/VeGo.NavItem"
+        android:layout_marginStart="4dp">
+
+        <LinearLayout
+            android:id="@+id/nav_suggest_pill"
+            style="@style/VeGo.NavPill">
+
+            <ImageView
+                android:id="@+id/nav_suggest_icon"
+                style="@style/VeGo.NavIcon"
+                android:src="@drawable/ic_sparkles"
+                android:tint="@color/vego_text_secondary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/nav_suggest_label"
+            style="@style/VeGo.NavLabel"
+            android:text="@string/nav_suggest" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nav_account"
+        style="@style/VeGo.NavItem"
+        android:layout_marginStart="4dp">
+
+        <LinearLayout
+            android:id="@+id/nav_account_pill"
+            style="@style/VeGo.NavPill">
+
+            <ImageView
+                android:id="@+id/nav_account_icon"
+                style="@style/VeGo.NavIcon"
+                android:src="@drawable/ic_user_round"
+                android:tint="@color/vego_text_secondary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/nav_account_label"
+            style="@style/VeGo.NavLabel"
+            android:text="@string/nav_account" />
+    </LinearLayout>
+</LinearLayout>

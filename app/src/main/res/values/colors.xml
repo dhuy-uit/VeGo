@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Bảng màu VéGo (lấy từ Figma VeGo3) -->
+    <color name="vego_primary">#007F78</color>
+    <color name="vego_primary_dark">#075B58</color>
+    <color name="vego_text">#173536</color>
+    <color name="vego_text_secondary">#647A7C</color>
+    <color name="vego_hint">#8FA3A4</color>
+    <color name="vego_border">#DBE6E5</color>
+    <color name="vego_background">#F5F8F8</color>
+    <color name="vego_surface">#FFFFFF</color>
+    <color name="vego_mint">#E4F4F1</color>
+    <color name="vego_orange_bg">#FFF2E6</color>
+    <color name="vego_orange_text">#A65A21</color>
+    <color name="vego_promo_overlay">#B5073D39</color>
+    <color name="vego_promo_note">#E3F1EE</color>
+    <color name="vego_danger">#C34F4F</color>
+    <color name="vego_danger_bg">#FFF0EF</color>
+    <color name="vego_chip_bg">#EEF3F3</color>
+    <color name="vego_star">#E88943</color>
+    <color name="vego_star_off">#D5E0DF</color>
+    <color name="vego_seat_booked_text">#8C9F9F</color>
+    <color name="vego_pillow_selected">#87FFFFFF</color>
+    <color name="vego_ripple_light">#33FFFFFF</color>
+    <color name="vego_ripple_primary">#1F007F78</color>
+    <!-- Nhóm 06: Ví xu & game -->
+    <color name="vego_muted">#E8EEEE</color>
+    <color name="vego_game_cloud">#B7D9D3</color>
+    <color name="vego_game_hill">#D1E9E3</color>
+    <color name="vego_game_dash">#8BB9AF</color>
+    <color name="vego_game_ground">#DCEFEA</color>
+    <!-- Nhóm 07: Hỗ trợ AI -->
+    <color name="vego_bubble_bot">#EDF2F2</color>
+</resources>

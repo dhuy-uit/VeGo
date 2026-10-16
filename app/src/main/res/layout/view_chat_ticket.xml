@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma "Vé thu nhỏ" trong chat (node 2002:87) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card"
+    android:divider="@drawable/space_12"
+    android:orientation="vertical"
+    android:padding="14dp"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_bus_front" />
+
+        <TextView
+            android:id="@+id/tv_mini_operator"
+            style="@style/VeGo.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="13sp"
+            tools:text="Phương Trang" />
+
+        <TextView
+            style="@style/VeGo.Badge.Mint"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:text="@string/chat_ticket_paid"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_mini_route"
+        style="@style/VeGo.Text.BodyStrong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+    <TextView
+        android:id="@+id/tv_mini_depart"
+        style="@style/VeGo.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_bold"
+        android:lineHeight="28sp"
+        android:textSize="22sp"
+        tools:text="22:00 · 18/10/2026" />
+
+    <TextView
+        android:id="@+id/tv_mini_arrive"
+        style="@style/VeGo.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/vego_text_secondary"
+        android:textSize="12sp"
+        tools:text="Đến nơi: 05:00 +1 ngày" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/vego_border" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_mini_code"
+            style="@style/VeGo.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="12sp"
+            tools:text="VG18102605" />
+
+        <TextView
+            android:id="@+id/tv_mini_seat"
+            style="@style/VeGo.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="@font/inter_bold"
+            android:textColor="@color/vego_primary"
+            android:textSize="12sp"
+            tools:text="Ghế A05" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_mini_passenger"
+        style="@style/VeGo.Text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/vego_text_secondary"
+        android:textSize="12sp"
+        tools:text="Nguyễn Minh Anh · 1 hành khách" />
+
+    <TextView
+        android:id="@+id/btn_mini_view"
+        style="@style/VeGo.Button.Primary"
+        android:text="@string/success_view_ticket" />
+</LinearLayout>

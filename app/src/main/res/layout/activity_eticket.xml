@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Vé & sau chuyến · Vé điện tử" (node 4:63452) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".tickets.ETicketActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/eticket_title" />
+
+            <TextView
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/eticket_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Mã vé + QR (khối này được lưu thành ảnh khi bấm "Lưu vé") -->
+            <LinearLayout
+                android:id="@+id/card_qr"
+                style="@style/VeGo.Card"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tv_eticket_badge"
+                    style="@style/VeGo.Badge.Mint"
+                    tools:text="Đã thanh toán · A05 đã đặt" />
+
+                <TextView
+                    android:id="@+id/tv_ticket_code"
+                    style="@style/VeGo.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:gravity="center_horizontal"
+                    android:lineHeight="33sp"
+                    android:textIsSelectable="true"
+                    android:textSize="23sp"
+                    tools:text="VG18102605" />
+
+                <ImageView
+                    android:id="@+id/iv_qr"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"
+                    android:background="@drawable/bg_qr_frame"
+                    android:contentDescription="@string/eticket_qr_caption"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/tv_qr_caption"
+                    style="@style/VeGo.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:lineHeight="16sp"
+                    android:text="@string/eticket_qr_caption"
+                    android:textColor="@color/vego_text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Thẻ chuyến xe -->
+            <include
+                android:id="@+id/card_trip"
+                layout="@layout/view_trip_card" />
+
+            <!-- Thông tin đặt vé -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:lineHeight="23sp"
+                    android:text="@string/confirm_booking_info"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_20"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/VeGo.Text.StackLabel"
+                            android:text="@string/confirm_passenger" />
+
+                        <TextView
+                            android:id="@+id/tv_passenger"
+                            style="@style/VeGo.Text.StackValue"
+                            tools:text="Nguyễn Minh Anh · 090 123 4567" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/VeGo.Text.StackLabel"
+                            android:text="@string/confirm_seat_qty" />
+
+                        <TextView
+                            android:id="@+id/tv_seat_qty"
+                            style="@style/VeGo.Text.StackValue"
+                            android:fontFamily="@font/inter_bold"
+                            android:textColor="@color/vego_primary"
+                            tools:text="A05 · 1 hành khách" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/VeGo.Text.StackLabel"
+                            android:text="@string/confirm_stops" />
+
+                        <TextView
+                            android:id="@+id/tv_stops"
+                            style="@style/VeGo.Text.StackValue"
+                            tools:text="Bến xe Miền Đông mới\n→ Bến xe Đà Lạt" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/VeGo.Divider" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_fare_fee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_fare_fee"
+                    app:irValue="320.000đ / 0đ" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_paid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/label_paid_amount"
+                    app:irValue="320.000đ" />
+            </LinearLayout>
+
+            <!-- Lời nhắc giờ có mặt -->
+            <LinearLayout
+                android:id="@+id/group_reminder"
+                style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:id="@+id/tv_reminder_title"
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Có mặt lúc 21:30 ngày 18/10" />
+
+                    <TextView
+                        android:id="@+id/tv_reminder_body"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Điểm đón: Bến xe Miền Đông mới." />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_save_ticket"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/eticket_save" />
+
+            <TextView
+                android:id="@+id/btn_cancel_ticket"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/eticket_cancel"
+                android:textColor="@color/vego_danger" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

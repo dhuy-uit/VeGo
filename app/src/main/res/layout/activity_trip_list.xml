@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Danh sách chuyến" (node 4:62829) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.TripListActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <LinearLayout style="@style/VeGo.HeaderTitleBlock">
+
+            <TextView
+                android:id="@+id/tv_route"
+                style="@style/VeGo.Text.ScreenTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+            <TextView
+                android:id="@+id/tv_route_subtitle"
+                style="@style/VeGo.Text.HeaderSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="18/10/2026 · 1 hành khách" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scroll"
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <!-- Số chuyến + nút Bộ lọc -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/btn_filter"
+                    style="@style/VeGo.Button.Outline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/list_filter" />
+
+                <TextView
+                    android:id="@+id/tv_result_count"
+                    style="@style/VeGo.Text.BodyStrong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toStartOf="@id/btn_filter"
+                    tools:text="6 chuyến phù hợp" />
+            </RelativeLayout>
+
+            <!-- Sắp xếp -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_8"
+                android:orientation="horizontal"
+                android:showDividers="middle">
+
+                <TextView
+                    android:id="@+id/chip_sort_departure"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/sort_departure" />
+
+                <TextView
+                    android:id="@+id/chip_sort_price"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/sort_price" />
+
+                <TextView
+                    android:id="@+id/chip_sort_rating"
+                    style="@style/VeGo.Chip"
+                    android:text="@string/sort_rating" />
+            </LinearLayout>
+
+            <!-- Các thẻ chuyến xe được thêm trong TripListActivity -->
+            <LinearLayout
+                android:id="@+id/list_trips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_20"
+                android:orientation="vertical"
+                android:showDividers="middle" />
+
+            <!-- Khi bộ lọc không còn chuyến nào -->
+            <LinearLayout
+                android:id="@+id/group_empty"
+                style="@style/VeGo.InfoBox"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/list_empty_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/list_empty_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_show_more"
+                style="@style/VeGo.Text.CenterLink"
+                android:lineHeight="17sp"
+                android:textColor="@color/vego_text_secondary"
+                android:textSize="12sp"
+                tools:text="Đang hiển thị 3/6 chuyến · Xem thêm chuyến" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

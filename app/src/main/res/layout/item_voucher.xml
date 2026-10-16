@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ voucher đổi bằng xu -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.Card"
+    android:divider="@drawable/space_8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_tile_mint"
+            android:importantForAccessibility="no"
+            android:padding="10dp"
+            android:src="@drawable/ic_ticket_percent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:divider="@drawable/space_2"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/tv_voucher_name"
+                style="@style/VeGo.Text.CardTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Giảm 20.000đ vé xe" />
+
+            <TextView
+                android:id="@+id/tv_voucher_condition"
+                style="@style/VeGo.Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Áp dụng cho vé từ 200.000đ" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_voucher_cost"
+            style="@style/VeGo.Text.Amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            tools:text="500 xu" />
+
+        <TextView
+            android:id="@+id/tv_voucher_note"
+            style="@style/VeGo.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/vego_text_secondary"
+            android:textSize="11sp"
+            tools:text="Dùng trong 30 ngày" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/btn_redeem"
+        style="@style/VeGo.Button"
+        android:background="@drawable/bg_button_redeem"
+        android:text="@string/voucher_redeem"
+        android:textColor="@color/button_redeem_text" />
+</LinearLayout>

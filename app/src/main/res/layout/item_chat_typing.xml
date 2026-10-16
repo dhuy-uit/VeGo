@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trợ lý đang soạn câu trả lời: 3 chấm nhấp nháy -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bubble_bot"
+    android:contentDescription="@string/chat_typing"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingTop="14dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="14dp">
+
+    <View
+        android:id="@+id/dot_1"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:background="@drawable/bg_typing_dot" />
+
+    <View
+        android:id="@+id/dot_2"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/bg_typing_dot" />
+
+    <View
+        android:id="@+id/dot_3"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/bg_typing_dot" />
+</LinearLayout>

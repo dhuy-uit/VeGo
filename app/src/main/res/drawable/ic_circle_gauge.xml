@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "circle_gauge" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:pathData="M11.6999 2.0247C10.0957 1.40147 8.32594 1.34888 6.68753 1.87576C5.04912 2.40264 3.64173 3.47694 2.70148 4.91843C1.76122 6.35993 1.3453 8.08093 1.52347 9.79273C1.70164 11.5045 2.46308 13.103 3.68004 14.3199C4.897 15.5369 6.49546 16.2983 8.20725 16.4765C9.91905 16.6547 11.64 16.2388 13.0815 15.2985C14.523 14.3582 15.5973 12.9509 16.1242 11.3125C16.6511 9.67404 16.5985 7.90428 15.9753 6.30004M10.0502 7.95002L14.2506 3.74969M10.5 9.0001C10.5 9.8286 9.82836 10.5002 8.99986 10.5002C8.17137 10.5002 7.49974 9.8286 7.49974 9.0001C7.49974 8.17161 8.17137 7.49999 8.99986 7.49999C9.82836 7.49999 10.5 8.17161 10.5 9.0001Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#647A7C"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Minh họa chạy vượt chướng ngại vật" (node 2003:2665), dựng lại bằng vector -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="372dp"
+    android:height="252dp"
+    android:viewportWidth="372"
+    android:viewportHeight="252">
+    <path android:fillColor="#E4F4F1"
+        android:pathData="M18,0 H354 A18,18 0 0,1 372,18 V234 A18,18 0 0,1 354,252 H18 A18,18 0 0,1 0,234 V18 A18,18 0 0,1 18,0 Z" />
+    <!-- Mây -->
+    <group android:translateX="46" android:translateY="41">
+        <path android:strokeColor="#B7D9D3" android:strokeWidth="2" android:strokeLineCap="round"
+            android:pathData="M33,1V9.23535H46V19H1V11.5879H13V1H33Z" />
+    </group>
+    <group android:translateX="243" android:translateY="70">
+        <path android:strokeColor="#B7D9D3" android:strokeWidth="2" android:strokeLineCap="round"
+            android:pathData="M33,1V9.23535H46V19H1V11.5879H13V1H33Z" />
+    </group>
+    <!-- Đồi xa -->
+    <group android:translateY="150">
+        <path android:fillColor="#D1E9E3"
+            android:pathData="M0,63V44H57V26H112V44H178V32H224V0H278V32H331V44H372V63H0Z" />
+    </group>
+    <!-- Khủng long đang nhảy + mắt -->
+    <group android:translateX="83" android:translateY="109">
+        <path android:fillColor="#007F78"
+            android:pathData="M36,0H78V31.4286H56V41.9048H68V50.2857H56V44H46V67.0476H38V79.619H50V88H30V67.0476H22V83.8095H8V75.4286H16V60.7619H8V52.381H0V23.0476H8V39.8095H16V46.0952H28V37.7143H36V0Z" />
+    </group>
+    <path android:fillColor="#FFFFFF" android:pathData="M140,116h6v6h-6z" />
+    <!-- Xương rồng & chướng ngại vật -->
+    <group android:translateX="249" android:translateY="164">
+        <path android:fillColor="#007F78" android:pathData="M13,0H21V22H27V10H34V29H21V48H13V34H0V16H7V27H13V0Z" />
+    </group>
+    <group android:translateX="329" android:translateY="190">
+        <path android:fillColor="#8BB9AF" android:pathData="M0,22V10H8V0H24V8H30V22H0Z" />
+    </group>
+    <!-- Đường chạy -->
+    <path android:fillColor="#007F78" android:pathData="M20,212h332v2h-332z" />
+    <path android:fillColor="#8BB9AF" android:pathData="M49,228h30v2h-30z" />
+    <path android:fillColor="#8BB9AF" android:pathData="M153,235h14v2h-14z" />
+    <path android:fillColor="#8BB9AF" android:pathData="M298,224h32v2h-32z" />
+    <!-- Xu trên đường chạy -->
+    <group android:translateX="183" android:translateY="100">
+        <path android:fillColor="#FFF2E6" android:strokeColor="#A65A21" android:strokeWidth="1.5"
+            android:pathData="M13,0.75 A12.25,12.25 0 1,1 12.99,0.75 Z" />
+        <path android:fillColor="#A65A21" android:pathData="M8.6,8.7 L10.75,8.7 L13,15.3 L15.25,8.7 L17.4,8.7 L14.1,17.4 L11.9,17.4 Z" />
+    </group>
+    <group android:translateX="219" android:translateY="117">
+        <path android:fillColor="#FFF2E6" android:strokeColor="#A65A21" android:strokeWidth="1.5"
+            android:pathData="M13,0.75 A12.25,12.25 0 1,1 12.99,0.75 Z" />
+        <path android:fillColor="#A65A21" android:pathData="M8.6,8.7 L10.75,8.7 L13,15.3 L15.25,8.7 L17.4,8.7 L14.1,17.4 L11.9,17.4 Z" />
+    </group>
+</vector>

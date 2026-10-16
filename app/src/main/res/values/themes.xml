@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Giao diện VéGo chỉ có bản sáng theo Figma -->
+    <style name="Base.Theme.VeGo" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/vego_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/vego_primary</item>
+        <item name="android:colorBackground">@color/vego_background</item>
+        <item name="android:windowBackground">@color/vego_surface</item>
+        <item name="android:textColorHint">@color/vego_hint</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Hiệu ứng mặc định khi mở / quay lại màn hình -->
+        <item name="android:windowAnimationStyle">@style/VeGo.WindowAnimation</item>
+    </style>
+
+    <style name="Theme.VeGo" parent="Base.Theme.VeGo" />
+
+    <!-- Đi tiếp: trượt sang trái có chiều sâu. Quay lại: ngược lại -->
+    <style name="VeGo.WindowAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/push_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/push_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/pop_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/pop_exit</item>
+    </style>
+</resources>

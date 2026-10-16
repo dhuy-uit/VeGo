@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hộp thoại VéGo: biểu tượng + tiêu đề + nội dung + 1–2 nút (dùng qua VeGoDialog) -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:divider="@drawable/space_12"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:showDividers="middle">
+
+        <ImageView
+            android:id="@+id/dialog_icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:importantForAccessibility="no"
+            android:padding="16dp"
+            tools:background="@drawable/bg_result_success"
+            tools:src="@drawable/ic_circle_check_large" />
+
+        <TextView
+            android:id="@+id/dialog_title"
+            style="@style/VeGo.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center_horizontal"
+            android:lineHeight="26sp"
+            android:textSize="19sp"
+            tools:text="Đặt vé thành công!" />
+
+        <TextView
+            android:id="@+id/dialog_message"
+            style="@style/VeGo.Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            tools:text="Vé của bạn đã được lưu trong mục Vé của tôi." />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:divider="@drawable/space_10"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/dialog_primary"
+                style="@style/VeGo.Button.Primary"
+                android:layout_height="48dp"
+                tools:text="Đồng ý" />
+
+            <TextView
+                android:id="@+id/dialog_secondary"
+                style="@style/VeGo.Button.Outline"
+                android:layout_height="48dp"
+                android:visibility="gone"
+                tools:text="Để sau"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

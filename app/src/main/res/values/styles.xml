@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiểu chữ và thành phần dùng chung, quy đổi từ Figma (font Inter, line-height 1.45) -->
+<resources>
+
+    <!-- Gốc cho các style "VeGo.*" (dùng kế thừa bằng dấu chấm) -->
+    <style name="VeGo" />
+
+    <!-- ===== Chữ ===== -->
+    <style name="VeGo.Text">
+        <item name="android:textColor">@color/vego_text</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="VeGo.Text.H1">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:lineHeight">41sp</item>
+    </style>
+
+    <style name="VeGo.Text.H2">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:lineHeight">38sp</item>
+    </style>
+
+    <style name="VeGo.Text.Greeting">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineHeight">35sp</item>
+    </style>
+
+    <style name="VeGo.Text.ScreenTitle">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:lineHeight">29sp</item>
+    </style>
+
+    <style name="VeGo.Text.Section">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineHeight">26sp</item>
+    </style>
+
+    <style name="VeGo.Text.Body">
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="VeGo.Text.BodyStrong">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="VeGo.Text.Label">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineHeight">19sp</item>
+    </style>
+
+    <style name="VeGo.Text.Caption">
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight">17sp</item>
+    </style>
+
+    <style name="VeGo.Text.Link">
+        <item name="android:textColor">@color/vego_primary</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Dòng chữ căn giữa, bấm được (vd: "Quay lại đăng nhập") -->
+    <style name="VeGo.Text.CenterLink">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/vego_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Nhãn trạng thái nhỏ (badge) -->
+    <style name="VeGo.Badge">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">9dp</item>
+        <item name="android:paddingEnd">9dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="VeGo.Badge.Mint">
+        <item name="android:background">@drawable/bg_badge_mint</item>
+        <item name="android:textColor">@color/vego_primary</item>
+    </style>
+
+    <style name="VeGo.Badge.Orange">
+        <item name="android:background">@drawable/bg_badge_orange</item>
+        <item name="android:textColor">@color/vego_orange_text</item>
+    </style>
+
+    <!-- ===== Thanh tiêu đề ===== -->
+    <style name="VeGo.Header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:background">@color/vego_surface</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+    </style>
+
+    <!-- Nút icon 20dp, vùng chạm 40dp (lề âm để icon vẫn thẳng hàng như Figma) -->
+    <style name="VeGo.HeaderIconButton">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- ===== Nội dung cuộn ===== -->
+    <style name="VeGo.ScrollArea">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/vego_background</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:overScrollMode">ifContentScrolls</item>
+    </style>
+
+    <style name="VeGo.Content">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:divider">@drawable/space_20</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <!-- ===== Trường nhập liệu ===== -->
+    <style name="VeGo.Field">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/space_7</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="VeGo.InputBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:addStatesFromChildren">true</item>
+    </style>
+
+    <style name="VeGo.InputText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/vego_text</item>
+        <item name="android:textColorHint">@color/vego_hint</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
+    <style name="VeGo.InputIcon">
+        <item name="android:layout_width">18dp</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginEnd">14dp</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- Icon bấm được trong ô nhập (vd: hiện/ẩn mật khẩu) -->
+    <style name="VeGo.InputIconButton">
+        <item name="android:layout_width">34dp</item>
+        <item name="android:layout_height">34dp</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginEnd">6dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- ===== Nút ===== -->
+    <style name="VeGo.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="VeGo.Button.Primary">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="VeGo.Button.Outline">
+        <item name="android:background">@drawable/bg_button_outline</item>
+        <item name="android:textColor">@color/vego_primary</item>
+    </style>
+
+    <!-- ===== Thẻ ===== -->
+    <style name="VeGo.Card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">18dp</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:divider">@drawable/space_12</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <!-- Hộp thông tin hướng dẫn nền xanh nhạt -->
+    <style name="VeGo.InfoBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:background">@drawable/bg_info</item>
+    </style>
+
+    <!-- ===== Thanh điều hướng dưới ===== -->
+    <style name="VeGo.NavItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="VeGo.NavPill">
+        <item name="android:layout_width">52dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="VeGo.NavIcon">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="VeGo.NavLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- ===== Nhóm 02: Tài khoản ===== -->
+    <style name="VeGo.Text.HeadingM">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:lineHeight">36sp</item>
+    </style>
+
+    <style name="VeGo.Text.CardTitle">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:lineHeight">25sp</item>
+    </style>
+
+    <!-- Ảnh đại diện tròn 80dp: chữ viết tắt hoặc ảnh người dùng chọn -->
+    <style name="VeGo.Avatar">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:background">@drawable/bg_avatar</item>
+        <item name="android:clipToOutline">true</item>
+    </style>
+
+    <style name="VeGo.AvatarInitials">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/vego_primary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Dòng thông tin "Nhãn  ·  Giá trị" -->
+    <style name="VeGo.InfoRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:baselineAligned">true</item>
+    </style>
+
+    <style name="VeGo.InfoRowLabel" parent="VeGo.Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight">18sp</item>
+    </style>
+
+    <style name="VeGo.InfoRowValue" parent="VeGo.Text">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">21sp</item>
+    </style>
+
+    <!-- Dòng menu bấm được: icon + tiêu đề + mũi tên -->
+    <style name="VeGo.MenuRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="VeGo.MenuIcon">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="VeGo.MenuTitle" parent="VeGo.Text.BodyStrong">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">12dp</item>
+    </style>
+
+    <style name="VeGo.MenuChevron">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:src">@drawable/ic_chevron_right</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="VeGo.Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@drawable/divider_line</item>
+    </style>
+
+    <!-- ===== Nhóm 03: Đặt vé ===== -->
+    <!-- Khối tiêu đề 2 dòng trên thanh tiêu đề (tiêu đề + mô tả nhỏ) -->
+    <style name="VeGo.HeaderTitleBlock">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/space_2</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="VeGo.Text.HeaderSubtitle">
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- Chip lựa chọn: bấm để chọn / bỏ chọn -->
+    <style name="VeGo.Chip" parent="VeGo.Badge">
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Badge chỉ để hiển thị, dạng xám -->
+    <style name="VeGo.Badge.Grey">
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:textColor">@color/vego_text_secondary</item>
+    </style>
+
+    <style name="VeGo.Badge.Danger">
+        <item name="android:background">@drawable/bg_badge_danger</item>
+        <item name="android:textColor">@color/vego_danger</item>
+    </style>
+
+    <!-- Tiêu đề 2 dòng "Nhãn / Giá trị" xếp dọc (màn Xác nhận) -->
+    <style name="VeGo.Text.StackLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/vego_text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="VeGo.Text.StackValue">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <!-- Màn kết quả: vòng tròn 88dp chứa icon 44dp -->
+    <style name="VeGo.ResultIcon">
+        <item name="android:layout_width">88dp</item>
+        <item name="android:layout_height">88dp</item>
+        <item name="android:padding">22dp</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="VeGo.Text.ResultTitle" parent="VeGo.Text.H2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="VeGo.Text.ResultBody" parent="VeGo.Text.Body">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <!-- Lựa chọn dạng danh sách có nút tròn (điểm đón, nhà xe) -->
+    <style name="VeGo.OptionRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Thẻ phương thức thanh toán -->
+    <style name="VeGo.PaymentOption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@drawable/bg_option_card</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- ===== Pop-up ===== -->
+    <style name="VeGo.Button.Danger">
+        <item name="android:background">@drawable/bg_button_danger</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Theme cho hộp thoại VeGoDialog: nền trong suốt, làm tối phía sau -->
+    <style name="VeGo.Dialog" parent="Theme.Material3.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.45</item>
+        <item name="android:windowAnimationStyle">@style/VeGo.DialogAnimation</item>
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
+    </style>
+
+    <style name="VeGo.DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+    <!-- ===== Nhóm 04 ===== -->
+    <style name="VeGo.SegmentItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/bg_segment_item</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/chip_text</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- Ngôi sao đánh giá -->
+    <style name="VeGo.Star">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">★</item>
+        <item name="android:textSize">42sp</item>
+        <item name="android:textColor">@color/vego_star</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- ===== Nhóm 06: Ví xu, điểm danh, game, voucher ===== -->
+    <!-- Màn có nút hành động dính đáy (Figma "justify-between") -->
+    <style name="VeGo.Page">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">20dp</item>
+    </style>
+
+    <style name="VeGo.Stack">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/space_20</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+
+    <style name="VeGo.Stack.Actions">
+        <item name="android:divider">@drawable/space_12</item>
+    </style>
+
+    <style name="VeGo.PageSpacer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minHeight">20dp</item>
+    </style>
+
+    <!-- Đồng xu chữ "V" -->
+    <style name="VeGo.Coin">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_coin</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:text">V</item>
+        <item name="android:textColor">@color/vego_orange_text</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <!-- Ô biểu tượng nguồn xu 36dp -->
+    <style name="VeGo.TxIcon">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:padding">9dp</item>
+        <item name="android:background">@drawable/bg_badge_mint</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="VeGo.Text.Amount">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:textColor">@color/vego_primary</item>
+    </style>
+
+    <style name="VeGo.Text.CenterCaption" parent="VeGo.Text.Caption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+</resources>

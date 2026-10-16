@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Đường kẻ 1dp, cách trên/dưới 12dp (dùng làm divider của LinearLayout) -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetTop="12dp"
+    android:insetBottom="12dp">
+    <shape android:shape="rectangle">
+        <size android:height="1dp" />
+        <solid android:color="@color/vego_border" />
+    </shape>
+</inset>

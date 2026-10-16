@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.VeGo">
+
+        <!-- Màn hình mở đầu: Đăng nhập -->
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".auth.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Nhóm 02: Tài khoản -->
+        <activity
+            android:name=".account.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".account.EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".account.ChangePasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Nhóm 03: Đặt vé -->
+        <activity
+            android:name=".booking.SearchTripActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".booking.TripListActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".booking.TripFilterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.TripDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.SeatSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.PassengerInfoActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".booking.BookingConfirmActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.PaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.PaymentSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.PaymentFailedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".booking.HoldExpiredActivity"
+            android:exported="false" />
+
+        <!-- Nhóm 04: Vé & sau chuyến -->
+        <activity
+            android:name=".tickets.MyTicketsActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".tickets.ETicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tickets.CancelTicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".tickets.ReviewActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".tickets.NotificationsActivity"
+            android:exported="false" />
+
+        <!-- Nhóm 05: Khám phá -->
+        <activity
+            android:name=".explore.SuggestActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+
+        <!-- Nhóm 06: Tiện ích · Ví xu -->
+        <activity
+            android:name=".wallet.WalletActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".wallet.CheckInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".wallet.GameIntroActivity"
+            android:exported="false" />
+        <activity
+            android:name=".wallet.GameActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".wallet.GameResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".wallet.VoucherActivity"
+            android:exported="false" />
+
+        <!-- Nhóm 07: Hỗ trợ AI -->
+        <activity
+            android:name=".support.SupportChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Trang chủ -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+
+</manifest>

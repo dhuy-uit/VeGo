@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucide icon "map_pin" exported from Figma VeGo3 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
+    <path
+        android:pathData="M9.45072 16.35C10.8456 15.1454 14.9994 11.245 14.9994 7.49994C14.9994 5.9085 14.3673 4.38223 13.2422 3.25691C12.1171 2.13159 10.5912 1.49939 9.00001 1.49939C7.40887 1.49939 5.8829 2.13159 4.75779 3.25691C3.63269 4.38223 3.00061 5.9085 3.00061 7.49994C3.00061 11.245 7.15445 15.1454 8.54931 16.35C8.67925 16.4477 8.83743 16.5006 9.00001 16.5006C9.16259 16.5006 9.32077 16.4477 9.45072 16.35Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#007F78"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round" />
+</vector>

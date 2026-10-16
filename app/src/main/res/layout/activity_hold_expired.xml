@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Figma: "Đặt vé · Hết thời gian giữ chỗ" (node 4:63717) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".booking.HoldExpiredActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/expired_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/space_16"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:showDividers="middle">
+
+                <ImageView
+                    android:id="@+id/iv_result"
+                    style="@style/VeGo.ResultIcon"
+                    android:background="@drawable/bg_result_warning"
+                    android:src="@drawable/ic_timer_off" />
+
+                <TextView
+                    style="@style/VeGo.Text.ResultTitle"
+                    android:text="@string/expired_heading" />
+
+                <TextView
+                    android:id="@+id/tv_expired_body"
+                    style="@style/VeGo.Text.ResultBody"
+                    tools:text="Ghế A05 đã được giải phóng. Đơn đặt vé chưa được xác nhận và bạn không bị tính tiền." />
+            </LinearLayout>
+
+            <TextView
+                style="@style/VeGo.Badge.Orange"
+                android:text="@string/expired_badge" />
+
+            <LinearLayout style="@style/VeGo.Card">
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_operator"
+                    app:irValue="Phương Trang" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_route"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_route"
+                    app:irValue="TP. Hồ Chí Minh → Đà Lạt" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_depart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_depart"
+                    app:irValue="22:00 · 18/10/2026" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_previous_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_previous_seat"
+                    app:irValue="A05 · Không còn giữ" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irHighlight="true"
+                    app:irLabel="@string/label_paid"
+                    app:irValue="0đ" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/expired_info_title" />
+
+                    <TextView
+                        android:id="@+id/tv_expired_info"
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Chọn lại chuyến và ghế còn trống." />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_back_to_list"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/expired_back_to_list" />
+
+            <TextView
+                android:id="@+id/btn_new_search"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/expired_new_search" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
