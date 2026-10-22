@@ -31,6 +31,7 @@ import com.example.vego.MainActivity;
 import com.example.vego.R;
 import com.example.vego.account.ProfileActivity;
 import com.example.vego.common.ui.VeGoBanner;
+import com.example.vego.data.api.ApiModels;
 import com.example.vego.explore.SuggestActivity;
 import com.example.vego.tickets.MyTicketsActivity;
 
@@ -200,6 +201,53 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected String textOf(EditText field) {
         return field.getText().toString().trim();
+    }
+
+    // ---------- Gọi API ----------
+
+    /** Khóa nút trong lúc chờ server, đổi chữ thành "Đang xử lý..."; busy=false để trả lại như cũ. */
+    protected void setBusy(@IdRes int buttonId, boolean busy) {
+        View view = findViewById(buttonId);
+        if (view == null) return;
+        if (view instanceof TextView) {
+            TextView button = (TextView) view;
+            if (busy) {
+                if (button.getTag(R.id.tag_original_text) == null) {
+                    button.setTag(R.id.tag_original_text, button.getText());
+                }
+                button.setText(R.string.action_processing);
+            } else {
+                Object original = button.getTag(R.id.tag_original_text);
+                if (original instanceof CharSequence) button.setText((CharSequence) original);
+                button.setTag(R.id.tag_original_text, null);
+            }
+        }
+        view.setEnabled(!busy);
+        view.setAlpha(busy ? 0.6f : 1f);
+    }
+
+    /** Hiện thông điệp lỗi của server bằng thanh thông báo đỏ. */
+    protected void showError(ApiModels.ApiError error) {
+        VeGoBanner.show(this, error.message, VeGoBanner.Type.ERROR);
+    }
+
+    /**
+     * Gắn lỗi theo từng ô nhập mà server trả về.
+     * pairs: "tên trường", EditText, "tên trường", EditText...
+     * Trả về true nếu có ít nhất một ô bị báo lỗi (ô đầu tiên được focus).
+     */
+    protected boolean showFieldErrors(ApiModels.ApiError error, Object... pairs) {
+        boolean any = false;
+        for (int i = 0; i + 1 < pairs.length; i += 2) {
+            String message = error.field((String) pairs[i]);
+            EditText field = (EditText) pairs[i + 1];
+            if (message != null && field != null) {
+                field.setError(message);
+                if (!any) field.requestFocus();
+                any = true;
+            }
+        }
+        return any;
     }
 
     // ---------- Thanh điều hướng dưới ----------

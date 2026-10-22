@@ -1,14 +1,20 @@
 package com.example.vego.account;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.EditText;
+
+import androidx.annotation.Nullable;
 
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.common.UserSession;
 import com.example.vego.common.ui.VeGoDialog;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
-/** Figma: "Tài khoản · Đổi mật khẩu". */
+/** Figma: "Tài khoản · Đổi mật khẩu". Gọi PUT /api/v1/users/me/password. */
 public class ChangePasswordActivity extends BaseActivity {
 
     private EditText etCurrent;
@@ -40,11 +46,7 @@ public class ChangePasswordActivity extends BaseActivity {
         String current = etCurrent.getText().toString();
         String next = etNew.getText().toString();
 
-        if (!current.equals(UserSession.get().getPassword())) {
-            etCurrent.setError(getString(R.string.error_wrong_password));
-            etCurrent.requestFocus();
-            return;
-        }
+        // Kiểm tra nhanh ở app; mật khẩu hiện tại do server kiểm tra
         boolean strong = next.length() >= 8
                 && next.matches(".*[a-z].*")
                 && next.matches(".*[A-Z].*")
@@ -65,13 +67,37 @@ public class ChangePasswordActivity extends BaseActivity {
             return;
         }
 
-        UserSession.get().setPassword(next);
-        VeGoDialog.with(this)
-                .type(VeGoDialog.Type.SUCCESS)
-                .title(R.string.change_password_success_title)
-                .message(R.string.change_password_success_message)
-                .cancelable(false)
-                .primary(R.string.change_password_back, this::finish)
-                .show();
+        setBusy(R.id.btn_update_password, true);
+        ApiClient.api().changePassword(new ApiModels.ChangePasswordRequest(current, next,
+                        Build.MANUFACTURER + " " + Build.MODEL))
+                .enqueue(new ApiCallback<ApiModels.AuthResponse>(this) {
+                    @Override
+                    protected void onSuccess(@Nullable ApiModels.AuthResponse auth) {
+                        // Server đã đăng xuất các máy khác và cấp token mới cho máy này
+                        if (auth != null) {
+                            ApiClient.tokens().save(auth);
+                            UserSession.get().set(auth.user);
+                        }
+                        VeGoDialog.with(ChangePasswordActivity.this)
+                                .type(VeGoDialog.Type.SUCCESS)
+                                .title(R.string.change_password_success_title)
+                                .message(R.string.change_password_success_message)
+                                .cancelable(false)
+                                .primary(R.string.change_password_back, ChangePasswordActivity.this::finish)
+                                .show();
+                    }
+
+                    @Override
+                    protected void onError(ApiModels.ApiError error) {
+                        if (!showFieldErrors(error, "currentPassword", etCurrent, "newPassword", etNew)) {
+                            showError(error);
+                        }
+                    }
+
+                    @Override
+                    protected void onDone() {
+                        setBusy(R.id.btn_update_password, false);
+                    }
+                });
     }
 }

@@ -1,0 +1,44 @@
+name: Android
+
+on:
+  push:
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - ".github/workflows/android.yml"
+  pull_request:
+    paths:
+      - "app/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK debug
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Cài Android SDK 37
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" > /dev/null || true
+      - name: assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug 2>&1 | tee build.log
+          exit ${PIPESTATUS[0]}
+      - name: Tóm tắt lỗi build (annotation)
+        if: failure()
+        run: |
+          echo "::error title=Gradle::$(grep -E 'error:|e: |FAILURE|What went wrong|ERROR' -A2 build.log | head -60 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vego-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: ignore

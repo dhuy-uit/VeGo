@@ -599,4 +599,18 @@
     <string name="chat_leave_confirm">Rời đi</string>
     <string name="chat_leave_stay">Ở lại</string>
     <string name="chat_no_dialer">Máy này không có ứng dụng gọi điện. Số hotline: %1$s</string>
+
+    <!-- Kết nối server (REST API) -->
+    <string name="action_processing">Đang xử lý…</string>
+    <string name="session_expired">Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại</string>
+    <string name="guest_name">bạn</string>
+    <string name="home_load_failed">Chưa tải được dữ liệu mới, đang hiện dữ liệu mẫu</string>
+    <string name="home_route_from">Từ %1$s</string>
+    <string name="home_route_price">Từ %1$s</string>
+    <string name="home_trip_date">Ngày đi: %1$s</string>
+    <string name="home_trip_arrive">%1$s · +%2$d ngày</string>
+    <string name="home_trip_seats">Còn %1$d ghế</string>
+    <string name="birth_date_empty">Chọn ngày sinh</string>
+    <string name="avatar_reading_failed">Không đọc được ảnh đã chọn</string>
+    <string name="login_required">Đăng nhập để xem tài khoản của bạn</string>
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Lưu chữ gốc của nút khi đang chờ server (BaseActivity.setBusy) -->
+    <item name="tag_original_text" type="id" />
+</resources>

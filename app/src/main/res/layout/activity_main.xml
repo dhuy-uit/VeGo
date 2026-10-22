@@ -176,6 +176,7 @@
                 android:clipToOutline="true">
 
                 <ImageView
+                    android:id="@+id/iv_promo_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:importantForAccessibility="no"
@@ -196,10 +197,12 @@
                     android:showDividers="middle">
 
                     <TextView
+                        android:id="@+id/tv_promo_badge"
                         style="@style/VeGo.Badge.Orange"
                         android:text="@string/home_promo_badge" />
 
                     <TextView
+                        android:id="@+id/tv_promo_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_bold"
@@ -209,6 +212,7 @@
                         android:textSize="23sp" />
 
                     <TextView
+                        android:id="@+id/tv_promo_code"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
@@ -217,6 +221,7 @@
                         android:textSize="12sp" />
 
                     <TextView
+                        android:id="@+id/tv_promo_note"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
@@ -251,18 +256,21 @@
                     android:focusable="true">
 
                     <TextView
+                        android:id="@+id/tv_route1_name"
                         style="@style/VeGo.Text.BodyStrong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Đà Lạt" />
 
                     <TextView
+                        android:id="@+id/tv_route1_from"
                         style="@style/VeGo.Text.Caption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_route_from_hcm" />
 
                     <TextView
+                        android:id="@+id/tv_route1_price"
                         style="@style/VeGo.Text.BodyStrong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -280,18 +288,21 @@
                     android:focusable="true">
 
                     <TextView
+                        android:id="@+id/tv_route2_name"
                         style="@style/VeGo.Text.BodyStrong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Nha Trang" />
 
                     <TextView
+                        android:id="@+id/tv_route2_from"
                         style="@style/VeGo.Text.Caption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/home_route_from_hcm" />
 
                     <TextView
+                        android:id="@+id/tv_route2_price"
                         style="@style/VeGo.Text.BodyStrong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -336,6 +347,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_trip_operator"
                             style="@style/VeGo.Text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -345,6 +357,7 @@
                             android:textSize="15sp" />
 
                         <TextView
+                            android:id="@+id/tv_trip_bus"
                             style="@style/VeGo.Text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -355,6 +368,7 @@
                     </LinearLayout>
 
                     <TextView
+                            android:id="@+id/tv_trip_rating"
                         style="@style/VeGo.Badge.Mint"
                         android:text="4,8 ★" />
                 </LinearLayout>
@@ -374,6 +388,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_trip_depart"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -383,6 +398,7 @@
                             android:textSize="25sp" />
 
                         <TextView
+                            android:id="@+id/tv_trip_origin"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -400,6 +416,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_trip_duration"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -424,6 +441,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_trip_arrive"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -433,6 +451,7 @@
                             android:textSize="25sp" />
 
                         <TextView
+                            android:id="@+id/tv_trip_destination"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -443,6 +462,7 @@
                 </LinearLayout>
 
                 <TextView
+                            android:id="@+id/tv_trip_date"
                     style="@style/VeGo.Text.Caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -466,6 +486,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_trip_price"
                             style="@style/VeGo.Text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -485,6 +506,7 @@
                     </LinearLayout>
 
                     <TextView
+                            android:id="@+id/tv_trip_seats"
                         style="@style/VeGo.Badge.Orange"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
