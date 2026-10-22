@@ -77,6 +77,10 @@ management:
     health:
       probes:
         enabled: true
+  health:
+    # Email là tùy chọn: chưa cấu hình SMTP không được làm server báo DOWN
+    mail:
+      enabled: false
 
 springdoc:
   swagger-ui:
