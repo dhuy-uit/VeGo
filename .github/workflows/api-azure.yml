@@ -1,0 +1,51 @@
+name: Kiểm thử API trên Azure
+
+# Chạy bộ Postman lên server thật. Bấm "Run workflow" trong tab Actions.
+on:
+  workflow_dispatch:
+    inputs:
+      baseUrl:
+        description: "Địa chỉ server"
+        required: false
+        default: ""
+
+jobs:
+  newman:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+      - name: Newman
+        run: |
+          npm install -g newman@6 newman-reporter-htmlextra@1
+          ARGS=""
+          [ -n "${{ inputs.baseUrl }}" ] && ARGS="--env-var baseUrl=${{ inputs.baseUrl }}"
+          newman run postman/VeGo.postman_collection.json \
+            -e postman/VeGo-Azure.postman_environment.json $ARGS \
+            --working-dir postman \
+            -r cli,json,htmlextra --reporter-json-export newman.json \
+            --reporter-htmlextra-export newman-azure-report.html \
+            --reporter-htmlextra-title "VéGo API (Azure) - Kết quả kiểm thử"
+      - name: Tóm tắt kết quả (annotation)
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs");
+            if (!fs.existsSync("newman.json")) { console.log("::error title=Newman::Không có newman.json"); process.exit(0); }
+            const r = JSON.parse(fs.readFileSync("newman.json", "utf8")).run;
+            const s = r.stats;
+            const lines = r.failures.map(f => `${f.source && f.source.name} | ${f.error.test || f.error.name}: ${f.error.message}`);
+            const head = `requests ${s.requests.total}/${s.requests.failed} fail, assertions ${s.assertions.total}/${s.assertions.failed} fail, avg ${Math.round(r.timings.responseAverage)} ms`;
+            const esc = t => t.replace(/%/g, "%25").replace(/\r/g, "").replace(/\n/g, "%0A");
+            console.log(`::${r.failures.length ? "error" : "notice"} title=Newman::${esc([head, ...lines].join("\n"))}`);
+          '
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postman-azure-report
+          path: backend/newman-azure-report.html
