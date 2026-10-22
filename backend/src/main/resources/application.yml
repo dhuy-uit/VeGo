@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: vego-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/vego}
+    username: ${DB_USER:vego}
+    password: ${DB_PASSWORD:vego}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:8}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: Asia/Ho_Chi_Minh
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  # Gửi email quên mật khẩu: đặt biến môi trường SPRING_MAIL_HOST, SPRING_MAIL_PORT,
+  # SPRING_MAIL_USERNAME, SPRING_MAIL_PASSWORD (vd Gmail + mật khẩu ứng dụng).
+  # Không đặt thì server chỉ ghi link khôi phục ra log.
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  error:
+    include-message: always
+  compression:
+    enabled: true
+    mime-types: application/json
+
+app:
+  # Địa chỉ công khai của API, vd https://vego-api.southeastasia.cloudapp.azure.com
+  # Để trống thì tự lấy theo request (dùng khi chạy local).
+  public-base-url: ${PUBLIC_BASE_URL:}
+  upload-dir: ${UPLOAD_DIR:./data/uploads}
+  timezone: Asia/Ho_Chi_Minh
+  # Tạo tài khoản mẫu Nguyễn Minh Anh (0901234567 / vego123456) khi CSDL chưa có người dùng
+  seed-demo-user: ${SEED_DEMO_USER:true}
+  # Đặt ADMIN_EMAIL + ADMIN_PASSWORD để tạo tài khoản quản trị (dùng cho web admin sau này)
+  admin-email: ${ADMIN_EMAIL:}
+  admin-password: ${ADMIN_PASSWORD:}
+  jwt:
+    # Chỉ dùng cho máy dev. Trên server PHẢI đặt JWT_SECRET (>= 32 ký tự ngẫu nhiên).
+    secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me}
+    issuer: vego-api
+    access-ttl: ${JWT_ACCESS_TTL:15m}
+    refresh-ttl: ${JWT_REFRESH_TTL:30d}
+  auth:
+    reset-ttl: 15m
+    # true: trả token khôi phục trong response (để test bằng Postman khi chưa có email)
+    expose-reset-token: ${EXPOSE_RESET_TOKEN:false}
+    max-login-failures: 5
+    lockout: 15m
+  mail:
+    from: ${MAIL_FROM:VéGo <no-reply@vego.local>}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    com.vego: INFO

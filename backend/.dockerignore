@@ -1,0 +1,6 @@
+target
+data
+postman
+deploy
+*.md
+.env

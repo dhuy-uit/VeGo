@@ -1,0 +1,74 @@
+# Chạy toàn bộ backend VéGo: PostgreSQL (tự host) + API + Caddy (HTTPS, chỉ bật trên server).
+#   Máy cá nhân:  docker compose up -d --build            -> http://localhost:8080
+#   Server Azure: docker compose --profile https up -d --build
+name: vego
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vego
+      POSTGRES_USER: vego
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-vego}
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vego -d vego"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    # Không mở cổng CSDL ra ngoài; chỉ API trong mạng Docker truy cập được.
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/vego
+      DB_USER: vego
+      DB_PASSWORD: ${DB_PASSWORD:-vego}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-dev-only-secret-change-me}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
+      EXPOSE_RESET_TOKEN: ${EXPOSE_RESET_TOKEN:-false}
+      SEED_DEMO_USER: ${SEED_DEMO_USER:-true}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: "true"
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: "true"
+      MAIL_FROM: ${MAIL_FROM:-VéGo <no-reply@vego.local>}
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - uploads:/data/uploads
+    ports:
+      - "${API_PORT:-8080}:8080"
+
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["https"]
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      DOMAIN: ${DOMAIN:?Thiếu DOMAIN trong .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  uploads:
+  caddy_data:
+  caddy_config:
