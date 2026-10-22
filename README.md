@@ -95,7 +95,9 @@
 | Nền tảng | Android 10 trở lên (minSdk 29), targetSdk 37 |
 | Build | Gradle Kotlin DSL, Android Gradle Plugin 9.x, version catalog |
 | Giao diện | XML Views, Material 3 theme, `RelativeLayout` + `LinearLayout` |
-| Thư viện | AndroidX AppCompat, Activity, Material Components, ZXing core 3.5.3 |
+| Thư viện | AndroidX AppCompat, Activity, Material Components, ZXing core 3.5.3, Retrofit 2.11 + OkHttp 4.12 |
+| Backend | Spring Boot 3.5 (Java 21), PostgreSQL 16 tự host, JWT, Flyway, Docker Compose + Caddy trên Azure VM — xem [`backend/README.md`](backend/README.md) |
+| Kiểm thử API | Postman collection (`backend/postman/`), chạy tự động bằng Newman trên GitHub Actions |
 | Thiết kế | Figma |
 
 ---
@@ -114,8 +116,12 @@ app/src/main/java/com/example/vego/
 ├── support/      Màn hình chat Hỗ trợ AI
 ├── common/       BaseActivity, chuyển màn, mã QR, VeGoDialog, VeGoBanner
 ├── data/         Dữ liệu mẫu trong bộ nhớ: chuyến, vé, ví xu, thông báo
+│   ├── api/      Retrofit: VeGoApi, ApiClient, tự gắn/làm mới token, ApiCallback
 │   └── support/  SupportAssistant — trợ lý trả lời theo tài liệu
-└── MainActivity  Trang chủ
+├── VeGoApp       Khởi tạo tầng gọi API
+└── MainActivity  Trang chủ (dữ liệu từ GET /api/v1/home)
+
+backend/          Server REST API (Spring Boot) — xem backend/README.md
 
 app/src/main/res/
 ├── layout/       57 layout XML
@@ -125,7 +131,7 @@ app/src/main/res/
 └── values/       Màu, kiểu chữ (styles), chuỗi tiếng Việt
 ```
 
-> Ở giai đoạn này dữ liệu là dữ liệu mẫu nằm trong app (`data/`), để giao diện tương tác được như prototype. Các lớp này sẽ được thay bằng lời gọi REST API khi có backend.
+> Đăng nhập, đăng ký, quên mật khẩu, hồ sơ, đổi mật khẩu và Trang chủ đã gọi REST API thật. Các phần còn lại (đặt vé, vé, ví xu...) vẫn dùng dữ liệu mẫu trong `data/` và sẽ được chuyển dần sang API.
 
 ---
 
@@ -138,6 +144,8 @@ git clone https://github.com/dhuy-uit/VeGo.git
 ```
 
 1. Mở thư mục `VeGo` bằng Android Studio và chờ Gradle sync xong.
+   App gọi server theo khóa `vego.apiBaseUrl` trong `gradle.properties` (ghi đè được trong `local.properties`):
+   server Azure, hoặc `http://10.0.2.2:8080/` khi chạy backend trên máy tính (`cd backend && docker compose up -d --build`).
 2. Chọn máy ảo (ví dụ Pixel 8) rồi bấm **Run ▶**.
 3. Màn đầu tiên là Đăng nhập, tài khoản mẫu đã điền sẵn, bấm **Đăng nhập** để vào app.
 
@@ -152,8 +160,9 @@ Hoặc build bằng dòng lệnh:
 ## Lộ trình
 
 - [x] **Giai đoạn 1 — Frontend:** dựng toàn bộ giao diện theo Figma, tương tác như prototype
-- [ ] **Backend + REST API:** server riêng, app gọi API thay cho dữ liệu mẫu
-- [ ] **Cơ sở dữ liệu tự quản lý:** không dùng dịch vụ database bên thứ ba
+- [x] **Backend + REST API:** Spring Boot trên Azure; xác thực JWT, hồ sơ người dùng, trang chủ; app gọi bằng Retrofit
+- [x] **Cơ sở dữ liệu tự quản lý:** PostgreSQL chạy trong Docker trên máy ảo, không dùng dịch vụ database bên thứ ba
+- [ ] **Chuyển các màn còn lại sang API:** tìm chuyến, đặt vé, vé của tôi, ví xu
 - [ ] **Web admin:** quản lý chuyến, vé, người dùng và dashboard thống kê
 - [ ] **RAG với Gemini:** trợ lý trả lời theo kho tài liệu chính sách, chạy phía server để máy cấu hình yếu vẫn dùng mượt
 
