@@ -35,8 +35,7 @@ public class BookingConfirmActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_passenger)).setText(draft.passengerName + " · " + draft.passengerPhone);
         ((TextView) findViewById(R.id.tv_seat_qty)).setText(getString(R.string.confirm_seat_qty_value, draft.seat));
         ((TextView) findViewById(R.id.tv_stops)).setText(
-                TripRepository.PICKUP_POINTS[draft.pickupIndex][0] + "\n→ "
-                        + TripRepository.DROPOFF_POINTS[draft.dropoffIndex][0]);
+                draft.pickupLabel() + "\n→ " + draft.dropoffLabel());
         ((InfoRowView) findViewById(R.id.row_fare_fee)).setValue(
                 Format.money(trip.price) + " / " + Format.money(0));
         ((InfoRowView) findViewById(R.id.row_total)).setValue(Format.money(draft.total()));

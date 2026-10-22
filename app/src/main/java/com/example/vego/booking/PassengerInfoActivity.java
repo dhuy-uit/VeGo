@@ -1,14 +1,19 @@
 package com.example.vego.booking;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.common.UserSession;
+import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
@@ -46,44 +51,101 @@ public class PassengerInfoActivity extends BaseActivity {
         etPhone.setText(draft.passengerPhone.isEmpty() ? user.getPhone() : draft.passengerPhone);
 
         if (!draft.isHolding()) draft.pickupIndex = draft.pickupPointIndex;
-        showStops();
 
-        onClick(R.id.field_pickup, v -> choose(R.string.label_pickup, TripRepository.PICKUP_POINTS,
-                draft.pickupIndex, i -> { draft.pickupIndex = i; showStops(); }));
-        onClick(R.id.field_dropoff, v -> choose(R.string.label_dropoff, TripRepository.DROPOFF_POINTS,
-                draft.dropoffIndex, i -> { draft.dropoffIndex = i; showStops(); }));
+        onClick(R.id.tab_pickup_station, v -> setPickupShuttle(false));
+        onClick(R.id.tab_pickup_shuttle, v -> setPickupShuttle(true));
+        onClick(R.id.tab_dropoff_station, v -> setDropoffShuttle(false));
+        onClick(R.id.tab_dropoff_shuttle, v -> setDropoffShuttle(true));
+        // Số điện thoại trong lời nhắn trung chuyển cập nhật theo ô nhập
+        etPhone.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) { }
+            @Override public void afterTextChanged(android.text.Editable s) { renderShuttleNotes(); }
+        });
+        renderStops();
 
         setupBackButton(this::finish);
         onClick(R.id.btn_continue, v -> next());
     }
 
-    private interface OnChosen { void apply(int index); }
+    // ---------- Điểm đón / điểm trả ----------
 
-    /** Hộp thoại chọn một điểm đón / điểm trả. */
-    private void choose(int titleRes, String[][] points, int current, OnChosen onChosen) {
-        String[] labels = new String[points.length];
-        for (int i = 0; i < points.length; i++) labels[i] = points[i][0] + "\n" + points[i][1];
-        new AlertDialog.Builder(this)
-                .setTitle(titleRes)
-                .setSingleChoiceItems(labels, current, (dialog, which) -> {
-                    onChosen.apply(which);
-                    dialog.dismiss();
-                })
-                .setNegativeButton(R.string.action_cancel, null)
-                .show();
+    private void setPickupShuttle(boolean shuttle) {
+        if (draft.pickupShuttle == shuttle) return;
+        draft.pickupShuttle = shuttle;
+        renderStops();
+        if (shuttle) VeGoBanner.show(this, R.string.shuttle_selected_pickup, VeGoBanner.Type.INFO);
     }
 
-    private void showStops() {
+    private void setDropoffShuttle(boolean shuttle) {
+        if (draft.dropoffShuttle == shuttle) return;
+        draft.dropoffShuttle = shuttle;
+        renderStops();
+        if (shuttle) VeGoBanner.show(this, R.string.shuttle_selected_dropoff, VeGoBanner.Type.INFO);
+    }
+
+    private void renderStops() {
         Trip trip = draft.trip;
-        ((TextView) findViewById(R.id.tv_pickup)).setText(TripRepository.PICKUP_POINTS[draft.pickupIndex][0]);
-        ((TextView) findViewById(R.id.tv_dropoff)).setText(TripRepository.DROPOFF_POINTS[draft.dropoffIndex][0]);
-        // Có mặt trước giờ chạy 30 phút
+        renderSection(true, draft.pickupShuttle, TripRepository.PICKUP_POINTS, draft.pickupIndex);
+        renderSection(false, draft.dropoffShuttle, TripRepository.DROPOFF_POINTS, draft.dropoffIndex);
+        renderShuttleNotes();
+
+        // Lời nhắc thời gian dưới mỗi phần
         int meetMinutes = (trip.departMinutes - 30 + 24 * 60) % (24 * 60);
-        ((TextView) findViewById(R.id.tv_pickup_hint)).setText(getString(
-                R.string.passenger_pickup_hint, Format.time(meetMinutes), Format.date(draft.date)));
-        ((TextView) findViewById(R.id.tv_dropoff_hint)).setText(getString(
-                R.string.passenger_dropoff_hint, trip.arriveTime(),
-                Format.date(Format.plusDays(draft.date, trip.arriveDayOffset()))));
+        ((TextView) findViewById(R.id.tv_pickup_hint)).setText(draft.pickupShuttle
+                ? getString(R.string.shuttle_pickup_hint, trip.departTime(), Format.date(draft.date))
+                : getString(R.string.passenger_pickup_hint, Format.time(meetMinutes), Format.date(draft.date)));
+        String arriveDate = Format.date(Format.plusDays(draft.date, trip.arriveDayOffset()));
+        ((TextView) findViewById(R.id.tv_dropoff_hint)).setText(draft.dropoffShuttle
+                ? getString(R.string.shuttle_dropoff_hint, trip.arriveTime(), arriveDate)
+                : getString(R.string.passenger_dropoff_hint, trip.arriveTime(), arriveDate));
+    }
+
+    /** Một phần chọn: thanh "Tại bến xe / Xe trung chuyển" + danh sách bến hoặc thẻ trung chuyển. */
+    private void renderSection(boolean pickup, boolean shuttle, String[][] points, int selected) {
+        findViewById(pickup ? R.id.tab_pickup_station : R.id.tab_dropoff_station).setSelected(!shuttle);
+        findViewById(pickup ? R.id.tab_pickup_shuttle : R.id.tab_dropoff_shuttle).setSelected(shuttle);
+
+        LinearLayout list = findViewById(pickup ? R.id.list_pickup_stations : R.id.list_dropoff_stations);
+        View shuttleCard = findViewById(pickup ? R.id.card_pickup_shuttle : R.id.card_dropoff_shuttle);
+        list.setVisibility(shuttle ? View.GONE : View.VISIBLE);
+        shuttleCard.setVisibility(shuttle ? View.VISIBLE : View.GONE);
+        shuttleCard.setSelected(true);
+        if (shuttle) return;
+
+        list.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        int primary = ContextCompat.getColor(this, R.color.vego_primary);
+        for (int i = 0; i < points.length; i++) {
+            final int index = i;
+            boolean isSelected = i == selected;
+            View card = inflater.inflate(R.layout.item_stop_option, list, false);
+            ((TextView) card.findViewById(R.id.tv_stop_name)).setText(points[i][0]);
+            ((TextView) card.findViewById(R.id.tv_stop_address)).setText(points[i][1]);
+            ImageView radio = card.findViewById(R.id.iv_stop_radio);
+            radio.setImageResource(isSelected ? R.drawable.ic_circle_check : R.drawable.ic_circle);
+            radio.setColorFilter(primary);
+            card.setSelected(isSelected);
+            // Thẻ đang chọn nền xanh nhạt -> ô biểu tượng chuyển sang trắng cho nổi
+            card.findViewById(R.id.iv_stop_icon).setBackgroundResource(
+                    isSelected ? R.drawable.bg_tile_white : R.drawable.bg_badge_mint);
+            card.setContentDescription(isSelected ? getString(R.string.cd_stop_selected, points[i][0]) : points[i][0]);
+            card.setOnClickListener(v -> {
+                if (pickup) draft.pickupIndex = index; else draft.dropoffIndex = index;
+                renderStops();
+            });
+            list.addView(card);
+        }
+    }
+
+    private void renderShuttleNotes() {
+        String phone = textOf(etPhone).isEmpty() ? UserSession.get().getPhone() : textOf(etPhone);
+        View pickup = findViewById(R.id.card_pickup_shuttle);
+        ((TextView) pickup.findViewById(R.id.tv_shuttle_title)).setText(R.string.shuttle_pickup_title);
+        ((TextView) pickup.findViewById(R.id.tv_shuttle_body)).setText(getString(R.string.shuttle_pickup_body, phone));
+        View dropoff = findViewById(R.id.card_dropoff_shuttle);
+        ((TextView) dropoff.findViewById(R.id.tv_shuttle_title)).setText(R.string.shuttle_dropoff_title);
+        ((TextView) dropoff.findViewById(R.id.tv_shuttle_body)).setText(getString(R.string.shuttle_dropoff_body, phone));
     }
 
     private void next() {

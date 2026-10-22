@@ -67,8 +67,8 @@ public class PaymentSuccessActivity extends BaseActivity {
         TicketStore.get().add(new Ticket(code, trip.id, trip.operator, trip.busName,
                 trip.origin, trip.destination, trip.departMinutes, trip.durationMinutes,
                 draft.date, draft.seat, draft.passengerName, draft.passengerPhone,
-                TripRepository.PICKUP_POINTS[draft.pickupIndex][0],
-                TripRepository.DROPOFF_POINTS[draft.dropoffIndex][0],
+                draft.pickupLabel(),
+                draft.dropoffLabel(),
                 draft.total(), draft.paymentMethod.label, Ticket.Status.UPCOMING));
         NotificationStore.get().push(NotificationStore.Kind.TICKET,
                 getString(R.string.booking_notify_title),

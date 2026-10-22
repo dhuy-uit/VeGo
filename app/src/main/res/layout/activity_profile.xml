@@ -191,7 +191,8 @@
 
                         <ImageView
                             style="@style/VeGo.MenuIcon"
-                            android:src="@drawable/ic_bell" />
+                            android:src="@drawable/ic_sparkles"
+                            android:tint="@color/vego_primary" />
 
                         <TextView
                             style="@style/VeGo.MenuTitle"

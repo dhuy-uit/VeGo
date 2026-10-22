@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ chọn bến xe (điểm đón / điểm trả): cùng kiểu thẻ với Phương thức thanh toán -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/VeGo.PaymentOption"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp">
+
+    <ImageView
+        android:id="@+id/iv_stop_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_badge_mint"
+        android:importantForAccessibility="no"
+        android:padding="8dp"
+        android:src="@drawable/ic_map_pin" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_weight="1"
+        android:divider="@drawable/space_2"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_stop_name"
+            style="@style/VeGo.Text.BodyStrong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Bến xe Miền Đông mới" />
+
+        <TextView
+            android:id="@+id/tv_stop_address"
+            style="@style/VeGo.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="501 Hoàng Hữu Nam, TP. Thủ Đức" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_stop_radio"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_circle" />
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Đã chọn xe trung chuyển: không cần chọn bến, nhân viên nhà xe sẽ gọi để hẹn điểm -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_option_card"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_circle_white"
+        android:importantForAccessibility="no"
+        android:padding="8dp"
+        android:src="@drawable/ic_headset" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:divider="@drawable/space_4"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_shuttle_title"
+            style="@style/VeGo.Text.BodyStrong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Xe trung chuyển đón tận nơi" />
+
+        <TextView
+            android:id="@+id/tv_shuttle_body"
+            style="@style/VeGo.Text.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Sau khi đặt vé, nhân viên nhà xe sẽ gọi số 090 123 4567 để hẹn điểm đón trung chuyển với bạn." />
+    </LinearLayout>
+</LinearLayout>

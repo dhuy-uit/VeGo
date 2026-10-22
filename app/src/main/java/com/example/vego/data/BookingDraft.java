@@ -46,6 +46,9 @@ public final class BookingDraft {
     public String passengerPhone = "";
     public int pickupIndex = 0;
     public int dropoffIndex = 0;
+    /** Đón / trả bằng xe trung chuyển: không chọn bến, nhân viên sẽ gọi hẹn điểm. */
+    public boolean pickupShuttle = false;
+    public boolean dropoffShuttle = false;
 
     // Bước 4: giữ chỗ và thanh toán
     /** Mốc hết giờ giữ ghế (theo SystemClock.elapsedRealtime), 0 = chưa giữ. */
@@ -75,6 +78,18 @@ public final class BookingDraft {
     public boolean isHolding() {
         return holdUntil != 0;
     }
+
+    /** Nhãn điểm đón hiển thị ở Xác nhận / Vé điện tử. */
+    public String pickupLabel() {
+        return pickupShuttle ? SHUTTLE_LABEL : TripRepository.PICKUP_POINTS[pickupIndex][0];
+    }
+
+    /** Nhãn điểm trả hiển thị ở Xác nhận / Vé điện tử. */
+    public String dropoffLabel() {
+        return dropoffShuttle ? SHUTTLE_LABEL : TripRepository.DROPOFF_POINTS[dropoffIndex][0];
+    }
+
+    public static final String SHUTTLE_LABEL = "Xe trung chuyển (nhân viên sẽ liên hệ)";
 
     public void releaseHold() {
         holdUntil = 0;

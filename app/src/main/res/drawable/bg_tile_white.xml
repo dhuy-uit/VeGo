@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô biểu tượng nền trắng bo 8dp (dùng trên thẻ đang chọn nền xanh nhạt) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="8dp" />
+    <solid android:color="@color/vego_surface" />
+</shape>

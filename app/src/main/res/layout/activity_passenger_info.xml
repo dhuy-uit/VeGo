@@ -125,8 +125,10 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <!-- Điểm đón: bấm để chọn -->
-            <LinearLayout style="@style/VeGo.Field">
+            <!-- Điểm đón: tại bến xe (chọn bến) hoặc xe trung chuyển (nhân viên gọi hẹn điểm) -->
+            <LinearLayout
+                style="@style/VeGo.Field"
+                android:divider="@drawable/space_10">
 
                 <TextView
                     style="@style/VeGo.Text.Label"
@@ -134,25 +136,39 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_pickup" />
 
-                <RelativeLayout
-                    android:id="@+id/field_pickup"
-                    style="@style/VeGo.InputBox"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/ic_pickup"
-                        style="@style/VeGo.InputIcon"
-                        android:src="@drawable/ic_chevron_down" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_segment_container"
+                    android:divider="@drawable/space_4"
+                    android:orientation="horizontal"
+                    android:padding="4dp"
+                    android:showDividers="middle">
 
                     <TextView
-                        android:id="@+id/tv_pickup"
-                        style="@style/VeGo.InputText"
-                        android:layout_toStartOf="@id/ic_pickup"
-                        android:paddingEnd="10dp"
-                        tools:text="Bến xe Miền Đông mới" />
-                </RelativeLayout>
+                        android:id="@+id/tab_pickup_station"
+                        style="@style/VeGo.SegmentItem"
+                        android:text="@string/stop_mode_station" />
+
+                    <TextView
+                        android:id="@+id/tab_pickup_shuttle"
+                        style="@style/VeGo.SegmentItem"
+                        android:text="@string/stop_mode_shuttle" />
+                </LinearLayout>
+
+                <!-- Danh sách bến, thêm bằng code -->
+                <LinearLayout
+                    android:id="@+id/list_pickup_stations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_8"
+                    android:orientation="vertical"
+                    android:showDividers="middle" />
+
+                <include
+                    android:id="@+id/card_pickup_shuttle"
+                    layout="@layout/view_shuttle_note"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_pickup_hint"
@@ -162,8 +178,10 @@
                     tools:text="Có mặt lúc 21:30 ngày 18/10/2026." />
             </LinearLayout>
 
-            <!-- Điểm trả: bấm để chọn -->
-            <LinearLayout style="@style/VeGo.Field">
+            <!-- Điểm trả: tại bến xe (chọn bến) hoặc xe trung chuyển (nhân viên gọi hẹn điểm) -->
+            <LinearLayout
+                style="@style/VeGo.Field"
+                android:divider="@drawable/space_10">
 
                 <TextView
                     style="@style/VeGo.Text.Label"
@@ -171,32 +189,46 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_dropoff" />
 
-                <RelativeLayout
-                    android:id="@+id/field_dropoff"
-                    style="@style/VeGo.InputBox"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <ImageView
-                        android:id="@+id/ic_dropoff"
-                        style="@style/VeGo.InputIcon"
-                        android:src="@drawable/ic_chevron_down" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_segment_container"
+                    android:divider="@drawable/space_4"
+                    android:orientation="horizontal"
+                    android:padding="4dp"
+                    android:showDividers="middle">
 
                     <TextView
-                        android:id="@+id/tv_dropoff"
-                        style="@style/VeGo.InputText"
-                        android:layout_toStartOf="@id/ic_dropoff"
-                        android:paddingEnd="10dp"
-                        tools:text="Bến xe Đà Lạt" />
-                </RelativeLayout>
+                        android:id="@+id/tab_dropoff_station"
+                        style="@style/VeGo.SegmentItem"
+                        android:text="@string/stop_mode_station" />
+
+                    <TextView
+                        android:id="@+id/tab_dropoff_shuttle"
+                        style="@style/VeGo.SegmentItem"
+                        android:text="@string/stop_mode_shuttle" />
+                </LinearLayout>
+
+                <!-- Danh sách bến, thêm bằng code -->
+                <LinearLayout
+                    android:id="@+id/list_dropoff_stations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_8"
+                    android:orientation="vertical"
+                    android:showDividers="middle" />
+
+                <include
+                    android:id="@+id/card_dropoff_shuttle"
+                    layout="@layout/view_shuttle_note"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_dropoff_hint"
                     style="@style/VeGo.Text.Caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Dự kiến đến 05:00 ngày 19/10/2026." />
+                    tools:text="Có mặt lúc 21:30 ngày 18/10/2026." />
             </LinearLayout>
 
             <!-- Lời nhắc -->

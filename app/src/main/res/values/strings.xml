@@ -229,6 +229,17 @@
     <string name="label_dropoff">Điểm trả</string>
     <string name="passenger_pickup_hint">Có mặt lúc %1$s ngày %2$s.</string>
     <string name="passenger_dropoff_hint">Dự kiến đến %1$s ngày %2$s.</string>
+    <string name="stop_mode_station">Tại bến xe</string>
+    <string name="stop_mode_shuttle">Xe trung chuyển</string>
+    <string name="shuttle_pickup_title">Xe trung chuyển đón tận nơi</string>
+    <string name="shuttle_dropoff_title">Xe trung chuyển đưa về tận nơi</string>
+    <string name="shuttle_pickup_body">Bạn không cần chọn điểm đón. Sau khi đặt vé, nhân viên nhà xe sẽ gọi số %1$s để hẹn điểm đón trung chuyển với bạn.</string>
+    <string name="shuttle_dropoff_body">Bạn không cần chọn điểm trả. Nhân viên nhà xe sẽ gọi số %1$s để hẹn điểm trả trung chuyển trước khi xe đến nơi.</string>
+    <string name="shuttle_pickup_hint">Xe trung chuyển thường đón trước giờ khởi hành 60–90 phút (minh họa). Xe chạy lúc %1$s ngày %2$s.</string>
+    <string name="shuttle_dropoff_hint">Xe dự kiến đến bến lúc %1$s ngày %2$s, sau đó xe trung chuyển đưa bạn về điểm đã hẹn.</string>
+    <string name="shuttle_selected_pickup">Đã chọn xe trung chuyển đón, nhân viên sẽ liên hệ bạn</string>
+    <string name="shuttle_selected_dropoff">Đã chọn xe trung chuyển trả, nhân viên sẽ liên hệ bạn</string>
+    <string name="cd_stop_selected">%1$s, đã chọn</string>
     <string name="passenger_info_title">Kiểm tra số điện thoại</string>
     <string name="passenger_info_body">Nhà xe sẽ liên hệ số này để xác nhận điểm đón. Chỉ có 1 hành khách trong đơn đặt vé.</string>
     <string name="passenger_continue">Tiếp tục · Xác nhận đặt vé</string>
