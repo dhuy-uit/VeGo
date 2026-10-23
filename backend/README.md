@@ -56,8 +56,20 @@ Bảo mật: mật khẩu BCrypt; chỉ lưu SHA-256 của refresh token / mã k
 
 Tài khoản mẫu: **0901234567 / vego123456** (Nguyễn Minh Anh).
 
-## Chạy trên máy cá nhân
+## Server đang chạy (Azure)
 
+Backend chạy trên máy ảo Azure, app Android gọi API qua Internet:
+
+- API: **https://vego-api-3g15i.eastasia.cloudapp.azure.com**
+- Tài liệu API: https://vego-api-3g15i.eastasia.cloudapp.azure.com/swagger-ui.html
+- Trạng thái: https://vego-api-3g15i.eastasia.cloudapp.azure.com/actuator/health
+
+App lấy địa chỉ này từ khóa `vego.apiBaseUrl` trong `gradle.properties` (mặc định đang trỏ tới server Azure),
+nên chỉ cần bấm Run trong Android Studio là app gọi server thật.
+
+## (Tùy chọn) Chạy thử backend trên máy cá nhân khi phát triển
+
+Chỉ dùng để sửa/thử code backend trước khi đưa lên server, **không phải cách app chạy khi nộp bài**.
 Cần Docker Desktop:
 
 ```bash
@@ -66,10 +78,8 @@ docker compose up -d --build        # API ở http://localhost:8080
 docker compose logs -f api          # xem log (link quên mật khẩu in ở đây khi chưa cấu hình email)
 ```
 
-Hoặc chạy bằng IntelliJ/Maven (cần PostgreSQL ở localhost:5432, DB/user/pass = `vego`): `mvn spring-boot:run`.
-
-App Android trên máy ảo gọi server trên máy tính qua `http://10.0.2.2:8080/`
-(mặc định trong `gradle.properties`, khóa `vego.apiBaseUrl`).
+Muốn app trên máy ảo gọi bản local này thì thêm vào `local.properties` (không đưa lên GitHub):
+`vego.apiBaseUrl=http://10.0.2.2:8080/` — xóa dòng đó đi là app quay lại gọi server Azure.
 
 ## Kiểm thử bằng Postman
 
