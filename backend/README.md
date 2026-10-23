@@ -4,7 +4,7 @@ REST API cho app đặt vé xe khách VéGo: **xác thực**, **hồ sơ ngườ
 
 - Spring Boot 3.5 · Java 21 · PostgreSQL 16 (tự host trong Docker) · Flyway · JWT
 - Tài liệu API tự sinh: `/swagger-ui.html`
-- Bộ test Postman: `postman/` (35 request, ~130 assertion), chạy tự động trên GitHub Actions mỗi lần push
+- Bộ test Postman: `postman/` (54 request, ~200 assertion), chạy tự động trên GitHub Actions mỗi lần push
 
 ## Cấu trúc
 
@@ -49,6 +49,15 @@ Tiền tố `/api/v1`. Lỗi luôn có dạng:
 | PUT | `/users/me/password` | ✔ | `{currentPassword, newPassword}` → cặp token mới, các máy khác bị đăng xuất |
 | GET | `/home` | tùy chọn | Lời chào, ô tìm kiếm mặc định, khuyến mãi, tuyến phổ biến, chuyến gợi ý |
 | GET | `/files/avatars/{name}` | – | Ảnh đại diện |
+| POST | `/bookings` | ✔ | Giữ ghế 5 phút `{tripId, travelDate, seat, passengerName, passengerPhone, pickupLabel?, dropoffLabel?}` |
+| GET | `/bookings`, `/bookings/{code}` | ✔ | Đơn của tôi / một đơn (trạng thái HOLDING, PAID, EXPIRED, CANCELLED) |
+| POST / DELETE | `/bookings/{code}/voucher` | ✔ | Áp / bỏ mã giảm giá `{code}` |
+| POST | `/bookings/{code}/cancel` | ✔ | Hủy giữ chỗ |
+| POST | `/bookings/{code}/payments` | ✔ | `{method: MOMO \| VNPAY \| CARD}` → `payUrl` để app mở |
+| GET | `/vouchers` | – | Mã giảm giá đang có |
+| GET | `/trips/{id}/seats?date=` | – | Ghế đã có người giữ / đặt |
+| GET | `/payments/vnpay/ipn`, `/payments/vnpay/return` | – | VNPay gọi về (kiểm tra chữ ký HMAC-SHA512) |
+| POST / GET | `/payments/momo/ipn`, `/payments/momo/return` | – | MoMo gọi về (kiểm tra chữ ký HMAC-SHA256) |
 
 Token: `Authorization: Bearer <accessToken>`. Access token sống 15 phút, refresh token 30 ngày.
 Bảo mật: mật khẩu BCrypt; chỉ lưu SHA-256 của refresh token / mã khôi phục; sai mật khẩu 5 lần khóa đăng nhập 15 phút;
@@ -80,6 +89,17 @@ docker compose logs -f api          # xem log (link quên mật khẩu in ở đ
 
 Muốn app trên máy ảo gọi bản local này thì thêm vào `local.properties` (không đưa lên GitHub):
 `vego.apiBaseUrl=http://10.0.2.2:8080/` — xóa dòng đó đi là app quay lại gọi server Azure.
+
+## Thanh toán (sandbox)
+
+- **MoMo**: dùng tài khoản test dùng chung của MoMo (`test-payment.momo.vn`), không cần đăng ký.
+  Trang MoMo cho chọn quét QR bằng app MoMo test, thẻ ATM hoặc thẻ quốc tế test.
+- **VNPay / Thẻ ngân hàng**: cần `VNPAY_TMN_CODE` + `VNPAY_HASH_SECRET` (đăng ký tại sandbox.vnpayment.vn/devreg)
+  trong `.env` trên server. Thẻ test: NCB `9704198526191432198`, tên `NGUYEN VAN A`, ngày phát hành `07/15`, OTP `123456`.
+  IPN URL khai báo trong trang quản lý merchant: `https://<server>/api/v1/payments/vnpay/ipn`.
+- **Mô phỏng**: `PAYMENT_SIMULATE=true` cho mọi phương thức đi qua trang mô phỏng của server (dùng khi demo mà cổng sandbox lỗi, và trên CI).
+- Mã giảm giá mẫu: `VEGO10` (10%, tối đa 30.000đ, 3 lần), `VEGIN15` (15% tuyến TP.HCM – Đà Lạt), `BIENXANH20` (20% tuyến TP.HCM – Nha Trang), `CHAOBANMOI` (50.000đ cho đơn từ 200.000đ, 1 lần).
+- Kết quả thanh toán chỉ được ghi nhận khi chữ ký của cổng hợp lệ và đúng số tiền; IPN gửi lặp lại không bị xử lý 2 lần.
 
 ## Kiểm thử bằng Postman
 
