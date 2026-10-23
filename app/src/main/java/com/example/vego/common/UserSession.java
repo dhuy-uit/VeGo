@@ -31,6 +31,8 @@ public final class UserSession {
 
     /** Cập nhật hồ sơ mới nhận từ server và lưu lại. */
     public void set(@Nullable ApiModels.User user) {
+        // Đổi sang tài khoản khác: bỏ vé / thông báo / ví của tài khoản cũ
+        if (this.user != null && user != null && this.user.id != user.id) clearCaches();
         this.user = user;
         ApiClient.tokens().saveUser(user);
     }
@@ -39,6 +41,13 @@ public final class UserSession {
     public void clear() {
         user = null;
         ApiClient.tokens().clear();
+        clearCaches();
+    }
+
+    private static void clearCaches() {
+        com.example.vego.data.TicketStore.get().clear();
+        com.example.vego.data.NotificationStore.get().clear();
+        com.example.vego.data.CoinWallet.get().clear();
     }
 
     public boolean isLoggedIn() {

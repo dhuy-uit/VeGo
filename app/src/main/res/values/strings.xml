@@ -635,4 +635,29 @@
     <string name="payment_web_title">Thanh toán %1$s</string>
     <string name="payment_web_subtitle">Cổng thanh toán an toàn · Môi trường thử nghiệm</string>
     <string name="payment_not_finished">Chưa hoàn tất thanh toán. Bạn có thể thử lại trong thời gian giữ ghế.</string>
+
+    <!-- Nối API các màn còn lại -->
+    <string name="login_required_feature">Đăng nhập để xem vé, thông báo và Ví xu của bạn</string>
+    <string name="search_no_route_title">Chưa có tuyến này</string>
+    <string name="search_no_route_message">VéGo chưa có chuyến từ %1$s đến %2$s. Thử tìm theo tên thành phố, ví dụ \"TP. Hồ Chí Minh\" → \"Đà Lạt\".</string>
+    <string name="seat_loading">Đang tải sơ đồ ghế…</string>
+    <string name="seat_no_longer_free">Ghế %1$s vừa có người đặt, vui lòng chọn ghế khác</string>
+    <string name="seat_deck_title">%1$s · %2$d ghế</string>
+    <string name="seat_none_body_left">Còn %1$d ghế trống. Chạm vào một ghế còn trống để chọn chỗ.</string>
+    <string name="voucher_from_wallet">Voucher Ví xu của bạn</string>
+    <string name="notifications_loading">Đang tải thông báo…</string>
+    <string name="notifications_empty">Bạn chưa có thông báo nào.</string>
+    <string name="game_send_failed_title">Chưa gửi được điểm</string>
+    <string name="game_send_retry">Gửi lại</string>
+    <string name="voucher_valid_days">Dùng trong %1$d ngày</string>
+    <string name="voucher_owned_days">Đã có %1$d · Dùng trong %2$d ngày</string>
+    <string name="voucher_mine_title">Voucher của bạn</string>
+    <string name="voucher_mine_desc">Giảm %1$s · Đơn từ %2$s · %3$s</string>
+    <string name="voucher_state_used">Đã dùng</string>
+    <string name="voucher_state_expired">Hết hạn</string>
+    <string name="voucher_state_until">HSD %1$s · Chạm để sao chép</string>
+    <string name="voucher_copied">Đã sao chép mã %1$s, dán ở bước Thanh toán</string>
+    <string name="voucher_copy">Sao chép mã</string>
+    <string name="suggest_none_title">Chưa có gợi ý</string>
+    <string name="suggest_none_body">Hiện chưa có chuyến phù hợp. Bạn thử tìm chuyến ở Trang chủ nhé.</string>
 </resources>

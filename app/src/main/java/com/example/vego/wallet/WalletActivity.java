@@ -12,11 +12,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.data.CoinWallet;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
 import java.util.List;
 
@@ -38,6 +42,7 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!requireLogin()) return;
         setScreenContent(R.layout.activity_wallet);
 
         // Theo prototype: quay lại -> Thông tin cá nhân
@@ -54,8 +59,24 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        render();
+        ApiClient.api().wallet().enqueue(new ApiCallback<ApiModels.Wallet>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.Wallet w) {
+                wallet.update(w);
+                render();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                showError(error);
+            }
+        });
+    }
+
+    private void render() {
         // Figma: số dư 40sp, chữ "xu" nhỏ hơn (17sp)
-        String number = CoinWallet.coins(wallet.balance());
+        String number = wallet.isLoaded() ? CoinWallet.coins(wallet.balance()) : "…";
         SpannableString balance = new SpannableString(getString(R.string.xu_amount, number));
         balance.setSpan(new RelativeSizeSpan(17f / 40f), number.length(), balance.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -85,7 +106,7 @@ public class WalletActivity extends BaseActivity {
         Context ctx = parent.getContext();
         View row = inflater.inflate(R.layout.item_coin_transaction, parent, false);
         ((ImageView) row.findViewById(R.id.iv_tx_icon)).setImageResource(tx.source.icon);
-        ((TextView) row.findViewById(R.id.tv_tx_title)).setText(tx.source.label);
+        ((TextView) row.findViewById(R.id.tv_tx_title)).setText(tx.label);
         ((TextView) row.findViewById(R.id.tv_tx_time)).setText(tx.time);
         TextView amount = row.findViewById(R.id.tv_tx_amount);
         if (tx.amount >= 0) {

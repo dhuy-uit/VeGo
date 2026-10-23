@@ -1,17 +1,24 @@
 package com.example.vego.data;
 
-import java.util.Calendar;
+import androidx.annotation.Nullable;
 
-/** Một vé đã đặt (Vé của tôi). */
+import com.example.vego.common.UserSession;
+import com.example.vego.data.api.ApiModels;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+/** Một vé đã đặt (Vé của tôi), dựng từ dữ liệu GET /api/v1/tickets. */
 public class Ticket {
 
     public enum Status { UPCOMING, COMPLETED, CANCELLED }
 
     public final String code;
-    /** Chuyến gốc (null với vé cũ của tuyến không còn trong dữ liệu mẫu). */
     public final String tripId;
     public final String operator;
     public final String busName;
+    public final double tripRating;
     public final String origin;
     public final String destination;
     public final int departMinutes;
@@ -22,35 +29,62 @@ public class Ticket {
     public final String passengerPhone;
     public final String pickup;
     public final String dropoff;
+    /** Số tiền đã trả (sau mã giảm giá). */
     public final int price;
+    public final int fare;
+    public final int discount;
     public final String paymentMethod;
-
-    public Status status;
-    public int refundAmount;
+    public final Status status;
+    /** Vé đã hủy: số tiền đã hoàn. Vé sắp đi: số tiền sẽ hoàn nếu hủy lúc này. */
+    public final int refundAmount;
+    public final int refundPercent;
+    public final boolean cancellable;
+    public final boolean canReview;
     /** Số sao đã đánh giá, 0 = chưa đánh giá. */
-    public int rating;
+    public final int rating;
+    public final List<String> reviewTags;
+    public final int coinsEarned;
+    /** Nội dung mã QR (có chữ ký của server). */
+    public final String qrData;
 
-    public Ticket(String code, String tripId, String operator, String busName,
-                  String origin, String destination, int departMinutes, int durationMinutes,
-                  Calendar date, String seat, String passengerName, String passengerPhone,
-                  String pickup, String dropoff, int price, String paymentMethod, Status status) {
-        this.code = code;
-        this.tripId = tripId;
-        this.operator = operator;
-        this.busName = busName;
-        this.origin = origin;
-        this.destination = destination;
-        this.departMinutes = departMinutes;
-        this.durationMinutes = durationMinutes;
-        this.date = (Calendar) date.clone();
-        this.seat = seat;
-        this.passengerName = passengerName;
-        this.passengerPhone = passengerPhone;
-        this.pickup = pickup;
-        this.dropoff = dropoff;
-        this.price = price;
-        this.paymentMethod = paymentMethod;
-        this.status = status;
+    public Ticket(ApiModels.Ticket t) {
+        code = t.code;
+        tripId = t.trip.id;
+        operator = t.trip.operator;
+        busName = t.trip.busName;
+        tripRating = t.trip.rating;
+        origin = t.trip.origin;
+        destination = t.trip.destination;
+        departMinutes = t.trip.departMinutes;
+        durationMinutes = t.trip.durationMinutes;
+        Calendar d = UserSession.parseIsoDate(t.travelDate);
+        date = d != null ? d : Calendar.getInstance();
+        seat = t.seat;
+        passengerName = t.passengerName;
+        passengerPhone = UserSession.formatPhone(t.passengerPhone);
+        pickup = t.pickupLabel;
+        dropoff = t.dropoffLabel;
+        price = t.total;
+        fare = t.fare;
+        discount = t.discount;
+        paymentMethod = t.paymentMethodLabel != null ? t.paymentMethodLabel : "";
+        status = parseStatus(t.status);
+        refundAmount = t.refundAmount;
+        refundPercent = t.refundPercent;
+        cancellable = t.cancellable;
+        canReview = t.canReview;
+        rating = t.review != null ? t.review.rating : 0;
+        reviewTags = t.review != null && t.review.tags != null ? new ArrayList<>(t.review.tags) : new ArrayList<>();
+        coinsEarned = t.coinsEarned;
+        qrData = t.qrData != null ? t.qrData : "VEGO|" + code + "|" + seat;
+    }
+
+    private static Status parseStatus(@Nullable String s) {
+        try {
+            return s == null ? Status.UPCOMING : Status.valueOf(s);
+        } catch (IllegalArgumentException e) {
+            return Status.UPCOMING;
+        }
     }
 
     public String route() {

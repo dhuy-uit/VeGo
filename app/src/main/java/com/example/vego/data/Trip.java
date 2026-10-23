@@ -1,6 +1,6 @@
 package com.example.vego.data;
 
-/** Một chuyến xe (dữ liệu mẫu theo Figma, sau này lấy từ REST API). */
+/** Một chuyến xe (lấy từ REST API, xem {@link #from}). */
 public class Trip {
 
     public enum BusType { LIMOUSINE, SLEEPER, SEATER }
@@ -69,5 +69,18 @@ public class Trip {
 
     public String ratingText() {
         return Format.rating(rating) + " ★";
+    }
+
+    /** Đổi dữ liệu chuyến từ API sang lớp Trip mà các màn hình đang dùng. */
+    public static Trip from(com.example.vego.data.api.ApiModels.TripDto t) {
+        BusType type;
+        try {
+            type = BusType.valueOf(t.busType);
+        } catch (RuntimeException e) {
+            type = BusType.SLEEPER;
+        }
+        return new Trip(t.id, t.operator, t.busName, type, t.rating, t.departMinutes, t.durationMinutes,
+                t.price, t.seatsLeft, t.origin, t.destination,
+                t.pickupStation, t.pickupAddress, t.dropoffStation, t.dropoffAddress);
     }
 }

@@ -14,10 +14,6 @@ import com.example.vego.data.BookingDraft;
 import com.example.vego.data.CoinWallet;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.NotificationStore;
-import com.example.vego.data.Ticket;
-import com.example.vego.data.TicketStore;
-import com.example.vego.data.TripRepository;
 import com.example.vego.tickets.ETicketActivity;
 
 /** Figma: "Đặt vé · Thanh toán thành công". */
@@ -34,13 +30,23 @@ public class PaymentSuccessActivity extends BaseActivity {
         setScreenContent(R.layout.activity_payment_success);
 
         BookingDraft draft = BookingDraft.get();
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
         String code = draft.lastTicketCode != null ? draft.lastTicketCode : draft.issueTicketCode();
         // Số tiền thật đã trả (sau mã giảm giá) lấy từ server
         int paid = draft.total();
-        // Lưu vé vào "Vé của tôi" và tạo thông báo (chỉ lần đầu mở màn này)
-        if (savedInstanceState == null) saveTicket(draft, trip, code, paid);
+        // Server đã lưu vé, cộng xu (1.000đ = 1 xu) và gửi thông báo; ở đây chỉ báo cho người dùng
+        if (savedInstanceState == null) {
+            int coins = paid / 1000;
+            if (coins > 0) {
+                VeGoBanner.post(getString(R.string.wallet_booking_reward, coins), VeGoBanner.Type.SUCCESS);
+            }
+            // Vé của tôi / Ví xu / Thông báo sẽ tải lại bản mới từ server khi mở
+            CoinWallet.get().setBalance(CoinWallet.get().balance() + coins);
+        }
 
         ((TextView) findViewById(R.id.tv_success_badge)).setText(getString(R.string.success_badge, draft.seat));
         ((InfoRowView) findViewById(R.id.row_ticket_code)).setValue(code);
@@ -63,24 +69,5 @@ public class PaymentSuccessActivity extends BaseActivity {
         });
         onClick(R.id.btn_go_home, v -> goHome());
         onClick(R.id.btn_view_ticket, v -> startActivity(ETicketActivity.intent(this, code)));
-    }
-
-    private void saveTicket(BookingDraft draft, Trip trip, String code, int paid) {
-        TicketStore.get().add(new Ticket(code, trip.id, trip.operator, trip.busName,
-                trip.origin, trip.destination, trip.departMinutes, trip.durationMinutes,
-                draft.date, draft.seat, draft.passengerName, draft.passengerPhone,
-                draft.pickupLabel(),
-                draft.dropoffLabel(),
-                paid, draft.paymentMethod.label, Ticket.Status.UPCOMING));
-        NotificationStore.get().push(NotificationStore.Kind.TICKET,
-                getString(R.string.booking_notify_title),
-                getString(R.string.booking_notify_body, code, draft.seat,
-                        draft.paymentMethod.label, Format.money(paid)),
-                code);
-        // Đặt vé được tích xu: 1.000đ = 1 xu (Figma: "Đặt vé +320 xu" trong Ví xu)
-        int coins = CoinWallet.get().rewardBooking(paid);
-        if (coins > 0) {
-            VeGoBanner.post(getString(R.string.wallet_booking_reward, coins), VeGoBanner.Type.SUCCESS);
-        }
     }
 }

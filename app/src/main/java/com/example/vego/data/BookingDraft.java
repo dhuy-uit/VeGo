@@ -4,6 +4,8 @@ import android.os.SystemClock;
 
 import androidx.annotation.Nullable;
 
+import com.example.vego.data.api.ApiModels;
+
 import java.util.Calendar;
 
 /**
@@ -34,7 +36,8 @@ public final class BookingDraft {
     public String origin = "TP. Hồ Chí Minh";
     public String destination = "Đà Lạt";
     public final Calendar date = Calendar.getInstance();
-    public int pickupPointIndex = 0;
+    /** Điểm đón muốn chọn ở màn Tìm chuyến (tên bến), null = theo bến chính của chuyến. */
+    @Nullable public String preferredPickup;
     @Nullable public TripFilter filter;
 
     // Bước 2: chuyến và ghế
@@ -44,8 +47,11 @@ public final class BookingDraft {
     // Bước 3: hành khách
     public String passengerName = "";
     public String passengerPhone = "";
-    public int pickupIndex = 0;
-    public int dropoffIndex = 0;
+    /** Bến đón / trả đã chọn (tên bến), null = bến chính của chuyến. */
+    @Nullable public String pickupStation;
+    @Nullable public String dropoffStation;
+    /** Điểm đón / trả của chuyến đang chọn (GET /trips/{id}/stops), null = chưa tải. */
+    @Nullable public ApiModels.TripStops stops;
     /** Đón / trả bằng xe trung chuyển: không chọn bến, nhân viên sẽ gọi hẹn điểm. */
     public boolean pickupShuttle = false;
     public boolean dropoffShuttle = false;
@@ -72,8 +78,11 @@ public final class BookingDraft {
     @Nullable public String lastTicketCode;
 
     private BookingDraft() {
+        // Mặc định: ngày mai
+        Calendar today = Calendar.getInstance();
         date.clear();
-        date.set(2026, Calendar.OCTOBER, 18);
+        date.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        date.add(Calendar.DAY_OF_MONTH, 1);
     }
 
     public void startHoldIfNeeded() {
@@ -94,12 +103,16 @@ public final class BookingDraft {
 
     /** Nhãn điểm đón hiển thị ở Xác nhận / Vé điện tử. */
     public String pickupLabel() {
-        return pickupShuttle ? SHUTTLE_LABEL : TripRepository.PICKUP_POINTS[pickupIndex][0];
+        if (pickupShuttle) return SHUTTLE_LABEL;
+        if (pickupStation != null) return pickupStation;
+        return trip == null ? "" : trip.pickupStation;
     }
 
     /** Nhãn điểm trả hiển thị ở Xác nhận / Vé điện tử. */
     public String dropoffLabel() {
-        return dropoffShuttle ? SHUTTLE_LABEL : TripRepository.DROPOFF_POINTS[dropoffIndex][0];
+        if (dropoffShuttle) return SHUTTLE_LABEL;
+        if (dropoffStation != null) return dropoffStation;
+        return trip == null ? "" : trip.dropoffStation;
     }
 
     public static final String SHUTTLE_LABEL = "Xe trung chuyển (nhân viên sẽ liên hệ)";
@@ -140,7 +153,7 @@ public final class BookingDraft {
     }
 
     /** Cập nhật từ dữ liệu server: mã vé, tiền, mã giảm giá, thời gian giữ ghế còn lại. */
-    public void applyServerBooking(com.example.vego.data.api.ApiModels.Booking b) {
+    public void applyServerBooking(ApiModels.Booking b) {
         if (!b.code.equals(bookingCode)) bookingKey = currentBookingKey();
         bookingCode = b.code;
         discount = b.discount;
@@ -154,10 +167,13 @@ public final class BookingDraft {
         lastPaymentMessage = b.lastPayment != null ? b.lastPayment.message : null;
     }
 
-    /** Chọn chuyến mới thì bỏ ghế và lượt giữ chỗ cũ. */
+    /** Chọn chuyến mới thì bỏ ghế, điểm đón / trả và lượt giữ chỗ cũ. */
     public void selectTrip(Trip t) {
         if (trip == null || !trip.id.equals(t.id)) {
             seat = null;
+            pickupStation = null;
+            dropoffStation = null;
+            stops = null;
             releaseHold();
         }
         trip = t;

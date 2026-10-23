@@ -13,16 +13,20 @@ public class TripFilter {
     public int minPrice = PRICE_MIN;
     public int maxPrice = PRICE_MAX;
 
-    public static final int PRICE_MIN = 200_000;
-    public static final int PRICE_MAX = 400_000;
+    public static final int PRICE_MIN = 100_000;
+    public static final int PRICE_MAX = 500_000;
     public static final int PRICE_STEP = 10_000;
 
-    /** Bộ lọc gợi ý lần đầu mở (giống thiết kế Figma). */
+    /**
+     * Bộ lọc gợi ý lần đầu mở (giống thiết kế Figma: buổi tối, Phương Trang, Limousine),
+     * chỉ giữ tiêu chí có chuyến phù hợp trên tuyến vừa tìm.
+     */
     public static TripFilter suggested() {
         TripFilter f = new TripFilter();
         f.timeSlots.add(3);
-        f.operators.add("Phương Trang");
+        if (TripRepository.operators().contains("Phương Trang")) f.operators.add("Phương Trang");
         f.busTypes.add(Trip.BusType.LIMOUSINE);
+        if (TripRepository.search(f).isEmpty()) return new TripFilter();
         return f;
     }
 

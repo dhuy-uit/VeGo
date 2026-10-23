@@ -241,5 +241,197 @@ public final class ApiModels {
     public static class Voucher {
         public String code, title, description;
         @Nullable public String origin, destination;
+        /** PROMOTION (khuyến mãi chung) | WALLET (voucher đổi bằng xu). */
+        @Nullable public String source;
+        /** ISO-8601, có thể null. */
+        @Nullable public String expiresAt;
+
+        public boolean fromWallet() {
+            return "WALLET".equals(source);
+        }
+    }
+
+    // ---------- Tìm chuyến & sơ đồ ghế ----------
+
+    public static class TripSearch {
+        /** Tên chuẩn của điểm đi / đến (vd gõ "da lat" -> "Đà Lạt"). */
+        public String origin, destination;
+        public String date;
+        public boolean routeFound;
+        public int total;
+        public List<TripDto> trips;
+        public List<String> operators;
+        @Nullable public Integer minPrice, maxPrice;
+    }
+
+    public static class SeatMap {
+        public String tripId, date, busType;
+        public int totalSeats, seatsLeft, price;
+        public List<Deck> decks;
+        public List<String> taken;
+    }
+
+    public static class Deck {
+        /** A = tầng dưới / khoang, B = tầng trên. */
+        public String code, name;
+        public List<List<Seat>> rows;
+    }
+
+    public static class Seat {
+        public String code;
+        public boolean available;
+    }
+
+    public static class Station {
+        public int id;
+        public String city, name, address;
+    }
+
+    public static class TripStops {
+        public String tripId;
+        public List<Station> pickups, dropoffs;
+    }
+
+    public static class Suggestion {
+        @Nullable public BasedOn basedOn;
+        public String date;
+        public TripDto main;
+        public List<TripDto> more;
+    }
+
+    public static class BasedOn {
+        public String ticketCode, origin, destination, travelDate, operator, slot;
+        public int departMinutes;
+    }
+
+    // ---------- Vé của tôi ----------
+
+    /** status: UPCOMING | COMPLETED | CANCELLED. */
+    public static class Ticket {
+        public String code, status;
+        public TripDto trip;
+        public String travelDate, seat, passengerName, passengerPhone, pickupLabel, dropoffLabel;
+        public int fare, discount, total;
+        @Nullable public String voucherCode, paymentMethod, paymentMethodLabel;
+        public boolean cancellable, canReview;
+        public int refundPercent, refundAmount, coinsEarned;
+        @Nullable public ReviewInfo review;
+        public String qrData;
+    }
+
+    public static class ReviewInfo {
+        public int rating;
+        @Nullable public List<String> tags;
+        @Nullable public String comment;
+    }
+
+    public static class ReviewRequest {
+        public final int rating;
+        public final List<String> tags;
+        @Nullable public final String comment;
+
+        public ReviewRequest(int rating, List<String> tags, @Nullable String comment) {
+            this.rating = rating;
+            this.tags = tags;
+            this.comment = comment;
+        }
+    }
+
+    // ---------- Thông báo ----------
+
+    public static class Inbox {
+        public long unreadCount;
+        public List<NotificationItem> items;
+    }
+
+    /** kind: REMINDER | TICKET | PROMO | REVIEW | WALLET. createdAt: ISO-8601. */
+    public static class NotificationItem {
+        public long id;
+        public String kind, title, body;
+        @Nullable public String ticketCode;
+        public boolean read;
+        public String createdAt;
+    }
+
+    public static class UnreadCount {
+        public long unreadCount;
+    }
+
+    // ---------- Ví xu ----------
+
+    public static class Wallet {
+        public int balance;
+        public boolean checkedInToday;
+        public int gameTurnsLeft, gameTurnsPerDay, bestScore, availableVouchers;
+        public List<CoinTx> history;
+    }
+
+    /** source: WELCOME | CHECK_IN | GAME | BOOKING | VOUCHER | REFUND. */
+    public static class CoinTx {
+        public long id;
+        public String source, label;
+        public int amount;
+        @Nullable public String note, ref;
+        public String createdAt;
+    }
+
+    public static class CheckInStatus {
+        public String today;
+        public boolean checkedInToday;
+        public int streak, todayIndex, todayReward, daysToBonus, balance;
+        public List<CheckInDay> days;
+    }
+
+    /** state: CHECKED | TODAY | LOCKED. */
+    public static class CheckInDay {
+        public int index, reward;
+        public String date, state;
+    }
+
+    public static class CheckInResult {
+        public int reward;
+        public CheckInStatus status;
+    }
+
+    public static class GameStart {
+        public long playId;
+        public int turnsLeft, turnsPerDay, bestScore;
+    }
+
+    public static class ScoreRequest {
+        public final int score;
+
+        public ScoreRequest(int score) {
+            this.score = score;
+        }
+    }
+
+    public static class GameResult {
+        public int score, coins, bestScore, balance, turnsLeft, maxCoinsPerGame;
+        public boolean newBest;
+    }
+
+    public static class WalletVouchers {
+        public int balance;
+        public List<VoucherOffer> offers;
+        public List<MyVoucher> mine;
+    }
+
+    public static class VoucherOffer {
+        public String id;
+        public int discount, minOrder, cost, validDays, owned;
+        public boolean affordable;
+    }
+
+    /** status: AVAILABLE | USED | EXPIRED. */
+    public static class MyVoucher {
+        public String code, title, status;
+        public int discount, minOrder;
+        @Nullable public String expiresAt;
+    }
+
+    public static class Redeemed {
+        public MyVoucher voucher;
+        public int balance;
     }
 }

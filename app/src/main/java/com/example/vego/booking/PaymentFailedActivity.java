@@ -12,7 +12,6 @@ import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 
 /** Figma: "Đặt vé · Thanh toán thất bại". Ghế vẫn được giữ, có thể thử lại. */
 public class PaymentFailedActivity extends BaseActivity {
@@ -30,7 +29,10 @@ public class PaymentFailedActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setScreenContent(R.layout.activity_payment_failed);
 
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
         draft.startHoldIfNeeded();
 

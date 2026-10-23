@@ -11,7 +11,6 @@ import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 
 /** Figma: "Đặt vé · Hết thời gian giữ chỗ". */
 public class HoldExpiredActivity extends BaseActivity {
@@ -27,7 +26,10 @@ public class HoldExpiredActivity extends BaseActivity {
         setScreenContent(R.layout.activity_hold_expired);
 
         BookingDraft draft = BookingDraft.get();
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
         String seat = draft.seat != null ? draft.seat : "—";
 

@@ -16,7 +16,6 @@ import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 import com.example.vego.data.api.ApiCallback;
 import com.example.vego.data.api.ApiClient;
 import com.example.vego.data.api.ApiModels;
@@ -36,7 +35,10 @@ public class BookingConfirmActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setScreenContent(R.layout.activity_booking_confirm);
 
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
 
         ((TextView) findViewById(R.id.tv_hold_badge)).setText(getString(R.string.confirm_hold_badge, draft.seat));

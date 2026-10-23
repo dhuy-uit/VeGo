@@ -88,9 +88,26 @@ public class ProfileActivity extends BaseActivity {
                 showError(error);
             }
         });
-        // Số dư Ví xu thay đổi sau khi điểm danh / chơi game / đổi voucher
-        ((TextView) findViewById(R.id.tv_wallet_balance)).setText(
-                getString(R.string.xu_amount, CoinWallet.coins(CoinWallet.get().balance())));
+        // Số dư Ví xu thay đổi sau khi điểm danh / chơi game / đổi voucher / đặt vé
+        bindWallet();
+        ApiClient.api().wallet().enqueue(new ApiCallback<ApiModels.Wallet>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.Wallet w) {
+                CoinWallet.get().update(w);
+                bindWallet();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                // Đã báo lỗi ở phần hồ sơ phía trên
+            }
+        });
+    }
+
+    private void bindWallet() {
+        CoinWallet w = CoinWallet.get();
+        ((TextView) findViewById(R.id.tv_wallet_balance)).setText(getString(R.string.xu_amount,
+                w.isLoaded() ? CoinWallet.coins(w.balance()) : "…"));
     }
 
     private void bindUser() {

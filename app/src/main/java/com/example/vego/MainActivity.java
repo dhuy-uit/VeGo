@@ -18,7 +18,6 @@ import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 import com.example.vego.data.api.ApiCallback;
 import com.example.vego.data.api.ApiClient;
 import com.example.vego.data.api.ApiModels;
@@ -43,8 +42,8 @@ public class MainActivity extends BaseActivity {
     private boolean searchTouched;
     private boolean defaultsApplied;
 
-    /** Chuyến gợi ý hiện trên thẻ (mặc định là chuyến mẫu). */
-    private Trip suggestedTrip = TripRepository.suggested();
+    /** Chuyến gợi ý hiện trên thẻ (null = chưa tải được từ server). */
+    @Nullable private Trip suggestedTrip;
     @Nullable private Calendar suggestedDate;
     @Nullable private List<ApiModels.PopularRoute> routes;
 
@@ -69,7 +68,10 @@ public class MainActivity extends BaseActivity {
         onClick(R.id.card_route_nhatrang, v -> selectRoute(1));
         // Theo prototype: bấm thẻ chuyến -> Chọn ghế
         onClick(R.id.card_trip, v -> {
+            if (suggestedTrip == null) return;
             BookingDraft draft = BookingDraft.get();
+            draft.origin = suggestedTrip.origin;
+            draft.destination = suggestedTrip.destination;
             draft.selectTrip(suggestedTrip);
             draft.date.setTimeInMillis((suggestedDate != null ? suggestedDate : departureDate).getTimeInMillis());
             open(SeatSelectActivity.class);
@@ -164,7 +166,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void bindTrip(ApiModels.TripDto t) {
-        suggestedTrip = toTrip(t);
+        suggestedTrip = Trip.from(t);
         suggestedDate = UserSession.parseIsoDate(t.departureDate);
 
         setText(R.id.tv_trip_operator, t.operator);
@@ -182,19 +184,6 @@ public class MainActivity extends BaseActivity {
         }
         setText(R.id.tv_trip_price, Format.money(t.price));
         setText(R.id.tv_trip_seats, getString(R.string.home_trip_seats, t.seatsLeft));
-    }
-
-    /** Đổi dữ liệu chuyến từ API sang lớp Trip mà luồng đặt vé đang dùng. */
-    private static Trip toTrip(ApiModels.TripDto t) {
-        Trip.BusType type;
-        try {
-            type = Trip.BusType.valueOf(t.busType);
-        } catch (RuntimeException e) {
-            type = Trip.BusType.SLEEPER;
-        }
-        return new Trip(t.id, t.operator, t.busName, type, t.rating, t.departMinutes, t.durationMinutes,
-                t.price, t.seatsLeft, t.origin, t.destination,
-                t.pickupStation, t.pickupAddress, t.dropoffStation, t.dropoffAddress);
     }
 
     private void showGreeting(@Nullable String name) {

@@ -30,6 +30,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /** Khai báo REST API của VéGo cho Retrofit. */
 public interface VeGoApi {
@@ -106,4 +107,77 @@ public interface VeGoApi {
 
     @GET("api/v1/vouchers")
     Call<List<Voucher>> vouchers();
+
+    // ---------- Tìm chuyến (không cần đăng nhập) ----------
+
+    @GET("api/v1/trips/search")
+    Call<ApiModels.TripSearch> searchTrips(@Query("origin") String origin, @Query("destination") String destination,
+                                           @Query("date") String date);
+
+    @GET("api/v1/trips/{id}")
+    Call<ApiModels.TripDto> trip(@Path("id") String tripId, @Query("date") String date);
+
+    @GET("api/v1/trips/{id}/seats")
+    Call<ApiModels.SeatMap> seatMap(@Path("id") String tripId, @Query("date") String date);
+
+    @GET("api/v1/trips/{id}/stops")
+    Call<ApiModels.TripStops> tripStops(@Path("id") String tripId);
+
+    @GET("api/v1/stations")
+    Call<List<ApiModels.Station>> stations(@Query("city") String city);
+
+    /** 204 (body null) khi không có gợi ý. */
+    @GET("api/v1/suggestions")
+    Call<ApiModels.Suggestion> suggestions(@Query("date") String date);
+
+    // ---------- Vé của tôi ----------
+
+    @GET("api/v1/tickets")
+    Call<List<ApiModels.Ticket>> tickets();
+
+    @GET("api/v1/tickets/{code}")
+    Call<ApiModels.Ticket> ticket(@Path("code") String code);
+
+    @POST("api/v1/tickets/{code}/cancel")
+    Call<ApiModels.Ticket> cancelTicket(@Path("code") String code);
+
+    @POST("api/v1/tickets/{code}/review")
+    Call<ApiModels.Ticket> reviewTicket(@Path("code") String code, @Body ApiModels.ReviewRequest body);
+
+    // ---------- Thông báo ----------
+
+    @GET("api/v1/notifications")
+    Call<ApiModels.Inbox> notifications();
+
+    @GET("api/v1/notifications/unread-count")
+    Call<ApiModels.UnreadCount> unreadNotifications();
+
+    @POST("api/v1/notifications/{id}/read")
+    Call<ApiModels.NotificationItem> markNotificationRead(@Path("id") long id);
+
+    @POST("api/v1/notifications/read-all")
+    Call<Void> markAllNotificationsRead();
+
+    // ---------- Ví xu ----------
+
+    @GET("api/v1/wallet")
+    Call<ApiModels.Wallet> wallet();
+
+    @GET("api/v1/wallet/check-in")
+    Call<ApiModels.CheckInStatus> checkInStatus();
+
+    @POST("api/v1/wallet/check-in")
+    Call<ApiModels.CheckInResult> checkIn();
+
+    @POST("api/v1/wallet/game/start")
+    Call<ApiModels.GameStart> startGame();
+
+    @POST("api/v1/wallet/game/{playId}/finish")
+    Call<ApiModels.GameResult> finishGame(@Path("playId") long playId, @Body ApiModels.ScoreRequest body);
+
+    @GET("api/v1/wallet/vouchers")
+    Call<ApiModels.WalletVouchers> walletVouchers();
+
+    @POST("api/v1/wallet/vouchers/{offerId}/redeem")
+    Call<ApiModels.Redeemed> redeemVoucher(@Path("offerId") String offerId);
 }

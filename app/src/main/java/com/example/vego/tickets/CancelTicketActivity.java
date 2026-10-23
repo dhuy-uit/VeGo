@@ -5,16 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.common.ui.VeGoDialog;
 import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.Format;
-import com.example.vego.data.NotificationStore;
 import com.example.vego.data.Ticket;
 import com.example.vego.data.TicketStore;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
-/** Figma: "Vé & sau chuyến · Xác nhận hủy vé". */
+/**
+ * Figma: "Vé & sau chuyến · Xác nhận hủy vé".
+ * Số tiền hoàn do server tính (từ 24 giờ trước giờ đi hoàn 80%, sát giờ hoàn 50%);
+ * xác nhận thì gọi POST /api/v1/tickets/{code}/cancel.
+ */
 public class CancelTicketActivity extends BaseActivity {
 
     private static final String EXTRA_CODE = "ticket_code";
@@ -36,9 +44,41 @@ public class CancelTicketActivity extends BaseActivity {
             finish();
             return;
         }
+        bind();
 
-        int percent = TicketStore.refundPercent(ticket);
-        int refund = TicketStore.refundAmount(ticket);
+        // Theo prototype: quay lại / "Giữ vé của tôi" -> Vé điện tử
+        setupBackButton(this::finish);
+        onClick(R.id.btn_keep, v -> finish());
+        onClick(R.id.btn_confirm_cancel, v -> confirm());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ticket == null) return;
+        // Số tiền hoàn đổi theo thời gian còn lại tới giờ đi -> lấy lại từ server
+        ApiClient.api().ticket(ticket.code).enqueue(new ApiCallback<ApiModels.Ticket>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.Ticket dto) {
+                if (dto == null) return;
+                ticket = TicketStore.get().put(dto);
+                if (!ticket.cancellable) {
+                    finish();
+                    return;
+                }
+                bind();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                showError(error);
+            }
+        });
+    }
+
+    private void bind() {
+        int percent = ticket.refundPercent;
+        int refund = ticket.refundAmount;
         ((TextView) findViewById(R.id.tv_route)).setText(ticket.route());
         ((InfoRowView) findViewById(R.id.row_code)).setValue(ticket.code);
         ((InfoRowView) findViewById(R.id.row_operator)).setValue(ticket.operator);
@@ -53,43 +93,49 @@ public class CancelTicketActivity extends BaseActivity {
         refundRow.setLabel(getString(R.string.label_refund, percent));
         refundRow.setValue(Format.money(refund));
         ((TextView) findViewById(R.id.tv_refund_note)).setText(getString(R.string.cancel_refund_note, ticket.paymentMethod));
-
-        // Theo prototype: quay lại / "Giữ vé của tôi" -> Vé điện tử
-        setupBackButton(this::finish);
-        onClick(R.id.btn_keep, v -> finish());
-        onClick(R.id.btn_confirm_cancel, v -> confirm(refund));
     }
 
     /** Hỏi lại lần cuối trước khi hủy, vì không thể hoàn tác. */
-    private void confirm(int refund) {
+    private void confirm() {
         VeGoDialog.with(this)
                 .type(VeGoDialog.Type.DANGER)
                 .title(getString(R.string.cancel_dialog_title, ticket.code))
-                .message(getString(R.string.cancel_dialog_message, Format.money(refund)))
+                .message(getString(R.string.cancel_dialog_message, Format.money(ticket.refundAmount)))
                 .primary(R.string.cancel_dialog_confirm, this::cancelTicket)
                 .secondary(R.string.cancel_dialog_keep, null)
                 .show();
     }
 
     private void cancelTicket() {
-        TicketStore.get().cancel(ticket);
-        NotificationStore.get().push(NotificationStore.Kind.TICKET,
-                getString(R.string.cancel_notify_title, ticket.code),
-                getString(R.string.cancel_notify_body, Format.money(ticket.refundAmount),
-                        ticket.paymentMethod, ticket.seat),
-                ticket.code);
+        setBusy(R.id.btn_confirm_cancel, true);
+        ApiClient.api().cancelTicket(ticket.code).enqueue(new ApiCallback<ApiModels.Ticket>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.Ticket dto) {
+                if (dto == null) return;
+                ticket = TicketStore.get().put(dto);
+                VeGoDialog.with(CancelTicketActivity.this)
+                        .type(VeGoDialog.Type.SUCCESS)
+                        .title(R.string.cancel_done_title)
+                        .message(getString(R.string.cancel_done_message,
+                                Format.money(ticket.refundAmount), ticket.paymentMethod))
+                        .cancelable(false)
+                        .primary(R.string.action_ok, () -> {
+                            // Về "Vé của tôi", mở sẵn tab Đã hủy
+                            startActivity(MyTicketsActivity.intent(CancelTicketActivity.this, Ticket.Status.CANCELLED));
+                            finish();
+                        })
+                        .show();
+            }
 
-        VeGoDialog.with(this)
-                .type(VeGoDialog.Type.SUCCESS)
-                .title(R.string.cancel_done_title)
-                .message(getString(R.string.cancel_done_message,
-                        Format.money(ticket.refundAmount), ticket.paymentMethod))
-                .cancelable(false)
-                .primary(R.string.action_ok, () -> {
-                    // Về "Vé của tôi", mở sẵn tab Đã hủy
-                    startActivity(MyTicketsActivity.intent(this, Ticket.Status.CANCELLED));
-                    finish();
-                })
-                .show();
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                showError(error);
+            }
+
+            @Override
+            protected void onDone() {
+                setBusy(R.id.btn_confirm_cancel, false);
+            }
+        });
     }
 }

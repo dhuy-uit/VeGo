@@ -160,6 +160,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!(this instanceof MainActivity)) finish();
     }
 
+    /**
+     * Màn hình cần đăng nhập (Vé của tôi, Thông báo, Ví xu...): khách thì chuyển sang Đăng nhập.
+     * Gọi đầu onCreate, trả về false nếu đã chuyển đi (onCreate nên return ngay).
+     */
+    protected boolean requireLogin() {
+        if (UserSession.get().isLoggedIn()) return true;
+        VeGoBanner.post(getString(R.string.login_required_feature), VeGoBanner.Type.INFO);
+        startActivity(new Intent(this, com.example.vego.auth.LoginActivity.class));
+        finish();
+        return false;
+    }
+
     /** Thông báo cho các nút dẫn tới màn hình chưa làm. */
     protected void showComingSoon(@StringRes int screenName) {
         VeGoBanner.show(this, getString(R.string.coming_soon, getString(screenName)), VeGoBanner.Type.INFO);

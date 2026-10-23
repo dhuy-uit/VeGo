@@ -9,7 +9,6 @@ import com.example.vego.R;
 import com.example.vego.data.Format;
 import com.example.vego.data.Ticket;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 
 import java.util.Calendar;
 
@@ -38,7 +37,7 @@ public final class TripCardBinder {
 
     /** Thẻ ở Vé điện tử: dựng từ thông tin vé đã đặt. */
     public static void bindTicket(View card, Ticket t) {
-        double rating = t.tripId != null ? TripRepository.byId(t.tripId).rating : 4.8;
+        double rating = t.tripRating;
         text(card, R.id.tv_operator, t.operator);
         text(card, R.id.tv_bus_name, t.busName);
         text(card, R.id.tv_rating, Format.rating(rating) + " ★");

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.vego.R;
@@ -18,7 +19,11 @@ import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
+
+import java.util.List;
 
 /** Figma: "Đặt vé · Thông tin hành khách" (Bước 2/3). */
 public class PassengerInfoActivity extends BaseActivity {
@@ -32,7 +37,10 @@ public class PassengerInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setScreenContent(R.layout.activity_passenger_info);
 
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
 
         ((TextView) findViewById(R.id.tv_route_badge)).setText(
@@ -50,7 +58,6 @@ public class PassengerInfoActivity extends BaseActivity {
         etName.setText(draft.passengerName.isEmpty() ? user.getFullName() : draft.passengerName);
         etPhone.setText(draft.passengerPhone.isEmpty() ? user.getPhone() : draft.passengerPhone);
 
-        if (!draft.isHolding()) draft.pickupIndex = draft.pickupPointIndex;
 
         onClick(R.id.tab_pickup_station, v -> setPickupShuttle(false));
         onClick(R.id.tab_pickup_shuttle, v -> setPickupShuttle(true));
@@ -63,12 +70,58 @@ public class PassengerInfoActivity extends BaseActivity {
             @Override public void afterTextChanged(android.text.Editable s) { renderShuttleNotes(); }
         });
         renderStops();
+        loadStops();
 
         setupBackButton(this::finish);
         onClick(R.id.btn_continue, v -> next());
     }
 
     // ---------- Điểm đón / điểm trả ----------
+
+    /** Điểm đón / trả của chuyến: GET /api/v1/trips/{id}/stops (bến chính của chuyến đứng đầu). */
+    private void loadStops() {
+        Trip trip = draft.trip;
+        if (trip == null || (draft.stops != null && trip.id.equals(draft.stops.tripId))) return;
+        ApiClient.api().tripStops(trip.id).enqueue(new ApiCallback<ApiModels.TripStops>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.TripStops stops) {
+                if (stops == null || draft.trip == null || !stops.tripId.equals(draft.trip.id)) return;
+                draft.stops = stops;
+                // Lần đầu: chọn sẵn bến đón đã chọn ở màn Tìm chuyến (nếu chuyến có đón ở đó)
+                if (draft.pickupStation == null && draft.preferredPickup != null) {
+                    for (ApiModels.Station st : stops.pickups) {
+                        if (st.name.equals(draft.preferredPickup)) draft.pickupStation = st.name;
+                    }
+                }
+                renderStops();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                // Không tải được danh sách: vẫn dùng bến chính của chuyến
+            }
+        });
+    }
+
+    /** Danh sách bến: lấy từ server, chưa tải được thì chỉ có bến chính của chuyến. */
+    private String[][] points(boolean pickup) {
+        Trip trip = draft.trip;
+        List<ApiModels.Station> list = draft.stops == null ? null
+                : (pickup ? draft.stops.pickups : draft.stops.dropoffs);
+        if (list == null || list.isEmpty()) {
+            return new String[][] {{ pickup ? trip.pickupStation : trip.dropoffStation,
+                    pickup ? trip.pickupAddress : trip.dropoffAddress }};
+        }
+        String[][] out = new String[list.size()][];
+        for (int i = 0; i < list.size(); i++) out[i] = new String[] { list.get(i).name, list.get(i).address };
+        return out;
+    }
+
+    /** Vị trí bến đang chọn trong danh sách (mặc định bến đầu = bến chính của chuyến). */
+    private static int indexOf(String[][] points, @Nullable String name) {
+        if (name != null) for (int i = 0; i < points.length; i++) if (points[i][0].equals(name)) return i;
+        return 0;
+    }
 
     private void setPickupShuttle(boolean shuttle) {
         if (draft.pickupShuttle == shuttle) return;
@@ -86,8 +139,10 @@ public class PassengerInfoActivity extends BaseActivity {
 
     private void renderStops() {
         Trip trip = draft.trip;
-        renderSection(true, draft.pickupShuttle, TripRepository.PICKUP_POINTS, draft.pickupIndex);
-        renderSection(false, draft.dropoffShuttle, TripRepository.DROPOFF_POINTS, draft.dropoffIndex);
+        String[][] pickups = points(true);
+        String[][] dropoffs = points(false);
+        renderSection(true, draft.pickupShuttle, pickups, indexOf(pickups, draft.pickupStation));
+        renderSection(false, draft.dropoffShuttle, dropoffs, indexOf(dropoffs, draft.dropoffStation));
         renderShuttleNotes();
 
         // Lời nhắc thời gian dưới mỗi phần
@@ -131,7 +186,7 @@ public class PassengerInfoActivity extends BaseActivity {
                     isSelected ? R.drawable.bg_tile_white : R.drawable.bg_badge_mint);
             card.setContentDescription(isSelected ? getString(R.string.cd_stop_selected, points[i][0]) : points[i][0]);
             card.setOnClickListener(v -> {
-                if (pickup) draft.pickupIndex = index; else draft.dropoffIndex = index;
+                if (pickup) draft.pickupStation = points[index][0]; else draft.dropoffStation = points[index][0];
                 renderStops();
             });
             list.addView(card);

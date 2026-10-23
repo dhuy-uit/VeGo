@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.vego.R;
@@ -16,6 +17,9 @@ import com.example.vego.common.widget.InfoRowView;
 import com.example.vego.data.Format;
 import com.example.vego.data.Ticket;
 import com.example.vego.data.TicketStore;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
 import java.util.List;
 
@@ -52,6 +56,7 @@ public class MyTicketsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!requireLogin()) return;
         setScreenContent(R.layout.activity_my_tickets);
 
         tabUpcoming = findViewById(R.id.tab_upcoming);
@@ -81,7 +86,24 @@ public class MyTicketsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Hiện ngay bản đã tải, rồi lấy danh sách mới nhất từ server
         render();
+        load();
+    }
+
+    private void load() {
+        ApiClient.api().tickets().enqueue(new ApiCallback<List<ApiModels.Ticket>>(this) {
+            @Override
+            protected void onSuccess(@Nullable List<ApiModels.Ticket> list) {
+                store.setAll(list);
+                render();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                showError(error);
+            }
+        });
     }
 
     private void readTab(Intent intent) {
@@ -110,7 +132,8 @@ public class MyTicketsActivity extends BaseActivity {
             listMain.addView(tab == Ticket.Status.UPCOMING ? upcomingCard(t) : historyCard(t));
         }
 
-        groupEmpty.setVisibility(main.isEmpty() ? View.VISIBLE : View.GONE);
+        // Chưa tải xong lần đầu thì chưa báo "không có vé"
+        groupEmpty.setVisibility(main.isEmpty() && store.isLoaded() ? View.VISIBLE : View.GONE);
         findViewById(R.id.btn_book_now).setVisibility(tab == Ticket.Status.UPCOMING ? View.VISIBLE : View.GONE);
         tvEmpty.setText(tab == Ticket.Status.UPCOMING ? R.string.my_tickets_empty_upcoming
                 : tab == Ticket.Status.COMPLETED ? R.string.my_tickets_empty_completed

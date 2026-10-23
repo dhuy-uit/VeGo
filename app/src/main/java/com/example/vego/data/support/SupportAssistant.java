@@ -6,7 +6,6 @@ import com.example.vego.data.CoinWallet;
 import com.example.vego.data.Format;
 import com.example.vego.data.Ticket;
 import com.example.vego.data.TicketStore;
-import com.example.vego.data.TripRepository;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -28,6 +27,15 @@ import java.util.regex.Pattern;
  * giữ nguyên lớp {@link Reply} để giao diện không phải sửa.
  */
 public final class SupportAssistant {
+
+    /** Bến đón ở TP. Hồ Chí Minh (khớp dữ liệu mẫu trên server; danh sách đầy đủ: GET /api/v1/stations). */
+    private static final String[][] HCM_STOPS = {
+            {"Bến xe Miền Đông mới", "501 Hoàng Hữu Nam, TP. Thủ Đức"},
+            {"Bến xe An Sương", "Quốc lộ 22, Hóc Môn"},
+            {"Bến xe Miền Tây", "395 Kinh Dương Vương, Bình Tân"},
+            {"Văn phòng Phương Trang", "272 Đề Thám, Quận 1"},
+            {"Văn phòng Thành Bưởi", "266 Lê Hồng Phong, Quận 5"}
+    };
 
     /** Một câu trả lời của trợ lý. */
     public static final class Reply {
@@ -99,7 +107,7 @@ public final class SupportAssistant {
         }
         if (hasAny(q, "diem don", "ben xe", "don o dau", "tra khach", "diem tra", "len xe o dau")) {
             StringBuilder sb = new StringBuilder();
-            for (String[] p : TripRepository.PICKUP_POINTS) sb.append("• ").append(p[0]).append(" — ").append(p[1]).append('\n');
+            for (String[] p : HCM_STOPS) sb.append("• ").append(p[0]).append(" — ").append(p[1]).append('\n');
             return Reply.text(SRC_PICKUP,
                     "Các điểm đón tại TP. Hồ Chí Minh hiện có:",
                     sb.toString().trim(),

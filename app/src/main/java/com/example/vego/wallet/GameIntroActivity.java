@@ -3,10 +3,15 @@ package com.example.vego.wallet;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.common.ui.VeGoDialog;
 import com.example.vego.data.CoinWallet;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
 /** Figma: "Tiện ích · Chơi game kiếm xu" — giới thiệu game và số lượt còn lại. */
 public class GameIntroActivity extends BaseActivity {
@@ -16,6 +21,7 @@ public class GameIntroActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!requireLogin()) return;
         setScreenContent(R.layout.activity_game_intro);
 
         setupBackButton(this::finish);
@@ -25,6 +31,23 @@ public class GameIntroActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        renderTurns();
+        // Lượt chơi còn lại tính theo ngày trên server
+        ApiClient.api().wallet().enqueue(new ApiCallback<ApiModels.Wallet>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.Wallet w) {
+                wallet.update(w);
+                renderTurns();
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                showError(error);
+            }
+        });
+    }
+
+    private void renderTurns() {
         int turns = wallet.turnsLeft();
         ((TextView) findViewById(R.id.tv_turns)).setText(turns > 0
                 ? getString(R.string.game_turns_left, turns)

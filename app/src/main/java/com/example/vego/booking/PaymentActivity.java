@@ -23,7 +23,6 @@ import com.example.vego.data.BookingDraft;
 import com.example.vego.data.BookingDraft.PaymentMethod;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
-import com.example.vego.data.TripRepository;
 import com.example.vego.data.api.ApiCallback;
 import com.example.vego.data.api.ApiClient;
 import com.example.vego.data.api.ApiModels;
@@ -50,7 +49,10 @@ public class PaymentActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setScreenContent(R.layout.activity_payment);
 
-        if (draft.trip == null) draft.selectTrip(TripRepository.suggested());
+        if (draft.trip == null) {
+            goHome();
+            return;
+        }
         Trip trip = draft.trip;
         draft.startHoldIfNeeded();
 
@@ -164,7 +166,8 @@ public class PaymentActivity extends BaseActivity {
                     View item = inflater.inflate(R.layout.item_voucher_suggestion, box, false);
                     ((TextView) item.findViewById(R.id.tv_voucher_code)).setText(v.code);
                     String desc = v.title;
-                    if (v.origin != null) desc += " · " + v.origin + " – " + v.destination;
+                    if (v.fromWallet()) desc += " · " + getString(R.string.voucher_from_wallet);
+                    else if (v.origin != null) desc += " · " + v.origin + " – " + v.destination;
                     ((TextView) item.findViewById(R.id.tv_voucher_desc)).setText(desc);
                     item.setOnClickListener(x -> {
                         etVoucher.setText(v.code);

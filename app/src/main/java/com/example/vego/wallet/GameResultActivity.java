@@ -19,12 +19,17 @@ public class GameResultActivity extends BaseActivity {
     private static final String EXTRA_SCORE = "score";
     private static final String EXTRA_EARNED = "earned";
     private static final String EXTRA_NEW_BEST = "new_best";
+    private static final String EXTRA_BALANCE = "balance";
+    private static final String EXTRA_TURNS = "turns_left";
 
-    public static Intent intent(Context context, int score, int earned, boolean newBest) {
+    /** Kết quả do server tính (điểm hợp lệ, xu nhận được, số dư mới, lượt còn lại). */
+    public static Intent intent(Context context, int score, int earned, boolean newBest, int balance, int turnsLeft) {
         return new Intent(context, GameResultActivity.class)
                 .putExtra(EXTRA_SCORE, score)
                 .putExtra(EXTRA_EARNED, earned)
-                .putExtra(EXTRA_NEW_BEST, newBest);
+                .putExtra(EXTRA_NEW_BEST, newBest)
+                .putExtra(EXTRA_BALANCE, balance)
+                .putExtra(EXTRA_TURNS, turnsLeft);
     }
 
     @Override
@@ -50,10 +55,10 @@ public class GameResultActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_result_rule)).setText(
                 earned >= CoinWallet.MAX_COINS_PER_GAME ? R.string.game_result_rule_capped : R.string.game_result_rule);
         findViewById(R.id.tv_new_best).setVisibility(newBest ? View.VISIBLE : View.GONE);
-        ((TextView) findViewById(R.id.tv_result_balance)).setText(
-                getString(R.string.xu_amount, CoinWallet.coins(wallet.balance())));
+        ((TextView) findViewById(R.id.tv_result_balance)).setText(getString(R.string.xu_amount,
+                CoinWallet.coins(getIntent().getIntExtra(EXTRA_BALANCE, wallet.balance()))));
 
-        int turns = wallet.turnsLeft();
+        int turns = getIntent().getIntExtra(EXTRA_TURNS, wallet.turnsLeft());
         ((TextView) findViewById(R.id.tv_result_turns)).setText(turns > 0
                 ? getString(R.string.game_turns_left, turns) : getString(R.string.game_no_turns));
 

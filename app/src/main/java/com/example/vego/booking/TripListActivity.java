@@ -6,14 +6,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.example.vego.R;
 import com.example.vego.common.BaseActivity;
 import com.example.vego.common.TripCardBinder;
+import com.example.vego.common.UserSession;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Trip;
 import com.example.vego.data.TripFilter;
 import com.example.vego.data.TripRepository;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,6 +39,7 @@ public class TripListActivity extends BaseActivity {
     /** Chuyến đang được chạm chọn (null = chưa chọn, nút "Chọn chuyến" ẩn). */
     private String selectedCode;
     private TextView quickButton;
+    private boolean resumedOnce = false;
 
     private LinearLayout listTrips;
     private TextView tvCount;
@@ -76,6 +83,27 @@ public class TripListActivity extends BaseActivity {
         ((TextView) findViewById(R.id.tv_route_subtitle))
                 .setText(getString(R.string.list_subtitle, Format.date(draft.date)));
         render(true);
+        // Lần đầu mở đã có kết quả vừa tìm; quay lại từ màn khác thì lấy số ghế mới nhất
+        if (resumedOnce) refresh();
+        resumedOnce = true;
+    }
+
+    /** Lấy lại số ghế trống mới nhất (người khác có thể vừa đặt) rồi vẽ lại không hiệu ứng. */
+    private void refresh() {
+        ApiClient.api().searchTrips(draft.origin, draft.destination, UserSession.toIsoDate(draft.date))
+                .enqueue(new ApiCallback<ApiModels.TripSearch>(this) {
+                    @Override
+                    protected void onSuccess(@Nullable ApiModels.TripSearch result) {
+                        if (result == null || !result.routeFound) return;
+                        TripRepository.setResults(result);
+                        render(false);
+                    }
+
+                    @Override
+                    protected void onError(ApiModels.ApiError error) {
+                        // Vẫn hiện kết quả đã tải trước đó
+                    }
+                });
     }
 
     /** Bấm chip đang chọn lần nữa thì bỏ sắp xếp, về thứ tự đề xuất. */
@@ -98,7 +126,14 @@ public class TripListActivity extends BaseActivity {
             case DEPARTURE: trips.sort(Comparator.comparingInt(t -> t.departMinutes)); break;
             case PRICE: trips.sort(Comparator.comparingInt(t -> t.price)); break;
             case RATING: trips.sort((a, b) -> Double.compare(b.rating, a.rating)); break;
-            default: break;
+            default:
+                // Đề xuất: chuyến đi qua bến đón đã chọn ở màn Tìm chuyến lên trước
+                if (draft.preferredPickup != null) {
+                    String preferred = draft.preferredPickup;
+                    trips.sort((a, b) -> Boolean.compare(!preferred.equals(a.pickupStation),
+                            !preferred.equals(b.pickupStation)));
+                }
+                break;
         }
 
         tvCount.setText(getString(R.string.list_count, trips.size()));
