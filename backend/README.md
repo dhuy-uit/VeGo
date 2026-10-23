@@ -14,11 +14,17 @@ backend/
 │   ├── auth/       Đăng ký, đăng nhập, refresh token xoay vòng, đăng xuất, quên/đặt lại mật khẩu
 │   ├── user/       Hồ sơ /users/me, ảnh đại diện, đổi mật khẩu
 │   ├── home/       Trang chủ: khuyến mãi, tuyến phổ biến, chuyến gợi ý
+│   ├── trip/       Tìm chuyến, sơ đồ ghế (SeatInventory), bến xe, gợi ý "Dành riêng cho bạn"
+│   ├── booking/    Giữ ghế, mã giảm giá (khuyến mãi + voucher Ví xu)
+│   ├── payment/    MoMo / VNPay sandbox, IPN có kiểm chữ ký, chế độ mô phỏng
+│   ├── ticket/     Vé của tôi: hủy vé hoàn tiền, đánh giá, QR có chữ ký, job nhắc lịch / mời đánh giá
+│   ├── notification/  Thông báo trong app
+│   ├── wallet/     Ví xu: sổ xu, điểm danh 7 ngày, game, đổi voucher, quà chào mừng
 │   ├── security/   JWT filter, cấu hình Spring Security
 │   ├── common/     Định dạng lỗi chung, tiện ích
-│   └── seed/       Tạo tài khoản mẫu
+│   └── seed/       Tài khoản mẫu + lịch sử mẫu (vé, xu, thông báo) cho tài khoản demo
 ├── src/main/resources/
-│   ├── db/migration/   V1 tạo bảng, V2 dữ liệu mẫu (nhà xe, bến, tuyến, chuyến, khuyến mãi)
+│   ├── db/migration/   V1 tạo bảng, V2 dữ liệu mẫu, V3 đặt vé + thanh toán, V4 vé / thông báo / Ví xu
 │   └── static/         Trang đặt lại mật khẩu (mở từ link trong email)
 ├── postman/        Collection + environment Local/Azure + ảnh test
 ├── deploy/         Script tạo máy ảo Azure và cài server
@@ -54,8 +60,23 @@ Tiền tố `/api/v1`. Lỗi luôn có dạng:
 | POST / DELETE | `/bookings/{code}/voucher` | ✔ | Áp / bỏ mã giảm giá `{code}` |
 | POST | `/bookings/{code}/cancel` | ✔ | Hủy giữ chỗ |
 | POST | `/bookings/{code}/payments` | ✔ | `{method: MOMO \| VNPAY \| CARD}` → `payUrl` để app mở |
-| GET | `/vouchers` | – | Mã giảm giá đang có |
-| GET | `/trips/{id}/seats?date=` | – | Ghế đã có người giữ / đặt |
+| GET | `/vouchers` | tùy chọn | Mã giảm giá đang có (đăng nhập thì kèm voucher Ví xu của mình, `source: WALLET`) |
+| GET | `/trips/search?origin=&destination=&date=` | – | Tìm chuyến; gõ không dấu / "HCM" vẫn khớp. Lọc tùy chọn: `operator`, `busType`, `slot` (0–3), `minPrice`, `maxPrice`; `sort` = RECOMMENDED \| DEPARTURE \| PRICE \| RATING |
+| GET | `/trips/{id}?date=` | – | Chi tiết chuyến, số ghế trống theo ngày |
+| GET | `/trips/{id}/seats?date=` | – | Sơ đồ ghế: `decks[].rows[][]{code, available}`, `taken`, `seatsLeft` |
+| GET | `/trips/{id}/stops` | – | Điểm đón / trả (bến chính của chuyến đứng đầu) |
+| GET | `/stations?city=`, `/cities` | – | Bến xe theo thành phố, các thành phố có tuyến |
+| GET | `/suggestions?date=` | tùy chọn | Gợi ý theo chuyến đã đi gần nhất (cùng tuyến, nhà xe, buổi); khách: chuyến đánh giá cao |
+| GET | `/tickets`, `/tickets/{code}` | ✔ | Vé đã thanh toán: `status` UPCOMING / COMPLETED / CANCELLED, số tiền hoàn nếu hủy lúc này, `qrData` |
+| POST | `/tickets/{code}/cancel` | ✔ | Hủy vé: trước giờ đi ≥ 24 giờ hoàn 80%, sát giờ 50%; thu hồi xu đã cộng |
+| POST | `/tickets/{code}/review` | ✔ | `{rating 1–5, tags[CLEAN, ONTIME, STAFF], comment?}` sau khi xe đã chạy |
+| GET | `/notifications`, `/notifications/unread-count` | ✔ | Thông báo (mới nhất trước) + số chưa đọc |
+| POST | `/notifications/{id}/read`, `/notifications/read-all` | ✔ | Đánh dấu đã đọc |
+| GET | `/wallet` | ✔ | Số dư xu, lượt chơi còn lại, kỷ lục, lịch sử giao dịch |
+| GET / POST | `/wallet/check-in` | ✔ | Chu kỳ điểm danh 7 ngày (20 xu/ngày, ngày 7: 50 xu) / điểm danh hôm nay |
+| POST | `/wallet/game/start`, `/wallet/game/{playId}/finish` | ✔ | 2 lượt/ngày; `{score}` → xu (10 điểm = 1 xu, tối đa 100) |
+| GET | `/wallet/vouchers` | ✔ | Voucher đổi được (V20 / V50 / V100) + voucher của tôi |
+| POST | `/wallet/vouchers/{offerId}/redeem` | ✔ | Đổi xu lấy mã `XU20K-xxxx`, nhập ở bước thanh toán |
 | GET | `/payments/vnpay/ipn`, `/payments/vnpay/return` | – | VNPay gọi về (kiểm tra chữ ký HMAC-SHA512) |
 | POST / GET | `/payments/momo/ipn`, `/payments/momo/return` | – | MoMo gọi về (kiểm tra chữ ký HMAC-SHA256) |
 
@@ -63,7 +84,15 @@ Token: `Authorization: Bearer <accessToken>`. Access token sống 15 phút, refr
 Bảo mật: mật khẩu BCrypt; chỉ lưu SHA-256 của refresh token / mã khôi phục; sai mật khẩu 5 lần khóa đăng nhập 15 phút;
 ảnh tải lên kiểm tra theo nội dung tệp; quên mật khẩu không tiết lộ tài khoản có tồn tại hay không.
 
-Tài khoản mẫu: **0901234567 / vego123456** (Nguyễn Minh Anh).
+Tài khoản mẫu: **0901234567 / vego123456** (Nguyễn Minh Anh) — có sẵn 1 vé đã đi (chưa đánh giá), 1 vé đã hủy,
+1 vé sắp đi, 1.250 xu, chuỗi điểm danh 3 ngày, 1 voucher và thông báo mẫu.
+
+Nghiệp vụ tự động:
+- Thanh toán thành công → cộng xu (1.000đ = 1 xu), đánh dấu voucher Ví xu đã dùng, thông báo "Vé đã được xác nhận".
+- Tài khoản mới → tặng 500 xu + thông báo mã CHAOBANMOI.
+- Mỗi 5 phút: nhắc lịch các vé còn dưới 3 giờ nữa chạy; mời đánh giá khi chuyến đã tới nơi.
+- Sơ đồ ghế giả lập ghế đã bán ở quầy (`total_seats - seats_left`, cố định theo chuyến + ngày);
+  tắt bằng `BOOKING_PRESOLD_SEATS=false`.
 
 ## Server đang chạy (Azure)
 
