@@ -24,7 +24,19 @@ public class Promotion {
     private String note;
 
     @Column(name = "discount_percent")
-    private int discountPercent;
+    private Integer discountPercent;
+
+    @Column(name = "discount_amount")
+    private Integer discountAmount;
+
+    @Column(name = "min_order")
+    private int minOrder;
+
+    @Column(name = "per_user_limit")
+    private int perUserLimit;
+
+    @Column(name = "show_on_home")
+    private boolean showOnHome;
 
     @Column(name = "max_discount")
     private Integer maxDiscount;
@@ -51,7 +63,11 @@ public class Promotion {
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public String getNote() { return note; }
-    public int getDiscountPercent() { return discountPercent; }
+    public Integer getDiscountPercent() { return discountPercent; }
+    public Integer getDiscountAmount() { return discountAmount; }
+    public int getMinOrder() { return minOrder; }
+    public int getPerUserLimit() { return perUserLimit; }
+    public boolean isShowOnHome() { return showOnHome; }
     public Integer getMaxDiscount() { return maxDiscount; }
     public String getImageKey() { return imageKey; }
     public Route getRoute() { return route; }

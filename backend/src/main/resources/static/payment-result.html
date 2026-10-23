@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VéGo · Kết quả thanh toán</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#F5F8F8;
+         color:#173536; font:15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding:16px; text-align:center; }
+  main { max-width:360px; background:#fff; border-radius:20px; padding:28px 24px; box-shadow:0 8px 30px rgba(23,53,54,.08); }
+  .icon { font-size:44px; } h1 { font-size:20px; margin:8px 0 4px; } p { color:#647A7C; margin:0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="icon" id="icon">⏳</div>
+  <h1 id="title">Đang quay lại VéGo…</h1>
+  <p id="sub">Ứng dụng sẽ tự cập nhật kết quả thanh toán.</p>
+</main>
+<script>
+  const q = new URLSearchParams(location.search), s = q.get('status');
+  const set = (i, t, d) => { icon.textContent = i; title.textContent = t; sub.textContent = d; };
+  if (s === 'success') set('✅', 'Thanh toán thành công', 'Mã vé ' + (q.get('booking') || '') + '. Đang quay lại ứng dụng VéGo…');
+  else if (s === 'failed') set('⚠️', 'Thanh toán chưa thành công', 'Quay lại ứng dụng VéGo để thử lại.');
+  else if (s === 'invalid') set('⚠️', 'Không xác minh được giao dịch', 'Quay lại ứng dụng VéGo để kiểm tra.');
+</script>
+</body>
+</html>

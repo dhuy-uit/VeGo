@@ -65,6 +65,26 @@ app:
     lockout: 15m
   mail:
     from: ${MAIL_FROM:VéGo <no-reply@vego.local>}
+  booking:
+    # Thời gian giữ ghế chờ thanh toán
+    hold-duration: ${BOOKING_HOLD:5m}
+  payments:
+    # true: mọi phương thức đi qua trang thanh toán mô phỏng (demo khi cổng sandbox lỗi, chạy CI)
+    simulate: ${PAYMENT_SIMULATE:false}
+    vnpay:
+      # Lấy tại https://sandbox.vnpayment.vn/devreg/ — đặt trong .env trên server, KHÔNG đưa lên GitHub.
+      # Để trống thì VNPay / Thẻ ngân hàng dùng trang mô phỏng.
+      tmn-code: ${VNPAY_TMN_CODE:}
+      hash-secret: ${VNPAY_HASH_SECRET:}
+      pay-url: ${VNPAY_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+    momo:
+      # Mặc định: tài khoản test dùng chung của MoMo (môi trường test-payment.momo.vn, không phải tiền thật)
+      partner-code: ${MOMO_PARTNER_CODE:MOMO}
+      access-key: ${MOMO_ACCESS_KEY:F8BBA842ECF85}
+      secret-key: ${MOMO_SECRET_KEY:K951B6PE1waDMi640xX08PD3vg6EkVlz}
+      endpoint: ${MOMO_ENDPOINT:https://test-payment.momo.vn/v2/gateway/api/create}
+      # payWithMethod: trang MoMo cho chọn ví (quét QR) / thẻ ATM / thẻ quốc tế
+      request-type: ${MOMO_REQUEST_TYPE:payWithMethod}
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
 

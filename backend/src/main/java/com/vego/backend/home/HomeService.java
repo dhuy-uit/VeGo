@@ -110,7 +110,7 @@ public class HomeService {
                 });
     }
 
-    static TripResponse toTrip(Trip t, LocalDate date) {
+    public static TripResponse toTrip(Trip t, LocalDate date) {
         int depart = t.getDepartTime().getHour() * 60 + t.getDepartTime().getMinute();
         int arriveTotal = depart + t.getDurationMinutes();
         return new TripResponse(
@@ -147,7 +147,7 @@ public class HomeService {
     private PromotionResponse toPromotion(Promotion p) {
         Route r = p.getRoute();
         return new PromotionResponse(p.getCode(), p.getBadge(), p.getTitle(), p.getDescription(), p.getNote(),
-                p.getDiscountPercent(), p.getMaxDiscount(), p.getImageKey(),
+                p.getDiscountPercent(), p.getDiscountAmount(), p.getMaxDiscount(), p.getImageKey(),
                 r == null ? null : r.getOriginCity(),
                 r == null ? null : r.getDestinationCity(),
                 p.getEndsAt().atZone(zone).toLocalDate());

@@ -73,6 +73,7 @@ jobs:
       - name: Chạy API
         env:
           EXPOSE_RESET_TOKEN: "true"
+          PAYMENT_SIMULATE: "true"
           JWT_SECRET: ci-secret-ci-secret-ci-secret-ci-secret-123
         run: |
           nohup java -jar target/vego-backend.jar > api.log 2>&1 &

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VéGo · Cổng thanh toán mô phỏng</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#F5F8F8;
+         color:#173536; font:15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; padding:16px; }
+  main { width:100%; max-width:380px; background:#fff; border-radius:20px; padding:24px; box-shadow:0 8px 30px rgba(23,53,54,.08); }
+  .badge { display:inline-block; background:#FFF4E5; color:#B25E09; border-radius:999px; padding:2px 10px; font-size:12px; font-weight:600; }
+  h1 { font-size:20px; margin:12px 0 4px; } p { color:#647A7C; margin:0 0 16px; }
+  .amount { font-size:28px; font-weight:800; color:#007F78; margin:4px 0 20px; }
+  button { width:100%; height:48px; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; margin-top:10px; }
+  .ok { background:#007F78; color:#fff; border:0; } .fail { background:#fff; color:#C2412D; border:1.5px solid #E7C2BB; }
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">CHẾ ĐỘ MÔ PHỎNG</span>
+  <h1 id="title">Thanh toán</h1>
+  <p>Server đang bật chế độ mô phỏng (không trừ tiền). Chọn kết quả giao dịch để kiểm tra luồng của ứng dụng.</p>
+  <div>Số tiền</div>
+  <div class="amount" id="amount"></div>
+  <button class="ok" onclick="send('success')">Giao dịch thành công</button>
+  <button class="fail" onclick="send('failed')">Giao dịch thất bại</button>
+</main>
+<script>
+  const q = new URLSearchParams(location.search);
+  const names = { MOMO: 'MoMo', VNPAY: 'VNPay', CARD: 'Thẻ ngân hàng' };
+  document.getElementById('title').textContent = 'Thanh toán ' + (names[q.get('method')] || '');
+  document.getElementById('amount').textContent = Number(q.get('amount') || 0).toLocaleString('vi-VN') + 'đ';
+  async function send(result) {
+    document.querySelectorAll('button').forEach(b => b.disabled = true);
+    const res = await fetch('api/v1/payments/simulated/' + encodeURIComponent(q.get('ref')) + '?result=' + result, { method: 'POST' });
+    const body = await res.json().catch(() => ({}));
+    location.href = body.redirect || 'payment-result.html?status=failed';
+  }
+</script>
+</body>
+</html>

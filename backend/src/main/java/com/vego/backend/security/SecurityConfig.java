@@ -45,8 +45,12 @@ public class SecurityConfig {
                                 "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/refresh",
                                 "/api/v1/auth/logout", "/api/v1/auth/forgot-password",
                                 "/api/v1/auth/reset-password").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/home", "/api/v1/files/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/reset-password.html", "/favicon.ico", "/error",
+                        .requestMatchers(HttpMethod.GET, "/api/v1/home", "/api/v1/files/**", "/api/v1/trips/**").permitAll()
+                        // Cổng thanh toán gọi về (kiểm tra bằng chữ ký, không dùng token)
+                        .requestMatchers("/api/v1/payments/vnpay/**", "/api/v1/payments/momo/**",
+                                "/api/v1/payments/simulated/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/reset-password.html", "/payment-result.html",
+                                "/payment-sim.html", "/favicon.ico", "/error",
                                 "/actuator/health", "/actuator/health/**", "/actuator/info",
                                 "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

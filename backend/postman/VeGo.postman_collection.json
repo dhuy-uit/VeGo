@@ -1804,7 +1804,1001 @@
       ]
     },
     {
-      "name": "4. Đăng xuất",
+      "name": "4. Đặt vé, mã giảm giá & thanh toán",
+      "description": "Giữ ghế 5 phút, áp mã giảm giá, tạo thanh toán MoMo / VNPay (sandbox). Trên CI server chạy chế độ mô phỏng để đi hết luồng thanh toán thành công.",
+      "item": [
+        {
+          "name": "Ghế đã có người giữ của chuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/PT2200/seats?date={{travelDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{travelDate}}"
+                }
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "PT2200",
+                "seats"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Chọn ngày đi và ghế ngẫu nhiên để các lần chạy không đụng nhau",
+                  "const d = new Date(Date.now() + 7 * 3600 * 1000 + (2 + Math.floor(Math.random() * 45)) * 86400000);",
+                  "pm.collectionVariables.set('travelDate', d.toISOString().slice(0, 10));",
+                  "const n = 1 + Math.floor(Math.random() * 17);",
+                  "pm.collectionVariables.set('seat', (Math.random() < 0.5 ? 'A' : 'B') + String(n).padStart(2, '0'));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Có danh sách ghế đã giữ', () => pm.expect(pm.response.json().taken).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế khi chưa đăng nhập",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{seat}}\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 401 (Unauthorized)', () => pm.response.to.have.status(401));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi UNAUTHORIZED', () => pm.expect(err.code).to.eql('UNAUTHORIZED'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế với mã ghế sai",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"Z999\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi VALIDATION_ERROR', () => pm.expect(err.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);",
+                  "pm.test('Báo lỗi ở ô seat', () => pm.expect(err.fieldErrors).to.have.property('seat'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế chuyến không tồn tại",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"KHONGCO\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{seat}}\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 404 (Not Found)', () => pm.response.to.have.status(404));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi TRIP_NOT_FOUND', () => pm.expect(err.code).to.eql('TRIP_NOT_FOUND'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{seat}}\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phoneFormatted}}\",\n  \"pickupLabel\": \"Bến xe Miền Đông mới\",\n  \"dropoffLabel\": \"Bến xe Đà Lạt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 201 (Created)', () => pm.response.to.have.status(201));",
+                  "",
+                  "const b = pm.response.json();",
+                  "pm.test('Đơn đang giữ ghế', () => {",
+                  "    pm.expect(b.status).to.eql('HOLDING');",
+                  "    pm.expect(b.code).to.match(/^VG\\d{6}[A-Z0-9]{4}$/);",
+                  "    pm.expect(b.seat).to.eql(pm.collectionVariables.get('seat'));",
+                  "    pm.expect(b.total).to.eql(b.fare);",
+                  "    pm.expect(b.holdRemainingSeconds).to.be.within(200, 300);",
+                  "});",
+                  "pm.collectionVariables.set('bookingCode', b.code);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Xem đơn",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "",
+                  "const b = pm.response.json();",
+                  "pm.test('Đúng đơn, có thông tin chuyến', () => {",
+                  "    pm.expect(b.code).to.eql(pm.collectionVariables.get('bookingCode'));",
+                  "    pm.expect(b.trip.id).to.eql('PT2200');",
+                  "    pm.expect(b.passengerPhone).to.eql(pm.collectionVariables.get('phone'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Áp mã giảm giá không tồn tại",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "voucher"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"KHONGCOMA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 404 (Not Found)', () => pm.response.to.have.status(404));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi VOUCHER_NOT_FOUND', () => pm.expect(err.code).to.eql('VOUCHER_NOT_FOUND'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Áp mã sai tuyến",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "voucher"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"BIENXANH20\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi VOUCHER_NOT_APPLICABLE', () => pm.expect(err.code).to.eql('VOUCHER_NOT_APPLICABLE'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);",
+                  "pm.test('Báo lỗi ở ô code', () => pm.expect(err.fieldErrors).to.have.property('code'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Áp mã VEGIN15 (giảm 15%, tối đa 50.000đ)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "voucher"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"vegin15\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "",
+                  "const b = pm.response.json();",
+                  "pm.test('Giảm 15% giá vé 320.000đ = 48.000đ', () => {",
+                  "    pm.expect(b.voucherCode).to.eql('VEGIN15');",
+                  "    pm.expect(b.discount).to.eql(48000);",
+                  "    pm.expect(b.total).to.eql(272000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bỏ mã giảm giá",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "voucher"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Về giá gốc', () => { const b = pm.response.json(); pm.expect(b.discount).to.eql(0); pm.expect(b.total).to.eql(b.fare); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Áp mã VEGO10 (giảm 10%, tối đa 30.000đ)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/voucher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "voucher"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"VEGO10\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Giảm tối đa 30.000đ', () => { const b = pm.response.json(); pm.expect(b.discount).to.eql(30000); pm.expect(b.total).to.eql(290000); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tạo thanh toán sai phương thức",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"BITCOIN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi VALIDATION_ERROR', () => pm.expect(err.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);",
+                  "pm.test('Báo lỗi ở ô method', () => pm.expect(err.fieldErrors).to.have.property('method'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tạo thanh toán VNPay",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"VNPAY\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 201 (Created)', () => pm.response.to.have.status(201));",
+                  "",
+                  "const p = pm.response.json();",
+                  "pm.test('Có link thanh toán đúng số tiền', () => {",
+                  "    pm.expect(p.amount).to.eql(290000);",
+                  "    pm.expect(p.payUrl).to.match(/^https?:\\/\\//);",
+                  "    if (p.provider === 'VNPAY') {",
+                  "        pm.expect(p.payUrl).to.include('vnp_Amount=29000000').and.include('vnp_SecureHash=');",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tạo thanh toán MoMo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"MOMO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 201 (Created)', () => pm.response.to.have.status(201));",
+                  "",
+                  "const p = pm.response.json();",
+                  "pm.test('Có link thanh toán MoMo', () => {",
+                  "    pm.expect(p.provider).to.be.oneOf(['MOMO', 'SIMULATED']);",
+                  "    if (p.provider === 'MOMO') pm.expect(p.payUrl).to.include('momo.vn');",
+                  "});",
+                  "pm.collectionVariables.set('txnRef', p.txnRef);",
+                  "pm.collectionVariables.set('payProvider', p.provider);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mô phỏng thanh toán thành công",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payments/simulated/{{txnRef}}?result=success",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "result",
+                  "value": "success"
+                }
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "simulated",
+                "{{txnRef}}"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Chỉ chạy khi server bật PAYMENT_SIMULATE=true (CI). Trên server thật, thanh toán qua trang MoMo/VNPay."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Chuyển về trang kết quả', () => pm.expect(pm.response.json().redirect).to.include('status=success'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đơn sau khi thanh toán",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "",
+                  "const b = pm.response.json();",
+                  "pm.test('Đã thanh toán', () => {",
+                  "    pm.expect(b.status).to.eql('PAID');",
+                  "    pm.expect(b.paymentMethod).to.eql('MOMO');",
+                  "    pm.expect(b.lastPayment.status).to.eql('SUCCESS');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Danh sách đơn của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Có đơn vừa tạo', () => pm.expect(pm.response.json().map(b => b.code)).to.include(pm.collectionVariables.get('bookingCode')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hủy giữ chỗ",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "cancel"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') === 'SIMULATED') {",
+                  "    pm.test('Vé đã thanh toán thì không hủy giữ chỗ được (409)', () => pm.response.to.have.status(409));",
+                  "} else {",
+                  "    pm.test('Hủy được (200)', () => pm.response.to.have.status(200));",
+                  "    pm.test('Đơn chuyển CANCELLED', () => pm.expect(pm.response.json().status).to.eql('CANCELLED'));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Đăng xuất",
       "description": "Thu hồi phiên đăng nhập.",
       "item": [
         {
@@ -1947,6 +2941,26 @@
     },
     {
       "key": "avatarUrl",
+      "value": ""
+    },
+    {
+      "key": "travelDate",
+      "value": ""
+    },
+    {
+      "key": "seat",
+      "value": ""
+    },
+    {
+      "key": "bookingCode",
+      "value": ""
+    },
+    {
+      "key": "txnRef",
+      "value": ""
+    },
+    {
+      "key": "payProvider",
       "value": ""
     }
   ]
