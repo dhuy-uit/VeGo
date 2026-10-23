@@ -14,6 +14,7 @@ import com.vego.backend.user.User;
 import com.vego.backend.user.UserMapper;
 import com.vego.backend.user.UserRepository;
 import com.vego.backend.user.dto.UserResponse;
+import com.vego.backend.wallet.WelcomeGift;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -46,12 +47,13 @@ public class AuthService {
     private final UserMapper userMapper;
     private final UrlBuilder urls;
     private final AppProperties props;
+    private final WelcomeGift welcomeGift;
     private final Clock clock;
 
     public AuthService(UserRepository users, RefreshTokenRepository refreshTokens,
                        PasswordResetTokenRepository resetTokens, PasswordEncoder passwordEncoder,
                        TokenService tokenService, LoginAttemptService loginAttempts, MailService mailService,
-                       UserMapper userMapper, UrlBuilder urls, AppProperties props, Clock clock) {
+                       UserMapper userMapper, UrlBuilder urls, AppProperties props, WelcomeGift welcomeGift, Clock clock) {
         this.users = users;
         this.refreshTokens = refreshTokens;
         this.resetTokens = resetTokens;
@@ -62,6 +64,7 @@ public class AuthService {
         this.userMapper = userMapper;
         this.urls = urls;
         this.props = props;
+        this.welcomeGift = welcomeGift;
         this.clock = clock;
     }
 
@@ -88,6 +91,7 @@ public class AuthService {
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(req.password()));
         users.save(user);
+        welcomeGift.give(user.getId());
         log.info("Tài khoản mới #{} ({})", user.getId(), email);
         return userMapper.toResponse(user);
     }

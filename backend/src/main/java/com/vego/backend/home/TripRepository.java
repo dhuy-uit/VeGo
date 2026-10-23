@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface TripRepository extends JpaRepository<Trip, String> {
 
@@ -19,4 +20,15 @@ public interface TripRepository extends JpaRepository<Trip, String> {
             where t.active = true and r.id in :routeIds
             """)
     List<Trip> findActiveByRouteIds(@Param("routeIds") Collection<Integer> routeIds);
+
+    /** Một chuyến đang chạy kèm nhà xe / bến (dùng cho Chi tiết chuyến, Chọn ghế, giữ ghế). */
+    @Query("""
+            select t from Trip t
+              join fetch t.route
+              join fetch t.operator
+              join fetch t.pickupStation
+              join fetch t.dropoffStation
+            where t.active = true and upper(t.id) = upper(:id)
+            """)
+    Optional<Trip> findActiveWithDetails(@Param("id") String id);
 }

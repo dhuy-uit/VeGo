@@ -68,6 +68,8 @@ app:
   booking:
     # Thời gian giữ ghế chờ thanh toán
     hold-duration: ${BOOKING_HOLD:5m}
+    # Giả lập ghế đã bán ở quầy theo trips.seats_left (sơ đồ ghế có sẵn ghế đã đặt như thực tế)
+    presold-seats: ${BOOKING_PRESOLD_SEATS:true}
   payments:
     # true: mọi phương thức đi qua trang thanh toán mô phỏng (demo khi cổng sandbox lỗi, chạy CI)
     simulate: ${PAYMENT_SIMULATE:false}

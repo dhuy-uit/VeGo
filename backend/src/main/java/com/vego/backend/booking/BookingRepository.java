@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,7 +75,40 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("""
             select count(b) from Booking b
             where b.user.id = :userId and upper(b.voucherCode) = upper(:code)
-              and b.status = com.vego.backend.booking.Booking.Status.PAID
+              and b.paidAt is not null
             """)
     long countPaidWithVoucher(@Param("userId") Long userId, @Param("code") String code);
+
+    /** Số ghế đang giữ / đã thanh toán của từng chuyến trong ngày: [tripId, count]. */
+    @Query("""
+            select b.trip.id, count(b) from Booking b
+            where b.trip.id in :tripIds and b.travelDate = :date
+              and (b.status = com.vego.backend.booking.Booking.Status.PAID
+                   or (b.status = com.vego.backend.booking.Booking.Status.HOLDING and b.holdExpiresAt > :now))
+            group by b.trip.id
+            """)
+    List<Object[]> countTaken(@Param("tripIds") Collection<String> tripIds, @Param("date") LocalDate date,
+                              @Param("now") Instant now);
+
+    /** Vé của tôi: các đơn đã thanh toán (kể cả đã hủy sau khi thanh toán). */
+    @Query("""
+            select b from Booking b
+              join fetch b.trip t join fetch t.route join fetch t.operator
+              join fetch t.pickupStation join fetch t.dropoffStation
+            where b.user.id = :userId and b.paidAt is not null
+              and b.status in (com.vego.backend.booking.Booking.Status.PAID,
+                               com.vego.backend.booking.Booking.Status.CANCELLED)
+            order by b.travelDate desc, b.paidAt desc
+            """)
+    List<Booking> findTicketsOfUser(@Param("userId") Long userId);
+
+    /** Vé đã thanh toán đi trong khoảng ngày (dùng cho job nhắc lịch / mời đánh giá). */
+    @Query("""
+            select b from Booking b
+              join fetch b.trip t join fetch t.route join fetch t.operator join fetch t.pickupStation
+              join fetch b.user
+            where b.status = com.vego.backend.booking.Booking.Status.PAID
+              and b.travelDate between :from and :to
+            """)
+    List<Booking> findPaidBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }

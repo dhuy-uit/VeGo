@@ -10,6 +10,7 @@ import com.vego.backend.home.HomeService;
 import com.vego.backend.home.PromotionRepository;
 import com.vego.backend.home.Trip;
 import com.vego.backend.home.TripRepository;
+import com.vego.backend.trip.SeatInventory;
 import com.vego.backend.payment.Payment;
 import com.vego.backend.payment.PaymentRepository;
 import com.vego.backend.user.User;
@@ -47,19 +48,21 @@ public class BookingService {
     private final PaymentRepository payments;
     private final PromotionRepository promotions;
     private final VoucherService vouchers;
+    private final SeatInventory seats;
     private final Duration holdDuration;
     private final ZoneId zone;
     private final Clock clock;
 
     public BookingService(BookingRepository bookings, TripRepository trips, UserRepository users,
                           PaymentRepository payments, PromotionRepository promotions, VoucherService vouchers,
-                          BookingProperties bookingProps, AppProperties props, Clock clock) {
+                          SeatInventory seats, BookingProperties bookingProps, AppProperties props, Clock clock) {
         this.bookings = bookings;
         this.trips = trips;
         this.users = users;
         this.payments = payments;
         this.promotions = promotions;
         this.vouchers = vouchers;
+        this.seats = seats;
         this.holdDuration = bookingProps.holdDuration();
         this.zone = props.zone();
         this.clock = clock;
@@ -71,8 +74,7 @@ public class BookingService {
         Instant now = clock.instant();
         User user = users.findById(userId)
                 .orElseThrow(() -> ApiException.unauthorized("USER_NOT_FOUND", "Tài khoản không còn tồn tại"));
-        Trip trip = trips.findById(req.tripId().trim().toUpperCase(Locale.ROOT))
-                .filter(Trip::isActive)
+        Trip trip = trips.findActiveWithDetails(req.tripId().trim())
                 .orElseThrow(() -> ApiException.notFound("TRIP_NOT_FOUND", "Không tìm thấy chuyến xe"));
 
         LocalDateTime departure = req.travelDate().atTime(trip.getDepartTime());
@@ -87,7 +89,13 @@ public class BookingService {
         if (phone == null) {
             throw ApiException.field("INVALID_PHONE", "passengerPhone", "Số điện thoại cần 10 chữ số");
         }
-        String seat = req.seat().trim().toUpperCase(Locale.ROOT);
+        String seat = normalizeSeat(req.seat());
+        if (!seats.exists(trip, seat)) {
+            throw ApiException.field("INVALID_SEAT", "seat", "Xe này không có ghế " + seat);
+        }
+        if (seats.presold(trip, req.travelDate()).contains(seat)) {
+            throw seatTaken(seat);
+        }
 
         // Đơn cũ hết hạn được giải phóng; đơn đang giữ khác của chính người này bị hủy
         bookings.expireHolds(now);
@@ -133,7 +141,7 @@ public class BookingService {
     public BookingResponse applyVoucher(long userId, String code, String voucherCode) {
         Booking b = requireHolding(load(userId, code));
         VoucherService.Applied applied = vouchers.evaluate(b, voucherCode);
-        b.applyDiscount(applied.promotion().getCode(), applied.discount());
+        b.applyDiscount(applied.code(), applied.discount());
         return toResponse(bookings.saveAndFlush(b));
     }
 
@@ -156,11 +164,6 @@ public class BookingService {
             bookings.saveAndFlush(b);
         }
         return toResponse(b);
-    }
-
-    @Transactional(readOnly = true)
-    public List<String> takenSeats(String tripId, LocalDate date) {
-        return bookings.takenSeats(tripId.toUpperCase(Locale.ROOT), date, clock.instant());
     }
 
     /** Giải phóng ghế của các đơn giữ quá hạn, chạy mỗi 30 giây. */
@@ -207,8 +210,7 @@ public class BookingService {
         Instant now = clock.instant();
         long remaining = b.getStatus() == Booking.Status.HOLDING
                 ? Math.max(0, Duration.between(now, b.getHoldExpiresAt()).toSeconds()) : 0;
-        String voucherTitle = b.getVoucherCode() == null ? null
-                : promotions.findByCode(b.getVoucherCode()).map(p -> p.getTitle()).orElse(null);
+        String voucherTitle = vouchers.titleOf(b.getVoucherCode());
         BookingResponse.LastPayment last = b.getId() == null ? null
                 : payments.findFirstByBookingIdOrderByCreatedAtDesc(b.getId())
                 .map(p -> new BookingResponse.LastPayment(p.getTxnRef(), p.getProvider().name(),
@@ -231,6 +233,12 @@ public class BookingService {
             if (!bookings.existsByCode(code)) return code;
         }
         throw new IllegalStateException("Không sinh được mã vé");
+    }
+
+    /** "a5" / "A05" -> "A05". */
+    static String normalizeSeat(String raw) {
+        String s = raw.trim().toUpperCase(Locale.ROOT);
+        return s.length() == 2 ? s.charAt(0) + "0" + s.charAt(1) : s;
     }
 
     private static ApiException seatTaken(String seat) {

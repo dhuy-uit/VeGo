@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "745a3ea3-8c92-581d-8ec6-710bf57173bb",
     "name": "VéGo API",
-    "description": "Bộ kiểm thử REST API của VéGo: xác thực, hồ sơ người dùng, trang chủ.\n\nChạy cả collection theo thứ tự (Run collection): các request lưu token và dữ liệu vào biến collection để request sau dùng. Chọn environment VéGo Local hoặc VéGo Azure.",
+    "description": "Bộ kiểm thử REST API của VéGo: xác thực, hồ sơ người dùng, trang chủ, tìm chuyến, đặt vé & thanh toán, vé của tôi, thông báo, Ví xu.\n\nChạy cả collection theo thứ tự (Run collection): các request lưu token và dữ liệu vào biến collection để request sau dùng. Chọn environment VéGo Local hoặc VéGo Azure.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "event": [
@@ -1804,7 +1804,583 @@
       ]
     },
     {
-      "name": "4. Đặt vé, mã giảm giá & thanh toán",
+      "name": "4. Tìm chuyến, bến xe & gợi ý",
+      "item": [
+        {
+          "name": "Tìm chuyến TP.HCM → Đà Lạt (gõ không dấu)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/search?origin=tp hcm&destination=da lat&date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "tp hcm"
+                },
+                {
+                  "key": "destination",
+                  "value": "da lat"
+                },
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Ngày đi: 3 ngày nữa (giờ Việt Nam)",
+                  "const d = new Date(Date.now() + 7 * 3600 * 1000 + 3 * 86400000);",
+                  "pm.collectionVariables.set('searchDate', d.toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Nhận ra tên chuẩn của tuyến', () => {",
+                  "    pm.expect(r.routeFound).to.eql(true);",
+                  "    pm.expect(r.origin).to.eql('TP. Hồ Chí Minh');",
+                  "    pm.expect(r.destination).to.eql('Đà Lạt');",
+                  "});",
+                  "pm.test('Có 6 chuyến và danh sách nhà xe để lọc', () => {",
+                  "    pm.expect(r.total).to.eql(6);",
+                  "    pm.expect(r.trips).to.have.lengthOf(6);",
+                  "    pm.expect(r.operators).to.include.members(['Phương Trang', 'Thành Bưởi', 'Điền Linh']);",
+                  "});",
+                  "pm.test('Số ghế trống theo ngày', () => r.trips.forEach(t => pm.expect(t.seatsLeft).to.be.within(0, t.totalSeats)));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tìm chuyến có bộ lọc + sắp xếp theo giá",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/search?origin=TP. Hồ Chí Minh&destination=Đà Lạt&date={{searchDate}}&operator=Phương Trang&busType=LIMOUSINE&slot=3&sort=PRICE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "TP. Hồ Chí Minh"
+                },
+                {
+                  "key": "destination",
+                  "value": "Đà Lạt"
+                },
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                },
+                {
+                  "key": "operator",
+                  "value": "Phương Trang"
+                },
+                {
+                  "key": "busType",
+                  "value": "LIMOUSINE"
+                },
+                {
+                  "key": "slot",
+                  "value": "3"
+                },
+                {
+                  "key": "sort",
+                  "value": "PRICE"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Chỉ còn chuyến Phương Trang limousine buổi tối', () => {",
+                  "    pm.expect(r.total).to.eql(2);",
+                  "    r.trips.forEach(t => {",
+                  "        pm.expect(t.operator).to.eql('Phương Trang');",
+                  "        pm.expect(t.busType).to.eql('LIMOUSINE');",
+                  "        pm.expect(t.departMinutes).to.be.at.least(18 * 60);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tìm chuyến không có tuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/search?origin=Hà Giang&destination=Cà Mau&date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "Hà Giang"
+                },
+                {
+                  "key": "destination",
+                  "value": "Cà Mau"
+                },
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Không có chuyến', () => {",
+                  "    pm.expect(pm.response.json().routeFound).to.eql(false);",
+                  "    pm.expect(pm.response.json().trips).to.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tìm chuyến ngày đã qua",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/search?origin=HCM&destination=Đà Lạt&date=2020-01-01",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "HCM"
+                },
+                {
+                  "key": "destination",
+                  "value": "Đà Lạt"
+                },
+                {
+                  "key": "date",
+                  "value": "2020-01-01"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "pm.test('Mã lỗi DATE_IN_PAST', () => pm.expect(pm.response.json().code).to.eql('DATE_IN_PAST'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tìm chuyến trùng điểm đi và đến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/search?origin=Đà Lạt&destination=da lat&date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "Đà Lạt"
+                },
+                {
+                  "key": "destination",
+                  "value": "da lat"
+                },
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "pm.test('Mã lỗi SAME_PLACE', () => pm.expect(pm.response.json().code).to.eql('SAME_PLACE'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chi tiết chuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/PT2200?date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "PT2200"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('Đúng chuyến 22:00 Phương Trang', () => {",
+                  "    pm.expect(t.id).to.eql('PT2200');",
+                  "    pm.expect(t.departTime).to.eql('22:00');",
+                  "    pm.expect(t.arriveDayOffset).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chi tiết chuyến không tồn tại",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/KHONGCO?date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "KHONGCO"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 404 (Not Found)', () => pm.response.to.have.status(404));",
+                  "pm.test('Mã lỗi TRIP_NOT_FOUND', () => pm.expect(pm.response.json().code).to.eql('TRIP_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sơ đồ ghế xe ghế ngồi 29 chỗ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/TB1330/seats?date={{searchDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "TB1330",
+                "seats"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{searchDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const m = pm.response.json();",
+                  "pm.test('1 khoang, 29 ghế, mỗi hàng tối đa 3 ghế', () => {",
+                  "    pm.expect(m.decks).to.have.lengthOf(1);",
+                  "    pm.expect(m.totalSeats).to.eql(29);",
+                  "    let n = 0;",
+                  "    m.decks[0].rows.forEach(r => { pm.expect(r.length).to.be.at.most(3); n += r.length; });",
+                  "    pm.expect(n).to.eql(29);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Điểm đón / trả của chuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/PT2200/stops",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "PT2200",
+                "stops"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const s = pm.response.json();",
+                  "pm.test('Bến chính của chuyến đứng đầu', () => {",
+                  "    pm.expect(s.pickups[0].name).to.eql('Bến xe Miền Đông mới');",
+                  "    pm.expect(s.dropoffs[0].name).to.eql('Bến xe Đà Lạt');",
+                  "    pm.expect(s.pickups.length).to.be.above(1);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bến xe theo thành phố",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/stations?city=Đà Lạt",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "stations"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Đà Lạt"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Chỉ có bến ở Đà Lạt', () => pm.response.json().forEach(s => pm.expect(s.city).to.eql('Đà Lạt')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Các thành phố có tuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "cities"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Có TP. Hồ Chí Minh và Đà Lạt', () => pm.expect(pm.response.json()).to.include.members(['TP. Hồ Chí Minh', 'Đà Lạt']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gợi ý chuyến cho khách",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/suggestions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "suggestions"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const s = pm.response.json();",
+                  "pm.test('Có chuyến gợi ý chính', () => {",
+                  "    pm.expect(s.main.id).to.be.a('string');",
+                  "    pm.expect(s.basedOn).to.be.undefined;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Đặt vé, mã giảm giá & thanh toán",
       "description": "Giữ ghế 5 phút, áp mã giảm giá, tạo thanh toán MoMo / VNPay (sandbox). Trên CI server chạy chế độ mô phỏng để đi hết luồng thanh toán thành công.",
       "item": [
         {
@@ -1843,7 +2419,7 @@
           ]
         },
         {
-          "name": "Ghế đã có người giữ của chuyến",
+          "name": "Sơ đồ ghế của chuyến",
           "request": {
             "method": "GET",
             "header": [],
@@ -1890,7 +2466,18 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
-                  "pm.test('Có danh sách ghế đã giữ', () => pm.expect(pm.response.json().taken).to.be.an('array'));"
+                  "const m = pm.response.json();",
+                  "pm.test('Có sơ đồ 2 tầng và danh sách ghế đã bán', () => {",
+                  "    pm.expect(m.decks).to.have.lengthOf(2);",
+                  "    pm.expect(m.taken).to.be.an('array');",
+                  "    pm.expect(m.seatsLeft).to.eql(m.totalSeats - m.taken.length);",
+                  "});",
+                  "// Chọn ngẫu nhiên một ghế còn trống để giữ ở các bước sau",
+                  "const free = [];",
+                  "m.decks.forEach(d => d.rows.forEach(r => r.forEach(s => { if (s.available) free.push(s.code); })));",
+                  "pm.test('Còn ghế trống', () => pm.expect(free.length).to.be.above(0));",
+                  "pm.collectionVariables.set('seat', free[Math.floor(Math.random() * free.length)]);",
+                  "if (m.taken.length) pm.collectionVariables.set('soldSeat', m.taken[0]);"
                 ]
               }
             }
@@ -2056,6 +2643,124 @@
                   "const err = pm.response.json();",
                   "pm.test('Mã lỗi TRIP_NOT_FOUND', () => pm.expect(err.code).to.eql('TRIP_NOT_FOUND'));",
                   "pm.test('Có thông điệp tiếng Việt', () => pm.expect(err.message).to.be.a('string').and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế đã bán",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{soldSeat}}\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('soldSeat')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi SEAT_TAKEN', () => pm.expect(pm.response.json().code).to.eql('SEAT_TAKEN'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Giữ ghế không có trên xe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"C40\",\n  \"passengerName\": \"Trần Thị Thu Hà\",\n  \"passengerPhone\": \"{{phone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "pm.test('Mã lỗi INVALID_SEAT', () => pm.expect(pm.response.json().code).to.eql('INVALID_SEAT'));",
+                  "pm.test('Báo lỗi ở ô seat', () => pm.expect(pm.response.json().fieldErrors).to.have.property('seat'));"
                 ]
               }
             }
@@ -2833,7 +3538,1070 @@
       ]
     },
     {
-      "name": "5. Đăng xuất",
+      "name": "6. Vé của tôi & thông báo",
+      "item": [
+        {
+          "name": "Danh sách vé của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test('Là danh sách', () => pm.expect(list).to.be.an('array'));",
+                  "if (pm.collectionVariables.get('payProvider') === 'SIMULATED') {",
+                  "    const t = list.find(x => x.code === pm.collectionVariables.get('bookingCode'));",
+                  "    pm.test('Có vé vừa thanh toán, trạng thái Sắp đi', () => {",
+                  "        pm.expect(t).to.be.an('object');",
+                  "        pm.expect(t.status).to.eql('UPCOMING');",
+                  "        pm.expect(t.cancellable).to.eql(true);",
+                  "        pm.expect(t.refundPercent).to.eql(80);",
+                  "        pm.expect(t.qrData).to.match(/^VEGO1\\|/);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Vé điện tử",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('Đúng vé, đã cộng xu', () => {",
+                  "    pm.expect(t.code).to.eql(pm.collectionVariables.get('bookingCode'));",
+                  "    pm.expect(t.coinsEarned).to.eql(Math.floor(t.total / 1000));",
+                  "    pm.expect(t.paymentMethodLabel).to.eql('MoMo');",
+                  "});",
+                  "pm.collectionVariables.set('refundExpected', t.refundAmount);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đánh giá vé chưa đi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"tags\": [\n    \"CLEAN\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi REVIEW_NOT_ALLOWED', () => pm.expect(pm.response.json().code).to.eql('REVIEW_NOT_ALLOWED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Thông báo của tôi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const n = pm.response.json();",
+                  "pm.test('Có thông báo chào mừng', () => pm.expect(n.items.map(i => i.kind)).to.include('PROMO'));",
+                  "pm.test('Đếm số chưa đọc', () => pm.expect(n.unreadCount).to.eql(n.items.filter(i => !i.read).length));",
+                  "if (pm.collectionVariables.get('payProvider') === 'SIMULATED') {",
+                  "    pm.test('Có thông báo vé đã xác nhận', () =>",
+                  "        pm.expect(n.items.map(i => i.ticketCode)).to.include(pm.collectionVariables.get('bookingCode')));",
+                  "}",
+                  "pm.collectionVariables.set('notificationId', n.items[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đánh dấu một thông báo đã đọc",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/{{notificationId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Đã đọc', () => pm.expect(pm.response.json().read).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đánh dấu tất cả đã đọc",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/read-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "read-all"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Số thông báo chưa đọc",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/unread-count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "unread-count"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Không còn thông báo chưa đọc', () => pm.expect(pm.response.json().unreadCount).to.eql(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Thông báo khi chưa đăng nhập",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 401 (Unauthorized)', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hủy vé (hoàn 80%)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "cancel"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('Vé đã hủy và hoàn tiền', () => {",
+                  "    pm.expect(t.status).to.eql('CANCELLED');",
+                  "    pm.expect(t.refundAmount).to.eql(pm.collectionVariables.get('refundExpected'));",
+                  "    pm.expect(t.cancellable).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hủy vé lần nữa",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "cancel"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi TICKET_CANCELLED', () => pm.expect(pm.response.json().code).to.eql('TICKET_CANCELLED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Vé không tồn tại",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/VG000000ZZZZ",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "VG000000ZZZZ"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 404 (Not Found)', () => pm.response.to.have.status(404));",
+                  "pm.test('Mã lỗi TICKET_NOT_FOUND', () => pm.expect(pm.response.json().code).to.eql('TICKET_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Ví xu, điểm danh, game & voucher",
+      "item": [
+        {
+          "name": "Ví xu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const w = pm.response.json();",
+                  "pm.test('Có quà chào mừng 500 xu trong lịch sử', () =>",
+                  "    pm.expect(w.history.map(h => h.source)).to.include('WELCOME'));",
+                  "pm.test('2 lượt chơi mỗi ngày', () => pm.expect(w.gameTurnsPerDay).to.eql(2));",
+                  "pm.collectionVariables.set('coinBalance', w.balance);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Trạng thái điểm danh",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/check-in",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "check-in"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const s = pm.response.json();",
+                  "pm.test('Chu kỳ 7 ngày, ngày 7 thưởng 50 xu', () => {",
+                  "    pm.expect(s.days).to.have.lengthOf(7);",
+                  "    pm.expect(s.days[6].reward).to.eql(50);",
+                  "    pm.expect(s.checkedInToday).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Điểm danh hôm nay",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/check-in",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "check-in"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Nhận 20 xu', () => {",
+                  "    pm.expect(r.reward).to.eql(20);",
+                  "    pm.expect(r.status.checkedInToday).to.eql(true);",
+                  "    pm.expect(r.status.balance).to.eql(Number(pm.collectionVariables.get('coinBalance')) + 20);",
+                  "});",
+                  "pm.collectionVariables.set('coinBalance', r.status.balance);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Điểm danh lần 2 trong ngày",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/check-in",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "check-in"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi ALREADY_CHECKED_IN', () => pm.expect(pm.response.json().code).to.eql('ALREADY_CHECKED_IN'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bắt đầu chơi game",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/game/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "game",
+                "start"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const g = pm.response.json();",
+                  "pm.test('Còn 1 lượt', () => pm.expect(g.turnsLeft).to.eql(1));",
+                  "pm.collectionVariables.set('playId', g.playId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Kết thúc lượt chơi (150 điểm)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/game/{{playId}}/finish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "game",
+                "{{playId}}",
+                "finish"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 150\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('10 điểm = 1 xu', () => {",
+                  "    pm.expect(r.score).to.eql(150);",
+                  "    pm.expect(r.coins).to.eql(15);",
+                  "    pm.expect(r.newBest).to.eql(true);",
+                  "    pm.expect(r.balance).to.eql(Number(pm.collectionVariables.get('coinBalance')) + 15);",
+                  "});",
+                  "pm.collectionVariables.set('coinBalance', r.balance);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Gửi điểm lần 2 cho cùng lượt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/game/{{playId}}/finish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "game",
+                "{{playId}}",
+                "finish"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 150\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi GAME_FINISHED', () => pm.expect(pm.response.json().code).to.eql('GAME_FINISHED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Voucher đổi bằng xu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/vouchers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "vouchers"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const v = pm.response.json();",
+                  "pm.test('Có 3 mức voucher', () => pm.expect(v.offers.map(o => o.id)).to.include.members(['V20', 'V50', 'V100']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đổi voucher V100 khi không đủ xu",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/vouchers/V100/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "vouchers",
+                "V100",
+                "redeem"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (Number(pm.collectionVariables.get('coinBalance')) >= 2000) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi NOT_ENOUGH_COINS', () => pm.expect(pm.response.json().code).to.eql('NOT_ENOUGH_COINS'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đổi voucher V20 (500 xu)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/wallet/vouchers/V20/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wallet",
+                "vouchers",
+                "V20",
+                "redeem"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Nhận mã voucher, trừ 500 xu', () => {",
+                  "    pm.expect(r.voucher.code).to.match(/^XU20K-/);",
+                  "    pm.expect(r.voucher.status).to.eql('AVAILABLE');",
+                  "    pm.expect(r.balance).to.eql(Number(pm.collectionVariables.get('coinBalance')) - 500);",
+                  "});",
+                  "pm.collectionVariables.set('walletVoucher', r.voucher.code);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Voucher Ví xu hiện trong gợi ý mã giảm giá",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vouchers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "vouchers"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const v = pm.response.json();",
+                  "pm.test('Có voucher vừa đổi (nguồn WALLET)', () => {",
+                  "    const mine = v.find(x => x.code === pm.collectionVariables.get('walletVoucher'));",
+                  "    pm.expect(mine).to.be.an('object');",
+                  "    pm.expect(mine.source).to.eql('WALLET');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Đăng xuất",
       "description": "Thu hồi phiên đăng nhập.",
       "item": [
         {
@@ -2996,6 +4764,34 @@
     },
     {
       "key": "payProvider",
+      "value": ""
+    },
+    {
+      "key": "searchDate",
+      "value": ""
+    },
+    {
+      "key": "soldSeat",
+      "value": ""
+    },
+    {
+      "key": "refundExpected",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    },
+    {
+      "key": "coinBalance",
+      "value": ""
+    },
+    {
+      "key": "playId",
+      "value": ""
+    },
+    {
+      "key": "walletVoucher",
       "value": ""
     }
   ]

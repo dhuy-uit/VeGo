@@ -84,6 +84,21 @@ public class Booking {
     @Column(name = "paid_at")
     private Instant paidAt;
 
+    @Column(name = "cancelled_at")
+    private Instant cancelledAt;
+
+    @Column(name = "refund_amount")
+    private Integer refundAmount;
+
+    @Column(name = "coins_earned", nullable = false)
+    private int coinsEarned;
+
+    @Column(name = "reminder_sent", nullable = false)
+    private boolean reminderSent;
+
+    @Column(name = "review_invited", nullable = false)
+    private boolean reviewInvited;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -145,4 +160,19 @@ public class Booking {
     public Instant getPaidAt() { return paidAt; }
     public void setPaidAt(Instant paidAt) { this.paidAt = paidAt; }
     public Instant getCreatedAt() { return createdAt; }
+    public Instant getCancelledAt() { return cancelledAt; }
+    public void setCancelledAt(Instant cancelledAt) { this.cancelledAt = cancelledAt; }
+    public Integer getRefundAmount() { return refundAmount; }
+    public void setRefundAmount(Integer refundAmount) { this.refundAmount = refundAmount; }
+    public int getCoinsEarned() { return coinsEarned; }
+    public void setCoinsEarned(int coinsEarned) { this.coinsEarned = coinsEarned; }
+    public boolean isReminderSent() { return reminderSent; }
+    public void setReminderSent(boolean reminderSent) { this.reminderSent = reminderSent; }
+    public boolean isReviewInvited() { return reviewInvited; }
+    public void setReviewInvited(boolean reviewInvited) { this.reviewInvited = reviewInvited; }
+
+    /** Vé đã thanh toán rồi bị hủy (khác với hủy giữ chỗ chưa trả tiền). */
+    public boolean isRefunded() {
+        return status == Status.CANCELLED && paidAt != null;
+    }
 }

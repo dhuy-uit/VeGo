@@ -55,6 +55,10 @@ public class User {
     @Column(name = "password_changed_at", nullable = false)
     private Instant passwordChangedAt;
 
+    /** Số dư Ví xu: chỉ đọc ở đây, thay đổi qua CoinLedger (UPDATE cộng/trừ nguyên tử). */
+    @Column(name = "coin_balance", nullable = false, insertable = false, updatable = false)
+    private int coinBalance;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -100,6 +104,7 @@ public class User {
     public void setStatus(Status status) { this.status = status; }
     public Instant getPasswordChangedAt() { return passwordChangedAt; }
     public void setPasswordChangedAt(Instant passwordChangedAt) { this.passwordChangedAt = passwordChangedAt; }
+    public int getCoinBalance() { return coinBalance; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }

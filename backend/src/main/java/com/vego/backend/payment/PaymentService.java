@@ -7,6 +7,7 @@ import com.vego.backend.common.ApiException;
 import com.vego.backend.common.UrlBuilder;
 import com.vego.backend.config.PaymentProperties;
 import com.vego.backend.payment.dto.PaymentResponse;
+import com.vego.backend.ticket.TicketEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,12 @@ public class PaymentService {
     private final MoMoGateway momo;
     private final PaymentProperties props;
     private final UrlBuilder urls;
+    private final TicketEvents ticketEvents;
     private final Clock clock;
 
     public PaymentService(PaymentRepository payments, BookingRepository bookings, BookingService bookingService,
                           VnPayGateway vnpay, MoMoGateway momo, PaymentProperties props, UrlBuilder urls,
-                          Clock clock) {
+                          TicketEvents ticketEvents, Clock clock) {
         this.payments = payments;
         this.bookings = bookings;
         this.bookingService = bookingService;
@@ -49,6 +51,7 @@ public class PaymentService {
         this.momo = momo;
         this.props = props;
         this.urls = urls;
+        this.ticketEvents = ticketEvents;
         this.clock = clock;
     }
 
@@ -119,6 +122,8 @@ public class PaymentService {
                 booking.setPaidAt(now);
                 booking.setPaymentMethod(payment.getMethod().name());
                 log.info("Đơn {} đã thanh toán qua {} ({})", booking.getCode(), payment.getProvider(), txnRef);
+                // Dùng voucher Ví xu, cộng xu đặt vé, gửi thông báo "Vé đã được xác nhận"
+                ticketEvents.onPaid(booking);
             } else if (booking.getStatus() != Booking.Status.PAID) {
                 // Trả tiền sau khi ghế đã thuộc về người khác: cần hoàn tiền thủ công
                 log.error("Đơn {} thanh toán thành công nhưng ghế đã bị giữ -> cần hoàn tiền giao dịch {}",

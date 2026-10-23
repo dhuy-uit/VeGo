@@ -5,6 +5,7 @@ import com.vego.backend.home.dto.HomeResponse;
 import com.vego.backend.home.dto.PopularRouteResponse;
 import com.vego.backend.home.dto.PromotionResponse;
 import com.vego.backend.home.dto.TripResponse;
+import com.vego.backend.trip.SeatInventory;
 import com.vego.backend.user.User;
 import com.vego.backend.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -37,15 +38,17 @@ public class HomeService {
     private final TripRepository trips;
     private final PromotionRepository promotions;
     private final UserRepository users;
+    private final SeatInventory seats;
     private final ZoneId zone;
     private final Clock clock;
 
     public HomeService(RouteRepository routes, TripRepository trips, PromotionRepository promotions,
-                       UserRepository users, AppProperties props, Clock clock) {
+                       UserRepository users, SeatInventory seats, AppProperties props, Clock clock) {
         this.routes = routes;
         this.trips = trips;
         this.promotions = promotions;
         this.users = users;
+        this.seats = seats;
         this.zone = props.zone();
         this.clock = clock;
     }
@@ -88,29 +91,35 @@ public class HomeService {
 
     private Optional<HomeResponse.SuggestedTrip> suggest(List<Trip> candidates, ZonedDateTime now) {
         LocalDateTime earliest = now.toLocalDateTime().plus(MIN_LEAD_TIME);
-        record Option(Trip trip, LocalDateTime departure) { }
+        record Option(Trip trip, LocalDateTime departure, int seatsLeft) { }
 
         return candidates.stream()
-                .filter(t -> t.getSeatsLeft() > 0)
                 .map(t -> {
                     LocalDateTime today = now.toLocalDate().atTime(t.getDepartTime());
-                    return new Option(t, today.isBefore(earliest) ? today.plusDays(1) : today);
+                    LocalDateTime when = today.isBefore(earliest) ? today.plusDays(1) : today;
+                    return new Option(t, when, seats.seatsLeft(t, when.toLocalDate()));
                 })
+                .filter(o -> o.seatsLeft() > 0)
                 .min(Comparator.comparing(Option::departure)
                         .thenComparing(o -> o.trip().getRating(), Comparator.reverseOrder())
                         .thenComparingInt(o -> o.trip().getPrice()))
                 .map(o -> {
                     String when = o.departure().toLocalDate().equals(now.toLocalDate())
                             ? "Khởi hành sớm nhất hôm nay" : "Khởi hành sớm nhất ngày mai";
-                    String seats = o.trip().getSeatsLeft() <= 5
-                            ? "Chỉ còn " + o.trip().getSeatsLeft() + " ghế"
-                            : "Còn " + o.trip().getSeatsLeft() + " ghế";
-                    return new HomeResponse.SuggestedTrip(when + " · " + seats,
-                            toTrip(o.trip(), o.departure().toLocalDate()));
+                    String left = o.seatsLeft() <= 5
+                            ? "Chỉ còn " + o.seatsLeft() + " ghế"
+                            : "Còn " + o.seatsLeft() + " ghế";
+                    return new HomeResponse.SuggestedTrip(when + " · " + left,
+                            toTrip(o.trip(), o.departure().toLocalDate(), o.seatsLeft()));
                 });
     }
 
     public static TripResponse toTrip(Trip t, LocalDate date) {
+        return toTrip(t, date, t.getSeatsLeft());
+    }
+
+    /** seatsLeft: số ghế còn trống thật của ngày đó (xem SeatInventory). */
+    public static TripResponse toTrip(Trip t, LocalDate date, int seatsLeft) {
         int depart = t.getDepartTime().getHour() * 60 + t.getDepartTime().getMinute();
         int arriveTotal = depart + t.getDurationMinutes();
         return new TripResponse(
@@ -126,7 +135,7 @@ public class HomeService {
                 depart,
                 t.getDurationMinutes(),
                 t.getPrice(),
-                t.getSeatsLeft(),
+                seatsLeft,
                 t.getTotalSeats(),
                 t.getRoute().getOriginCity(),
                 t.getRoute().getDestinationCity(),

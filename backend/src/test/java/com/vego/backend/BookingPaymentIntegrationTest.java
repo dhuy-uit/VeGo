@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /** Đặt vé, mã giảm giá và thanh toán VNPay (IPN có chữ ký) với PostgreSQL thật. */
 @SpringBootTest(properties = {
         "app.payments.simulate=false",
+        "app.booking.presold-seats=false",
         "app.payments.vnpay.tmn-code=TESTTMN1",
         "app.payments.vnpay.hash-secret=TESTSECRETTESTSECRETTESTSECRET12",
         "app.upload-dir=target/test-uploads"

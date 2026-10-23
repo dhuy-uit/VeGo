@@ -7,7 +7,6 @@ import com.vego.backend.security.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,12 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Tag(name = "Đặt vé")
@@ -69,12 +65,5 @@ public class BookingController {
     @PostMapping("/api/v1/bookings/{code}/cancel")
     public BookingResponse cancel(@AuthenticationPrincipal AuthUser me, @PathVariable String code) {
         return service.cancel(me.id(), code);
-    }
-
-    @Operation(summary = "Các ghế đã có người giữ / đặt của một chuyến trong ngày")
-    @GetMapping("/api/v1/trips/{tripId}/seats")
-    public Map<String, Object> seats(@PathVariable String tripId,
-                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return Map.of("tripId", tripId, "date", date, "taken", service.takenSeats(tripId, date));
     }
 }
