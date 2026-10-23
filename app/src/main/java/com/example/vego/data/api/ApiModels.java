@@ -75,6 +75,38 @@ public final class ApiModels {
         }
     }
 
+    public static class CreateBookingRequest {
+        public final String tripId, travelDate, seat, passengerName, passengerPhone, pickupLabel, dropoffLabel;
+
+        public CreateBookingRequest(String tripId, String travelDate, String seat, String passengerName,
+                                    String passengerPhone, String pickupLabel, String dropoffLabel) {
+            this.tripId = tripId;
+            this.travelDate = travelDate;
+            this.seat = seat;
+            this.passengerName = passengerName;
+            this.passengerPhone = passengerPhone;
+            this.pickupLabel = pickupLabel;
+            this.dropoffLabel = dropoffLabel;
+        }
+    }
+
+    public static class CodeRequest {
+        public final String code;
+
+        public CodeRequest(String code) {
+            this.code = code;
+        }
+    }
+
+    public static class CreatePaymentRequest {
+        /** MOMO | VNPAY | CARD */
+        public final String method;
+
+        public CreatePaymentRequest(String method) {
+            this.method = method;
+        }
+    }
+
     // ---------- Nhận về ----------
 
     public static class User {
@@ -171,5 +203,43 @@ public final class ApiModels {
         public int arriveDayOffset, departMinutes, durationMinutes, price, seatsLeft, totalSeats;
         public String origin, destination;
         public String pickupStation, pickupAddress, dropoffStation, dropoffAddress;
+    }
+
+    /** Đơn đặt vé. status: HOLDING | PAID | EXPIRED | CANCELLED. */
+    public static class Booking {
+        public String code;
+        public String status;
+        public TripDto trip;
+        public String travelDate;
+        public String seat;
+        public String passengerName, passengerPhone, pickupLabel, dropoffLabel;
+        public int fare, discount, total;
+        @Nullable public String voucherCode;
+        @Nullable public String voucherTitle;
+        @Nullable public String paymentMethod;
+        public long holdRemainingSeconds;
+        @Nullable public LastPayment lastPayment;
+
+        public boolean is(String s) {
+            return s.equals(status);
+        }
+    }
+
+    public static class LastPayment {
+        public String txnRef, provider, method, status;
+        @Nullable public String message;
+    }
+
+    public static class Payment {
+        public String txnRef, bookingCode, provider, method;
+        public int amount;
+        public String payUrl;
+        /** WebView chuyển tới địa chỉ bắt đầu bằng resultUrl = cổng đã trả kết quả. */
+        public String resultUrl;
+    }
+
+    public static class Voucher {
+        public String code, title, description;
+        @Nullable public String origin, destination;
     }
 }

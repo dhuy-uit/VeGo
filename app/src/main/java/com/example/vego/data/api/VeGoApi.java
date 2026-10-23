@@ -1,6 +1,12 @@
 package com.example.vego.data.api;
 
 import com.example.vego.data.api.ApiModels.AuthResponse;
+import com.example.vego.data.api.ApiModels.Booking;
+import com.example.vego.data.api.ApiModels.CodeRequest;
+import com.example.vego.data.api.ApiModels.CreateBookingRequest;
+import com.example.vego.data.api.ApiModels.CreatePaymentRequest;
+import com.example.vego.data.api.ApiModels.Payment;
+import com.example.vego.data.api.ApiModels.Voucher;
 import com.example.vego.data.api.ApiModels.ChangePasswordRequest;
 import com.example.vego.data.api.ApiModels.ForgotPasswordRequest;
 import com.example.vego.data.api.ApiModels.Home;
@@ -10,6 +16,8 @@ import com.example.vego.data.api.ApiModels.RefreshRequest;
 import com.example.vego.data.api.ApiModels.RegisterRequest;
 import com.example.vego.data.api.ApiModels.UpdateProfileRequest;
 import com.example.vego.data.api.ApiModels.User;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -21,6 +29,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 /** Khai báo REST API của VéGo cho Retrofit. */
 public interface VeGoApi {
@@ -73,4 +82,28 @@ public interface VeGoApi {
     /** Không bắt buộc đăng nhập; có token thì server chào theo tên. */
     @GET("api/v1/home")
     Call<Home> home();
+
+    // ---------- Đặt vé & thanh toán ----------
+
+    /** Giữ ghế 5 phút. */
+    @POST("api/v1/bookings")
+    Call<Booking> createBooking(@Body CreateBookingRequest body);
+
+    @GET("api/v1/bookings/{code}")
+    Call<Booking> getBooking(@Path("code") String code);
+
+    @POST("api/v1/bookings/{code}/cancel")
+    Call<Booking> cancelBooking(@Path("code") String code);
+
+    @POST("api/v1/bookings/{code}/voucher")
+    Call<Booking> applyVoucher(@Path("code") String code, @Body CodeRequest body);
+
+    @DELETE("api/v1/bookings/{code}/voucher")
+    Call<Booking> removeVoucher(@Path("code") String code);
+
+    @POST("api/v1/bookings/{code}/payments")
+    Call<Payment> createPayment(@Path("code") String code, @Body CreatePaymentRequest body);
+
+    @GET("api/v1/vouchers")
+    Call<List<Voucher>> vouchers();
 }

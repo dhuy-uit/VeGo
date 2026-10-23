@@ -91,6 +91,10 @@
         <activity
             android:name=".booking.HoldExpiredActivity"
             android:exported="false" />
+        <!-- Trang thanh toán MoMo / VNPay mở trong app -->
+        <activity
+            android:name=".booking.PaymentWebActivity"
+            android:exported="false" />
 
         <!-- Nhóm 04: Vé & sau chuyến -->
         <activity

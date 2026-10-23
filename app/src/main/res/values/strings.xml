@@ -613,4 +613,26 @@
     <string name="birth_date_empty">Chọn ngày sinh</string>
     <string name="avatar_reading_failed">Không đọc được ảnh đã chọn</string>
     <string name="login_required">Đăng nhập để xem tài khoản của bạn</string>
+
+    <!-- Đặt vé + thanh toán qua server -->
+    <string name="confirm_hold_seat">Giữ ghế</string>
+    <string name="booking_login_title">Đăng nhập để đặt vé</string>
+    <string name="booking_login_message">Bạn cần đăng nhập để giữ ghế và thanh toán. Vé sẽ được lưu vào tài khoản của bạn.</string>
+    <string name="seat_taken_title">Ghế vừa có người giữ</string>
+    <string name="seat_taken_choose">Chọn ghế khác</string>
+    <string name="trip_unavailable_title">Không đặt được chuyến này</string>
+    <string name="trip_unavailable_choose">Chọn chuyến khác</string>
+    <string name="booking_not_held_title">Chưa giữ ghế</string>
+    <string name="booking_not_held_message">Cần giữ ghế trước khi thanh toán.</string>
+    <string name="label_discount">Giảm giá</string>
+    <string name="payment_voucher_title">Mã giảm giá</string>
+    <string name="voucher_hint">Nhập mã giảm giá</string>
+    <string name="voucher_apply">Áp dụng</string>
+    <string name="voucher_remove">Bỏ mã</string>
+    <string name="voucher_empty">Vui lòng nhập mã giảm giá</string>
+    <string name="voucher_applied">%1$s · Giảm %2$s</string>
+    <string name="voucher_applied_banner">Đã áp dụng %1$s, giảm %2$s</string>
+    <string name="payment_web_title">Thanh toán %1$s</string>
+    <string name="payment_web_subtitle">Cổng thanh toán an toàn · Môi trường thử nghiệm</string>
+    <string name="payment_not_finished">Chưa hoàn tất thanh toán. Bạn có thể thử lại trong thời gian giữ ghế.</string>
 </resources>

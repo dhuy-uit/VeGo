@@ -17,6 +17,13 @@ public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
             """)
     List<Promotion> findRunning(@Param("now") Instant now);
 
+    @Query("""
+            select p from Promotion p left join fetch p.route
+            where p.active = true and p.startsAt <= :now and p.endsAt >= :now
+            order by p.priority desc, p.code asc
+            """)
+    List<Promotion> findAvailable(@Param("now") Instant now);
+
     @Query("select p from Promotion p left join fetch p.route where upper(p.code) = upper(:code)")
     Optional<Promotion> findByCode(@Param("code") String code);
 }

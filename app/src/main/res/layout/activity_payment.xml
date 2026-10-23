@@ -82,6 +82,14 @@
                     app:irValue="320.000đ" />
 
                 <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:irLabel="@string/label_discount"
+                    app:irValue="-0đ" />
+
+                <com.example.vego.common.widget.InfoRowView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:irLabel="@string/label_service_fee"
@@ -94,6 +102,109 @@
                     app:irHighlight="true"
                     app:irLabel="@string/label_total"
                     app:irValue="320.000đ" />
+            </LinearLayout>
+
+            <!-- Mã giảm giá -->
+            <LinearLayout
+                android:id="@+id/card_voucher"
+                style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/et_voucher"
+                    android:text="@string/payment_voucher_title" />
+
+                <!-- Ô nhập mã + nút Áp dụng -->
+                <RelativeLayout
+                    android:id="@+id/voucher_input"
+                    style="@style/VeGo.InputBox">
+
+                    <TextView
+                        android:id="@+id/btn_apply_voucher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="@string/voucher_apply"
+                        android:textColor="@color/vego_primary"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_voucher"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/btn_apply_voucher"
+                        android:hint="@string/voucher_hint"
+                        android:imeOptions="actionDone"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapCharacters|textNoSuggestions"
+                        android:maxLength="30" />
+                </RelativeLayout>
+
+                <!-- Mã đã áp dụng -->
+                <RelativeLayout
+                    android:id="@+id/voucher_applied"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:minHeight="52dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/ic_voucher"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="14dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_ticket_percent"
+                        app:tint="@color/vego_primary" />
+
+                    <TextView
+                        android:id="@+id/btn_remove_voucher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="@string/voucher_remove"
+                        android:textColor="@color/vego_danger"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_voucher_applied"
+                        style="@style/VeGo.Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toStartOf="@id/btn_remove_voucher"
+                        android:layout_toEndOf="@id/ic_voucher"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textSize="13sp"
+                        tools:text="VEGO10 · Giảm 30.000đ" />
+                </RelativeLayout>
+
+                <!-- Gợi ý mã đang có (lấy từ server), bấm để áp dụng -->
+                <LinearLayout
+                    android:id="@+id/voucher_suggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/space_8"
+                    android:orientation="vertical"
+                    android:showDividers="middle"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView

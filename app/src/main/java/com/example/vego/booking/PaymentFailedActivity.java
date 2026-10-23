@@ -34,8 +34,10 @@ public class PaymentFailedActivity extends BaseActivity {
         Trip trip = draft.trip;
         draft.startHoldIfNeeded();
 
-        ((TextView) findViewById(R.id.tv_failed_body)).setText(
-                getString(R.string.failed_body, draft.paymentMethod.label));
+        // Lý do thất bại do cổng thanh toán trả về (qua server), không có thì dùng câu mặc định
+        String body = getString(R.string.failed_body, draft.paymentMethod.label);
+        if (draft.lastPaymentMessage != null) body = draft.lastPaymentMessage + ". " + body;
+        ((TextView) findViewById(R.id.tv_failed_body)).setText(body);
         ((InfoRowView) findViewById(R.id.row_trip)).setValue(trip.origin + " → " + trip.destination);
         ((InfoRowView) findViewById(R.id.row_depart)).setValue(trip.departTime() + " · " + Format.date(draft.date));
         ((InfoRowView) findViewById(R.id.row_holding_seat)).setValue(draft.seat);

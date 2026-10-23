@@ -1808,6 +1808,41 @@
       "description": "Giữ ghế 5 phút, áp mã giảm giá, tạo thanh toán MoMo / VNPay (sandbox). Trên CI server chạy chế độ mô phỏng để đi hết luồng thanh toán thành công.",
       "item": [
         {
+          "name": "Mã giảm giá đang có",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vouchers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "vouchers"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "",
+                  "const v = pm.response.json();",
+                  "pm.test('Có các mã VEGO10, VEGIN15, CHAOBANMOI', () => pm.expect(v.map(x => x.code)).to.include.members(['VEGO10', 'VEGIN15', 'CHAOBANMOI']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Ghế đã có người giữ của chuyến",
           "request": {
             "method": "GET",

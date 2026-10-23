@@ -54,6 +54,19 @@ public final class BookingDraft {
     /** Mốc hết giờ giữ ghế (theo SystemClock.elapsedRealtime), 0 = chưa giữ. */
     private long holdUntil = 0;
     public PaymentMethod paymentMethod = PaymentMethod.MOMO;
+
+    // Đơn trên server (POST /api/v1/bookings)
+    /** Mã vé của đơn đang giữ trên server, null = chưa giữ ghế trên server. */
+    @Nullable public String bookingCode;
+    /** Thông tin đã gửi khi giữ ghế; đổi chuyến / ghế / hành khách thì phải giữ ghế lại. */
+    @Nullable private String bookingKey;
+    public int discount = 0;
+    @Nullable public String voucherCode;
+    @Nullable public String voucherTitle;
+    /** Tổng tiền server tính (đã trừ mã giảm giá), -1 = chưa có. */
+    private int serverTotal = -1;
+    /** Lý do thanh toán thất bại gần nhất (hiện ở màn Thất bại). */
+    @Nullable public String lastPaymentMessage;
     /** Đã hiện cảnh báo "còn 1 phút" cho lượt giữ chỗ hiện tại chưa. */
     public boolean warnedOneMinute = false;
     @Nullable public String lastTicketCode;
@@ -93,10 +106,52 @@ public final class BookingDraft {
 
     public void releaseHold() {
         holdUntil = 0;
+        clearBooking();
+    }
+
+    /** Bỏ thông tin đơn trên server (hết giờ, hủy, đổi chuyến, đã thanh toán xong). */
+    public void clearBooking() {
+        bookingCode = null;
+        bookingKey = null;
+        discount = 0;
+        voucherCode = null;
+        voucherTitle = null;
+        serverTotal = -1;
+        lastPaymentMessage = null;
+    }
+
+    public int fare() {
+        return trip == null ? 0 : trip.price;
     }
 
     public int total() {
-        return trip == null ? 0 : trip.price;
+        return serverTotal >= 0 ? serverTotal : fare();
+    }
+
+    /** Khóa nhận diện đơn: chuyến + ngày + ghế + hành khách + điểm đón/trả. */
+    public String currentBookingKey() {
+        return (trip == null ? "" : trip.id) + "|" + Format.date(date) + "|" + seat + "|" + passengerName
+                + "|" + passengerPhone + "|" + pickupLabel() + "|" + dropoffLabel();
+    }
+
+    /** Đơn trên server còn khớp với lựa chọn hiện tại không. */
+    public boolean hasServerBooking() {
+        return bookingCode != null && currentBookingKey().equals(bookingKey) && isHolding();
+    }
+
+    /** Cập nhật từ dữ liệu server: mã vé, tiền, mã giảm giá, thời gian giữ ghế còn lại. */
+    public void applyServerBooking(com.example.vego.data.api.ApiModels.Booking b) {
+        if (!b.code.equals(bookingCode)) bookingKey = currentBookingKey();
+        bookingCode = b.code;
+        discount = b.discount;
+        voucherCode = b.voucherCode;
+        voucherTitle = b.voucherTitle;
+        serverTotal = b.total;
+        if (b.is("HOLDING")) {
+            holdUntil = SystemClock.elapsedRealtime() + b.holdRemainingSeconds * 1000L;
+            if (b.holdRemainingSeconds > 60) warnedOneMinute = false;
+        }
+        lastPaymentMessage = b.lastPayment != null ? b.lastPayment.message : null;
     }
 
     /** Chọn chuyến mới thì bỏ ghế và lượt giữ chỗ cũ. */
@@ -108,8 +163,12 @@ public final class BookingDraft {
         trip = t;
     }
 
-    /** Mã vé dạng VG + ngày đi + số ghế, vd VG18102605. */
+    /** Mã vé: dùng mã server cấp; chưa có server thì tạo mã dạng VG + ngày đi + số ghế. */
     public String issueTicketCode() {
+        if (bookingCode != null) {
+            lastTicketCode = bookingCode;
+            return lastTicketCode;
+        }
         String seatDigits = seat == null ? "00" : seat.replaceAll("\\D", "");
         lastTicketCode = String.format(java.util.Locale.ROOT, "VG%02d%02d%02d%s",
                 date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.MONTH) + 1,

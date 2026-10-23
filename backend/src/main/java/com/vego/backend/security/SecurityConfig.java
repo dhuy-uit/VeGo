@@ -45,7 +45,8 @@ public class SecurityConfig {
                                 "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/refresh",
                                 "/api/v1/auth/logout", "/api/v1/auth/forgot-password",
                                 "/api/v1/auth/reset-password").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/home", "/api/v1/files/**", "/api/v1/trips/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/home", "/api/v1/files/**", "/api/v1/trips/**",
+                                "/api/v1/vouchers").permitAll()
                         // Cổng thanh toán gọi về (kiểm tra bằng chữ ký, không dùng token)
                         .requestMatchers("/api/v1/payments/vnpay/**", "/api/v1/payments/momo/**",
                                 "/api/v1/payments/simulated/**").permitAll()
