@@ -17,7 +17,7 @@ defaults:
 jobs:
   test:
     name: Build + test tích hợp (Testcontainers)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
@@ -44,7 +44,7 @@ jobs:
 
   postman:
     name: Kiểm thử API bằng Postman (Newman)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: test
     services:
       postgres:
@@ -118,7 +118,7 @@ jobs:
 
   docker:
     name: Build Docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: test
     steps:
       - uses: actions/checkout@v5
