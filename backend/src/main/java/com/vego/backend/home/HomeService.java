@@ -60,9 +60,10 @@ public class HomeService {
         Optional<User> user = userId == null ? Optional.empty() : users.findById(userId);
         String greetingName = user.map(User::givenName).orElse(null);
 
-        List<Route> popular = routes.findByPopularRankNotNullOrderByPopularRankAsc();
+        List<Route> popular = routes.findByPopularRankNotNullAndActiveTrueOrderByPopularRankAsc();
         Map<Integer, List<Trip>> tripsByRoute = popular.isEmpty() ? Map.of()
                 : trips.findActiveByRouteIds(popular.stream().map(Route::getId).toList()).stream()
+                .filter(Trip::isRecurring)
                 .collect(Collectors.groupingBy(t -> t.getRoute().getId()));
 
         List<PopularRouteResponse> popularRoutes = popular.stream()

@@ -90,6 +90,7 @@ public class TripService {
         Route r = route.get();
         Instant earliest = clock.instant().plus(MIN_LEAD_TIME);
         List<Trip> routeTrips = trips.findActiveByRouteIds(List.of(r.getId())).stream()
+                .filter(t -> t.runsOn(date))
                 .filter(t -> TripTimes.departure(t, date, zone).isAfter(earliest))
                 .toList();
 
@@ -124,7 +125,7 @@ public class TripService {
     }
 
     private Optional<Route> findRoute(String origin, String destination) {
-        return routes.findAll().stream()
+        return routes.findByActiveTrue().stream()
                 .filter(r -> CityNames.matches(origin, r.getOriginCity())
                         && CityNames.matches(destination, r.getDestinationCity()))
                 // Khớp đúng tên trước khớp một phần
@@ -139,7 +140,7 @@ public class TripService {
     /** Các thành phố có tuyến (gợi ý khi gõ điểm đi / đến). */
     @Transactional(readOnly = true)
     public List<String> cities() {
-        return routes.findAll().stream()
+        return routes.findByActiveTrue().stream()
                 .flatMap(r -> java.util.stream.Stream.of(r.getOriginCity(), r.getDestinationCity()))
                 .distinct().sorted().toList();
     }
@@ -149,13 +150,13 @@ public class TripService {
     @Transactional(readOnly = true)
     public TripResponse get(String tripId, LocalDate date) {
         checkDate(date);
-        Trip t = load(tripId);
+        Trip t = load(tripId, date);
         return HomeService.toTrip(t, date, seats.seatsLeft(t, date));
     }
 
     @Transactional(readOnly = true)
     public SeatMapResponse seatMap(String tripId, LocalDate date) {
-        Trip t = load(tripId);
+        Trip t = load(tripId, date);
         Set<String> taken = seats.unavailable(t, date);
         List<SeatMapResponse.Deck> decks = seats.layout(t).stream()
                 .map(d -> new SeatMapResponse.Deck(d.code(), d.name(), d.rows().stream()
@@ -201,6 +202,15 @@ public class TripService {
     private Trip load(String tripId) {
         return trips.findActiveWithDetails(tripId.trim())
                 .orElseThrow(() -> ApiException.notFound("TRIP_NOT_FOUND", "Không tìm thấy chuyến xe"));
+    }
+
+    /** Chuyến tăng cường chỉ xem / đặt được đúng ngày chạy. */
+    private Trip load(String tripId, LocalDate date) {
+        Trip t = load(tripId);
+        if (!t.runsOn(date)) {
+            throw ApiException.notFound("TRIP_NOT_RUNNING", "Chuyến này không chạy vào ngày đã chọn");
+        }
+        return t;
     }
 
     private void checkDate(LocalDate date) {

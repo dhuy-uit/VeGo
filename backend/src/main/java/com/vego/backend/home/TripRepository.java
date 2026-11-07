@@ -17,18 +17,18 @@ public interface TripRepository extends JpaRepository<Trip, String> {
               join fetch t.operator
               join fetch t.pickupStation
               join fetch t.dropoffStation
-            where t.active = true and r.id in :routeIds
+            where t.active = true and r.active = true and r.id in :routeIds
             """)
     List<Trip> findActiveByRouteIds(@Param("routeIds") Collection<Integer> routeIds);
 
     /** Một chuyến đang chạy kèm nhà xe / bến (dùng cho Chi tiết chuyến, Chọn ghế, giữ ghế). */
     @Query("""
             select t from Trip t
-              join fetch t.route
+              join fetch t.route r
               join fetch t.operator
               join fetch t.pickupStation
               join fetch t.dropoffStation
-            where t.active = true and upper(t.id) = upper(:id)
+            where t.active = true and r.active = true and upper(t.id) = upper(:id)
             """)
     Optional<Trip> findActiveWithDetails(@Param("id") String id);
 }

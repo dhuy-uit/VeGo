@@ -28,10 +28,14 @@ public class Route {
     @Column(name = "image_key")
     private String imageKey;
 
+    /** false = tuyến tạm ngừng (ẩn khỏi tìm chuyến, trang chủ). */
+    private boolean active;
+
     public Integer getId() { return id; }
     public String getOriginCity() { return originCity; }
     public String getDestinationCity() { return destinationCity; }
     public Integer getDistanceKm() { return distanceKm; }
     public Integer getPopularRank() { return popularRank; }
     public String getImageKey() { return imageKey; }
+    public boolean isActive() { return active; }
 }

@@ -128,6 +128,15 @@ public class SuggestActivity extends BaseActivity {
 
     /** Theo prototype: "Xem chuyến" -> Chi tiết chuyến (ngày đi theo gợi ý). */
     private void openTrip(Trip trip) {
+        // Số liệu cho web admin ("Báo cáo đề xuất"): không chờ, lỗi thì bỏ qua
+        ApiClient.api().suggestionClick(new ApiModels.SuggestionClick(trip.id))
+                .enqueue(new retrofit2.Callback<Void>() {
+                    @Override
+                    public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) { }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<Void> call, Throwable t) { }
+                });
         draft.origin = trip.origin;
         draft.destination = trip.destination;
         draft.date.setTimeInMillis(date.getTimeInMillis());

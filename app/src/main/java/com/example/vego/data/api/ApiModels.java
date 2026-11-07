@@ -90,6 +90,15 @@ public final class ApiModels {
         }
     }
 
+    /** Body của POST /api/v1/suggestions/click (số liệu "Báo cáo đề xuất" cho web admin). */
+    public static class SuggestionClick {
+        public final String tripId;
+
+        public SuggestionClick(String tripId) {
+            this.tripId = tripId;
+        }
+    }
+
     public static class CodeRequest {
         public final String code;
 

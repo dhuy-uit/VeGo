@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface RouteRepository extends JpaRepository<Route, Integer> {
 
-    List<Route> findByPopularRankNotNullOrderByPopularRankAsc();
+    List<Route> findByPopularRankNotNullAndActiveTrueOrderByPopularRankAsc();
+
+    List<Route> findByActiveTrue();
 }

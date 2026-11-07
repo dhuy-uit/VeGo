@@ -11,9 +11,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
-/** Chuyến xe chạy cố định hằng ngày. */
+/** Chuyến xe: chạy cố định hằng ngày, hoặc chuyến tăng cường chỉ chạy một ngày (serviceDate khác null). */
 @Entity
 @Table(name = "trips")
 public class Trip {
@@ -64,6 +65,10 @@ public class Trip {
 
     private boolean active;
 
+    /** null = chạy hằng ngày; có giá trị = chỉ chạy đúng ngày đó (tạo từ web admin "Lập lịch chuyến"). */
+    @Column(name = "service_date")
+    private LocalDate serviceDate;
+
     public String getId() { return id; }
     public Route getRoute() { return route; }
     public Operator getOperator() { return operator; }
@@ -78,4 +83,11 @@ public class Trip {
     public Station getPickupStation() { return pickupStation; }
     public Station getDropoffStation() { return dropoffStation; }
     public boolean isActive() { return active; }
+    public LocalDate getServiceDate() { return serviceDate; }
+
+    /** Chuyến cố định hằng ngày (không phải chuyến tăng cường). */
+    public boolean isRecurring() { return serviceDate == null; }
+
+    /** Chuyến có chạy vào ngày này không. */
+    public boolean runsOn(LocalDate date) { return serviceDate == null || serviceDate.equals(date); }
 }

@@ -66,6 +66,7 @@ public class SuggestionService {
             Trip base = last.getTrip();
             int target = TripTimes.departMinutes(base);
             trips.findActiveByRouteIds(List.of(base.getRoute().getId())).stream()
+                    .filter(t -> t.runsOn(date))
                     .filter(t -> t.getOperator().getId().equals(base.getOperator().getId()))
                     .filter(t -> TripTimes.dayPart(TripTimes.departMinutes(t)) == TripTimes.dayPart(target))
                     .filter(t -> TripTimes.departure(t, date, zone).isAfter(earliest))
@@ -74,9 +75,10 @@ public class SuggestionService {
         }
         if (candidates.isEmpty()) {
             last = null;
-            List<Route> popular = routes.findByPopularRankNotNullOrderByPopularRankAsc();
+            List<Route> popular = routes.findByPopularRankNotNullAndActiveTrueOrderByPopularRankAsc();
             if (!popular.isEmpty()) {
                 trips.findActiveByRouteIds(List.of(popular.get(0).getId())).stream()
+                        .filter(t -> t.runsOn(date))
                         .filter(t -> TripTimes.departure(t, date, zone).isAfter(earliest))
                         .sorted(Comparator.comparing(Trip::getRating).reversed()
                                 .thenComparingInt(TripTimes::departMinutes))

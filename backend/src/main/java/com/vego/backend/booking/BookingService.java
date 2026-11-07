@@ -76,6 +76,9 @@ public class BookingService {
                 .orElseThrow(() -> ApiException.unauthorized("USER_NOT_FOUND", "Tài khoản không còn tồn tại"));
         Trip trip = trips.findActiveWithDetails(req.tripId().trim())
                 .orElseThrow(() -> ApiException.notFound("TRIP_NOT_FOUND", "Không tìm thấy chuyến xe"));
+        if (!trip.runsOn(req.travelDate())) {
+            throw ApiException.field("TRIP_NOT_RUNNING", "travelDate", "Chuyến này không chạy vào ngày đã chọn");
+        }
 
         LocalDateTime departure = req.travelDate().atTime(trip.getDepartTime());
         if (departure.isBefore(LocalDateTime.now(clock.withZone(zone)).plus(MIN_LEAD_TIME))) {

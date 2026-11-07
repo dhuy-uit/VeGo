@@ -16,10 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,11 +31,16 @@ public class TripController {
 
     private final TripService trips;
     private final SuggestionService suggestions;
+    private final SuggestionEvents events;
 
-    public TripController(TripService trips, SuggestionService suggestions) {
+    public TripController(TripService trips, SuggestionService suggestions, SuggestionEvents events) {
         this.trips = trips;
         this.suggestions = suggestions;
+        this.events = events;
     }
+
+    /** Body của POST /api/v1/suggestions/click. */
+    public record SuggestionClick(String tripId) { }
 
     @Operation(summary = "Tìm chuyến theo điểm đi, điểm đến, ngày đi (không cần đăng nhập)",
             description = "Bộ lọc tùy chọn: operator (nhiều giá trị), busType (LIMOUSINE | SLEEPER | SEATER), "
@@ -95,8 +103,25 @@ public class TripController {
             @AuthenticationPrincipal AuthUser me,
             @Parameter(description = "Ngày đi muốn xem, mặc định ngày mai")
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return suggestions.suggest(me == null ? null : me.id(), date)
-                .map(ResponseEntity::ok)
+        Long userId = me == null ? null : me.id();
+        return suggestions.suggest(userId, date)
+                .map(s -> {
+                    List<String> shown = new ArrayList<>();
+                    shown.add(s.main().id());
+                    s.more().forEach(t -> shown.add(t.id()));
+                    events.impressions(userId, shown);
+                    return ResponseEntity.ok(s);
+                })
                 .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @Operation(summary = "Ghi nhận người dùng bấm vào một chuyến được đề xuất (số liệu cho web admin)")
+    @PostMapping("/api/v1/suggestions/click")
+    public ResponseEntity<Void> suggestionClick(@AuthenticationPrincipal AuthUser me,
+                                                @RequestBody SuggestionClick body) {
+        if (body == null || !events.click(me == null ? null : me.id(), body.tripId())) {
+            throw ApiException.notFound("TRIP_NOT_FOUND", "Không tìm thấy chuyến xe");
+        }
+        return ResponseEntity.noContent().build();
     }
 }

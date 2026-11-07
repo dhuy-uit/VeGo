@@ -130,6 +130,10 @@ public interface VeGoApi {
     @GET("api/v1/suggestions")
     Call<ApiModels.Suggestion> suggestions(@Query("date") String date);
 
+    /** Ghi nhận người dùng bấm vào chuyến được đề xuất (204, lỗi thì bỏ qua). */
+    @POST("api/v1/suggestions/click")
+    Call<Void> suggestionClick(@Body ApiModels.SuggestionClick body);
+
     // ---------- Vé của tôi ----------
 
     @GET("api/v1/tickets")
