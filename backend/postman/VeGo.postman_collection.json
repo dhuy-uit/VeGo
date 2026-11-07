@@ -4699,6 +4699,838 @@
           ]
         }
       ]
+    },
+    {
+      "name": "9. Quản trị (web admin)",
+      "description": "Chỉ chạy khi môi trường có adminEmail / adminPassword (tài khoản ADMIN_EMAIL trên server).",
+      "item": [
+        {
+          "name": "Đăng nhập quản trị",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\",\n  \"device\": \"Postman\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Tài khoản có quyền ADMIN', () => pm.expect(r.user.role).to.eql('ADMIN'));",
+                  "pm.collectionVariables.set('adminToken', r.accessToken);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "API quản trị khi chưa đăng nhập",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/vehicles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "vehicles"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 401 (Unauthorized)', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tổng quan vận hành (tháng)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/stats/overview?mode=MONTH",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "stats",
+                "overview"
+              ],
+              "query": [
+                {
+                  "key": "mode",
+                  "value": "MONTH"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Đủ chỉ số và biểu đồ', () => {",
+                  "    pm.expect(r.mode).to.eql('MONTH');",
+                  "    pm.expect(r.revenue).to.be.a('number');",
+                  "    pm.expect(r.fillRate).to.be.within(0, 100);",
+                  "    pm.expect(r.series).to.be.an('array').and.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Top tuyến bán chạy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/stats/top-routes?sort=REVENUE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "stats",
+                "top-routes"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "REVENUE"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Xếp hạng theo doanh thu giảm dần', () => {",
+                  "    for (let i = 1; i < r.items.length; i++) pm.expect(r.items[i - 1].revenue).to.be.at.least(r.items[i].revenue);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Báo cáo đề xuất",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/stats/suggestions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "stats",
+                "suggestions"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('12 tuần và 3 nhóm khách', () => { pm.expect(r.weekly).to.have.length(12); pm.expect(r.groups).to.have.length(3); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Danh mục cho ô chọn",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/options",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "options"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "const t001 = r.routes.find(x => x.code === 'T001');",
+                  "pm.test('Có nhà xe, bến xe, tuyến T001', () => { pm.expect(r.operators).to.not.be.empty; pm.expect(r.stations).to.not.be.empty; pm.expect(t001).to.exist; });",
+                  "pm.collectionVariables.set('adminRouteId', t001.id);",
+                  "pm.collectionVariables.set('adminOperatorId', r.operators.find(o => o.code === 'PT').id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Danh sách xe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/vehicles?size=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "vehicles"
+              ],
+              "query": [
+                {
+                  "key": "size",
+                  "value": "50"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Có thống kê đội xe', () => pm.expect(r.summary.total).to.be.at.least(24));",
+                  "const spare = r.page.items.find(v => v.code === 'XE015');",
+                  "pm.collectionVariables.set('adminSpareVehicleId', spare.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Thêm xe mới",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/vehicles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "vehicles"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"{{adminPlate}}\",\n  \"operatorId\": {{adminOperatorId}},\n  \"busType\": \"SLEEPER\",\n  \"totalSeats\": 40,\n  \"status\": \"READY\",\n  \"note\": \"Tạo từ Postman\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }",
+                  "pm.collectionVariables.set('adminPlate', '51B ' + String(Date.now()).slice(-5));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 201 (Created)', () => pm.response.to.have.status(201));",
+                  "const r = pm.response.json();",
+                  "pm.test('Biển số được chuẩn hóa, có sơ đồ 2 tầng', () => { pm.expect(r.vehicle.plate).to.match(/^\\d{2}[A-Z]{1,2}\\d?-\\d{3}\\.\\d{2}$/); pm.expect(r.decks).to.have.length(2); });",
+                  "pm.collectionVariables.set('adminVehicleId', r.vehicle.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chuyển xe sang bảo trì",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/vehicles/{{adminVehicleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "vehicles",
+                "{{adminVehicleId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"{{adminPlate}}\",\n  \"operatorId\": {{adminOperatorId}},\n  \"busType\": \"SLEEPER\",\n  \"totalSeats\": 40,\n  \"status\": \"MAINTENANCE\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Trạng thái Bảo trì', () => pm.expect(pm.response.json().vehicle.state).to.eql('MAINTENANCE'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Xóa xe vừa tạo",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/vehicles/{{adminVehicleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "vehicles",
+                "{{adminVehicleId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Danh sách tài xế",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/drivers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "drivers"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Có tài xế tạm nghỉ', () => pm.expect(r.summary.off).to.be.at.least(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Danh sách tuyến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/routes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "routes"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Có tuyến T001', () => pm.expect(pm.response.json().page.items.map(r => r.code)).to.include('T001'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chuyến trên tuyến T001 hôm nay",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/routes/{{adminRouteId}}/runs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "routes",
+                "{{adminRouteId}}",
+                "runs"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Mỗi chuyến có mã theo ngày và số ghế', () => pm.response.json().forEach(r => { pm.expect(r.code).to.include('-'); pm.expect(r.seatsTotal).to.be.above(0); }));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Kiểm tra lịch chuyến tăng cường",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/schedules/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "schedules",
+                "preview"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"routeId\": {{adminRouteId}},\n  \"date\": \"{{adminDate}}\",\n  \"departTime\": \"05:45\",\n  \"vehicleId\": {{adminSpareVehicleId}},\n  \"price\": 300000\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }",
+                  "const d = new Date(Date.now() + 9 * 86400000 + 7 * 3600000);",
+                  "pm.collectionVariables.set('adminDate', d.toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Không trùng lịch, 34 ghế, đến sau 7 giờ', () => {",
+                  "    pm.expect(r.errors).to.be.empty;",
+                  "    pm.expect(r.seats).to.eql(34);",
+                  "    pm.expect(new Date(r.arriveAt) - new Date(r.departAt)).to.eql(420 * 60000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hoạt động gần đây",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/activity",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "activity"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get('adminEmail')) { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "pm.test('Có danh sách hoạt động', () => pm.expect(pm.response.json().items).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "variable": [
@@ -4792,6 +5624,34 @@
     },
     {
       "key": "walletVoucher",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "adminRouteId",
+      "value": ""
+    },
+    {
+      "key": "adminOperatorId",
+      "value": ""
+    },
+    {
+      "key": "adminVehicleId",
+      "value": ""
+    },
+    {
+      "key": "adminSpareVehicleId",
+      "value": ""
+    },
+    {
+      "key": "adminPlate",
+      "value": ""
+    },
+    {
+      "key": "adminDate",
       "value": ""
     }
   ]

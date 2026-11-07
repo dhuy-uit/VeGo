@@ -21,11 +21,13 @@ backend/
 │   ├── notification/  Thông báo trong app
 │   ├── wallet/     Ví xu: sổ xu, điểm danh 7 ngày, game, đổi voucher, quà chào mừng
 │   ├── security/   JWT filter, cấu hình Spring Security
+│   ├── admin/      API web admin: xe, tài xế, tuyến / chuyến, lập lịch, thống kê, dữ liệu minh họa
 │   ├── common/     Định dạng lỗi chung, tiện ích
 │   └── seed/       Tài khoản mẫu + lịch sử mẫu (vé, xu, thông báo) cho tài khoản demo
 ├── src/main/resources/
-│   ├── db/migration/   V1 tạo bảng, V2 dữ liệu mẫu, V3 đặt vé + thanh toán, V4 vé / thông báo / Ví xu
-│   └── static/         Trang đặt lại mật khẩu (mở từ link trong email)
+│   ├── db/migration/   V1 tạo bảng, V2 dữ liệu mẫu, V3 đặt vé + thanh toán, V4 vé / thông báo / Ví xu,
+│   │                   V5 xe / tài xế / phân công / lượt xem đề xuất
+│   └── static/         Trang đặt lại mật khẩu; static/admin = web admin (HTML/CSS/JS thuần)
 ├── postman/        Collection + environment Local/Azure + ảnh test
 ├── deploy/         Script tạo máy ảo Azure và cài server
 ├── Dockerfile, docker-compose.yml, Caddyfile
@@ -94,6 +96,44 @@ Nghiệp vụ tự động:
 - Sơ đồ ghế giả lập ghế đã bán ở quầy (`total_seats - seats_left`, cố định theo chuyến + ngày);
   tắt bằng `BOOKING_PRESOLD_SEATS=false`.
 
+## Web admin
+
+Web admin là trang HTML/CSS/JavaScript thuần (không cần build) nằm trong `src/main/resources/static/admin`,
+chạy cùng server API: **https://vego-api-3g15i.eastasia.cloudapp.azure.com/admin**.
+Giao diện theo Figma (section 08–14): đăng nhập / quên mật khẩu, Tổng quan doanh thu, Quản lý xe, Tuyến & chuyến,
+Lập lịch chuyến, Tài xế, Top tuyến bán chạy, Báo cáo đề xuất, Đổi mật khẩu.
+
+- Đăng nhập bằng tài khoản `ADMIN_EMAIL` / `ADMIN_PASSWORD` trong `.env` trên server (tạo một lần khi server khởi động
+  và chưa có admin). Mọi API `/api/v1/admin/**` chỉ tài khoản role `ADMIN` gọi được.
+- Chuyến cố định chạy mỗi ngày; "Lập lịch chuyến" phân công xe + tài xế cho một chuyến trong một ngày,
+  hoặc tạo **chuyến tăng cường** chỉ chạy ngày đó (`trips.service_date`). App tìm thấy chuyến mới ngay.
+- Kiểm tra khi phân công: xe bảo trì, sai loại xe / số chỗ / nhà xe, tài xế tạm nghỉ, GPLX hết hạn hoặc không đủ hạng
+  (D1 ≤ 16 chỗ, D2 ≤ 29 chỗ, D > 29 chỗ), trùng lịch xe / tài xế (nghỉ tối thiểu 30 phút giữa hai chuyến).
+- Thống kê tính theo ngày khởi hành: doanh thu / vé = vé đã thanh toán; lấp đầy = vé bán / ghế của các chuyến đã chạy.
+- "Báo cáo đề xuất": app ghi lượt hiển thị (`GET /suggestions`) và lượt nhấp (`POST /suggestions/click`);
+  vé từ đề xuất = vé cùng người, cùng chuyến, đặt trong 48 giờ sau lượt nhấp.
+
+**Dữ liệu minh họa** (`ADMIN_DEMO=true`, mặc định bật): 6.000 khách mẫu (`users.demo = true`, không đăng nhập được),
+vé đã đi của 365 ngày gần nhất (~120.000 vé), đánh giá, lượt xem / nhấp đề xuất 90 ngày, phân công tài xế 7 ngày tới.
+Chỉ tạo ở các ngày đã qua nên không chiếm ghế khi khách đặt vé; mỗi đêm 00:20 tự bổ sung ngày hôm qua.
+Dashboard hiện nhãn "Số liệu minh họa" khi kỳ đang xem có dữ liệu này.
+
+| Phương thức | Đường dẫn `/api/v1/admin` | Mô tả |
+|---|---|---|
+| GET | `/stats/overview?mode=DAY\|MONTH\|YEAR&date=` | KPI, biểu đồ doanh thu, top tuyến trong kỳ |
+| GET | `/stats/top-routes?from&to&sort=TICKETS\|REVENUE\|FILL` | Bảng xếp hạng tuyến, chuyến nổi bật |
+| GET | `/stats/suggestions?from&to&group=` | Hiển thị / nhấp / vé từ đề xuất, 12 tuần, theo nhóm khách |
+| GET | `/activity` | Hoạt động 7 ngày (chuông thông báo) |
+| GET | `/options`, POST `/stations` | Nhà xe, bến xe, thành phố, tuyến; thêm bến |
+| GET POST PUT DELETE | `/vehicles`, `/vehicles/{id}` | Quản lý xe (trạng thái Đang chạy tính theo lịch thật) |
+| GET POST PUT DELETE | `/drivers`, `/drivers/{id}` | Quản lý tài xế |
+| GET POST PUT DELETE | `/routes`, `/routes/{id}`, GET `/routes/{id}/runs?date=` | Tuyến và các chuyến chạy trong ngày |
+| GET POST PUT DELETE | `/trips`, `/trips/{id}` | Chuyến cố định hằng ngày |
+| GET | `/schedules?from&days&routeId&vehicleId&driverId` | Lịch chạy |
+| POST | `/schedules/preview`, `/schedules` | Kiểm tra / lưu lịch chuyến |
+| PUT | `/schedules/assign` | Phân công xe / tài xế cho một chuyến chạy |
+| DELETE | `/schedules/{tripId}/{date}`, `/schedules/{tripId}/{date}/driver` | Xóa lịch, bỏ tài xế |
+
 ## Server đang chạy (Azure)
 
 Backend chạy trên máy ảo Azure, app Android gọi API qua Internet:
@@ -138,6 +178,9 @@ Muốn app trên máy ảo gọi bản local này thì thêm vào `local.propert
 3. Hai request tải ảnh dùng tệp `avatar.png` và `not-image.txt` trong thư mục `postman/`
    (Settings → General → Working directory trỏ tới thư mục này, hoặc chọn lại tệp trong tab Body).
 4. Chuột phải collection → **Run collection** → Run. Chạy cả collection theo thứ tự vì các request truyền token cho nhau.
+
+Thư mục "9. Quản trị (web admin)" chỉ chạy khi environment có `adminEmail` / `adminPassword`
+(Local đã có sẵn tài khoản CI; với Azure tự thêm 2 biến này, không lưu vào Git).
 
 Hai request "Đặt lại mật khẩu" chỉ chạy khi server bật `EXPOSE_RESET_TOKEN=true` (máy dev/CI);
 trên server thật chúng được bỏ qua vì mã khôi phục chỉ gửi qua email.

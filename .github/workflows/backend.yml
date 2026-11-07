@@ -75,6 +75,9 @@ jobs:
           EXPOSE_RESET_TOKEN: "true"
           PAYMENT_SIMULATE: "true"
           JWT_SECRET: ci-secret-ci-secret-ci-secret-ci-secret-123
+          ADMIN_EMAIL: admin@vego.local
+          ADMIN_PASSWORD: Admin12345
+          ADMIN_DEMO_DAYS: "30"
         run: |
           nohup java -jar target/vego-backend.jar > api.log 2>&1 &
           for i in $(seq 1 60); do
