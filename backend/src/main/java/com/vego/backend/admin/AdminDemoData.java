@@ -109,7 +109,7 @@ public class AdminDemoData implements ApplicationRunner {
                 Integer.class);
         if (have != null && have >= DEMO_USERS) return;
         // Mật khẩu ngẫu nhiên không ai biết: tài khoản mẫu không đăng nhập được
-        String hash = encoder.encode(UUID.randomUUID() + "-" + UUID.randomUUID());
+        String hash = encoder.encode(UUID.randomUUID().toString());
         db.jdbc.update(USERS_SQL, AdminSupport.params().addValue("hash", hash).addValue("users", DEMO_USERS)
                 .addValue("start", Date.valueOf(db.today().minusDays(days + 30))));
     }
