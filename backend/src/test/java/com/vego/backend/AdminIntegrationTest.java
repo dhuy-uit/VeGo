@@ -88,6 +88,10 @@ class AdminIntegrationTest {
         assertThat(me.get("role").asText()).isEqualTo("ADMIN");
         // Trang web admin là trang tĩnh, không cần đăng nhập
         mvc.perform(get("/admin/index.html")).andExpect(status().isOk());
+        // /admin phải chuyển sang /admin/ để admin.css, core.js (đường dẫn tương đối) tải đúng
+        mvc.perform(get("/admin")).andExpect(status().is3xxRedirection())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl("/admin/"));
+        mvc.perform(get("/admin/")).andExpect(status().isOk());
     }
 
     @Test
