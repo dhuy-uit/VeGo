@@ -200,7 +200,7 @@ function download(filename, rows) {
 const ui = {
   pageHead: (title, sub, actions = '') => `<div class="page-head"><div><h1>${esc(title)}</h1><p>${esc(sub || 'VéGo · Quản lý vận hành, kết nối hành trình')}</p></div><div class="actions">${actions}</div></div>`,
   stat: (label, ic, value, note, noteCls = '') => `<div class="card stat"><div class="label"><span>${esc(label)}</span>${icon(ic)}</div>
-      <div class="value">${value}</div><div class="note ${noteCls}">${note}</div></div>`,
+      <div class="value">${value}</div><div class="foot ${noteCls}">${note}</div></div>`,
   note: (title, text, kind = '', ic = 'info') => `<div class="note ${kind}">${icon(ic, 'ic-18')}<div><b>${esc(title)}</b>${text}</div></div>`,
   badge: (text, kind = '') => `<span class="badge ${kind}">${esc(text)}</span>`,
   empty: (title, text = '') => `<div class="empty"><b>${esc(title)}</b>${esc(text)}</div>`,

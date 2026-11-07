@@ -127,8 +127,8 @@ public class AdminDemoData implements ApplicationRunner {
                     INSERT INTO trip_assignments (trip_id, travel_date, vehicle_id, driver_id)
                     SELECT t.id, g::date, t.vehicle_id, d.id
                     FROM trips t
-                    JOIN drivers d ON d.code = :driver AND d.status = 'READY' AND d.license_expiry > g::date
                     CROSS JOIN generate_series(CAST(:from AS date), CAST(:to AS date), interval '1 day') g
+                    JOIN drivers d ON d.code = :driver AND d.status = 'READY' AND d.license_expiry > g::date
                     WHERE t.id = :trip AND t.active AND t.service_date IS NULL
                     ON CONFLICT (trip_id, travel_date) DO NOTHING
                     """, AdminSupport.params().addValue("driver", pair[1]).addValue("trip", pair[0])

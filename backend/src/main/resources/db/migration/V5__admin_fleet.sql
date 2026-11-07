@@ -124,7 +124,8 @@ FROM (VALUES
     ('XE023', '49B-123.90', 'PT', 'LIMOUSINE', 34, 'READY',       NULL),
     ('XE024', '65B-234.01', 'PT', 'SLEEPER',   40, 'READY',       NULL)
 ) AS v(code, plate, op, bus_type, seats, status, note)
-JOIN operators o ON o.code = v.op;
+JOIN operators o ON o.code = v.op
+ORDER BY v.code;
 
 UPDATE trips t SET vehicle_id = v.id
 FROM (VALUES
