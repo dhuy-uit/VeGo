@@ -178,6 +178,13 @@ public interface VeGoApi {
     @POST("api/v1/support/chat")
     Call<ApiModels.SupportReply> supportChat(@Body ApiModels.SupportRequest body);
 
+    /** Khách bấm Xác nhận thao tác trợ lý đề xuất; token dùng một lần (lỗi 410 nếu hết hạn / đã dùng). */
+    @POST("api/v1/support/actions/{token}/confirm")
+    Call<ApiModels.ActionResult> confirmSupportAction(@Path("token") String token);
+
+    @DELETE("api/v1/support/actions/{token}")
+    Call<Void> dismissSupportAction(@Path("token") String token);
+
     // ---------- Ví xu ----------
 
     @GET("api/v1/wallet")

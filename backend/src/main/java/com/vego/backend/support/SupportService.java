@@ -76,6 +76,7 @@ public class SupportService {
 
     private final KnowledgeIndex index;
     private final GeminiClient gemini;
+    private final SupportAgent agent;
     private final TicketService tickets;
     private final CoinLedger ledger;
     private final ZoneId zone;
@@ -91,10 +92,11 @@ public class SupportService {
         }
     });
 
-    public SupportService(KnowledgeIndex index, GeminiClient gemini, TicketService tickets, CoinLedger ledger,
-                          RagProperties rag, AppProperties props, Clock clock) {
+    public SupportService(KnowledgeIndex index, GeminiClient gemini, SupportAgent agent, TicketService tickets,
+                          CoinLedger ledger, RagProperties rag, AppProperties props, Clock clock) {
         this.index = index;
         this.gemini = gemini;
+        this.agent = agent;
         this.tickets = tickets;
         this.ledger = ledger;
         this.ratePerMinute = rag.ratePerMinute();
@@ -105,7 +107,19 @@ public class SupportService {
     public ChatReply chat(long userId, ChatRequest request) {
         checkRate(userId);
         String question = request.message().trim();
-        return switch (Intents.detect(question)) {
+        List<Turn> history = history(request);
+        Intents.Intent intent = Intents.detect(question);
+        // Việc thao tác (tìm chuyến, đặt / hủy / đổi vé) do trợ lý có công cụ xử lý; không phải thì rơi về bên dưới
+        boolean ownData = intent == Intents.Intent.MY_TICKETS || intent == Intents.Intent.MY_REFUND;
+        if ((intent == Intents.Intent.KNOWLEDGE || ownData) && agent.wants(question, history, ownData)) {
+            try {
+                var done = agent.run(userId, question, history);
+                if (done.isPresent()) return done.get();
+            } catch (GeminiClient.GeminiException e) {
+                log.warn("Trợ lý thao tác lỗi, chuyển sang tài liệu: {}", e.getMessage());
+            }
+        }
+        return switch (intent) {
             case GREETING -> rule(null, "Chào bạn! Mình là trợ lý VéGo. Bạn có thể hỏi mình về vé của bạn, "
                     + "chính sách hủy/đổi vé, hành lý, điểm đón, thanh toán hoặc Ví xu nhé.");
             case THANKS -> rule(null, "Rất vui được giúp bạn! Chúc bạn có một chuyến đi thật suôn sẻ cùng VéGo.");
@@ -118,7 +132,7 @@ public class SupportService {
             case MY_COINS -> rule("Theo Ví xu của bạn",
                     "Bạn đang có " + CoinLedger.coins(ledger.balance(userId)) + " xu trong Ví xu.",
                     "Vào Tài khoản → Ví xu để xem lịch sử và đổi voucher nhé.");
-            case KNOWLEDGE -> fromDocuments(question, history(request));
+            case KNOWLEDGE -> fromDocuments(question, history);
         };
     }
 
@@ -247,7 +261,8 @@ public class SupportService {
         List<Turn> clean = request.history().stream()
                 .filter(t -> t != null && t.text() != null && !t.text().isBlank())
                 .map(t -> new Turn("user".equals(t.role()) ? "user" : "bot",
-                        t.text().length() > 500 ? t.text().substring(0, 500) : t.text()))
+                        t.text().length() > 500 ? t.text().substring(0, 500) : t.text(),
+                        "AGENT".equals(t.mode()) ? "AGENT" : null))
                 .toList();
         return clean.subList(Math.max(0, clean.size() - HISTORY_TURNS), clean.size());
     }

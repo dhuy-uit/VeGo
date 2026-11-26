@@ -115,6 +115,25 @@ public class GeminiClient {
         }
     }
 
+    /**
+     * Một lượt hội thoại có gọi công cụ (function calling). contents là toàn bộ lượt trước đó; trả về nguyên nội dung
+     * của mô hình (parts giữ nguyên, gồm cả chữ ký suy luận mà Gemini yêu cầu khi gửi lại) để vòng lặp nối tiếp.
+     */
+    public JsonNode chatWithTools(String system, List<Object> contents, List<Map<String, Object>> declarations) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("systemInstruction", Map.of("parts", List.of(Map.of("text", system))));
+        body.put("contents", contents);
+        body.put("tools", List.of(Map.of("functionDeclarations", declarations)));
+        body.put("toolConfig", Map.of("functionCallingConfig", Map.of("mode", "AUTO")));
+        body.put("generationConfig", Map.of("maxOutputTokens", 1024));
+        JsonNode res = post("models/" + props.model() + ":generateContent", body, Duration.ofSeconds(12));
+        JsonNode content = res.path("candidates").path(0).path("content");
+        if (content.isMissingNode() || !content.path("parts").isArray()) {
+            throw new GeminiException(502, "Phản hồi trống từ Gemini");
+        }
+        return content;
+    }
+
     private static Map<String, Object> body(String system, String prompt, Map<String, Object> config) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("systemInstruction", Map.of("parts", List.of(Map.of("text", system))));

@@ -465,10 +465,17 @@ public final class ApiModels {
     /** Một lượt trò chuyện đã qua, role = "user" | "bot". */
     public static class SupportTurn {
         public final String role, text;
+        /** "AGENT" khi câu trả lời của bot thuộc một cuộc đặt / hủy / đổi vé đang làm dở, còn lại null. */
+        @Nullable public final String mode;
 
         public SupportTurn(String role, String text) {
+            this(role, text, null);
+        }
+
+        public SupportTurn(String role, String text, @Nullable String mode) {
             this.role = role;
             this.text = text;
+            this.mode = mode;
         }
     }
 
@@ -487,5 +494,21 @@ public final class ApiModels {
         public List<String> paragraphs;
         public boolean contactButton, escalate;
         public List<Ticket> tickets;
+        /** Thao tác chờ khách bấm Xác nhận (đặt / hủy / đổi vé), null nếu không có. */
+        @Nullable public SupportAction action;
+        /** Gợi ý bấm để gửi (vd chọn chuyến). */
+        @Nullable public List<String> suggestions;
+    }
+
+    /** kind: BOOK | CANCEL | EXCHANGE. Chỉ khi gọi confirm với token này server mới thực hiện. */
+    public static class SupportAction {
+        public String token, kind, title, summary, confirmLabel;
+    }
+
+    /** Kết quả sau khi xác nhận. booking có khi BOOK (đang giữ ghế, chờ thanh toán); ticket có khi CANCEL / EXCHANGE. */
+    public static class ActionResult {
+        public String kind, message;
+        @Nullable public Booking booking;
+        @Nullable public Ticket ticket;
     }
 }

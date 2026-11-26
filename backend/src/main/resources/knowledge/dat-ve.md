@@ -12,3 +12,8 @@ Khi xác nhận đặt chỗ, ghế được giữ cho bạn trong 5 phút để
 ## Giới hạn khi đặt vé
 Chỉ đặt vé trước tối đa 60 ngày. Không đặt được chuyến sắp khởi hành trong vòng 30 phút hoặc đã khởi hành.
 Mỗi lần đặt là 1 ghế cho 1 hành khách; đi nhiều người thì đặt từng vé. Số điện thoại hành khách gồm 10 chữ số.
+
+## Nhờ trợ lý đặt giúp
+Bạn nhắn cho trợ lý VéGo, ví dụ "đặt vé từ TP. Hồ Chí Minh đi Đà Lạt ngày mai". Trợ lý tìm chuyến, gợi ý ghế trống rồi chuẩn bị sẵn việc cần làm.
+Trợ lý không tự làm gì: chỉ khi bạn bấm nút Xác nhận trong khung chat thì mới thực hiện. Với đặt vé, ghế được giữ 5 phút và bạn tự thanh toán qua VNPay.
+Việc hủy hoặc đổi qua trợ lý cũng theo đúng điều kiện như trong ứng dụng.
