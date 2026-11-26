@@ -2,6 +2,7 @@ package com.vego.backend;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vego.backend.support.SupportActions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -48,6 +50,7 @@ class TicketWalletIntegrationTest {
 
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper json;
+    @Autowired SupportActions assistantActions;
 
     private JsonNode read(ResultActions r) throws Exception {
         return json.readTree(r.andReturn().getResponse().getContentAsString());
@@ -483,5 +486,54 @@ class TicketWalletIntegrationTest {
         mvc.perform(get("/api/v1/suggestions"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.main.id").exists());
+    }
+
+    /** Trợ lý chỉ đề xuất; thao tác chỉ xảy ra khi đúng chủ tài khoản xác nhận bằng token, và chỉ một lần. */
+    @Test
+    void assistantActionsNeedConfirmation() throws Exception {
+        String token = newUser();
+        long userId = read(mvc.perform(auth(get("/api/v1/users/me"), token)).andExpect(status().isOk())).get("id").asLong();
+        String other = newUser();
+
+        // Đặt vé: chưa xác nhận thì chưa có đơn nào
+        String seat = freeSeat("PT2200");
+        var book = assistantActions.proposeBooking(userId, "PT2200", TRAVEL, seat, "Phạm Thu Trang", "0987654321", "tóm tắt");
+        mvc.perform(auth(post("/api/v1/support/actions/" + book.token() + "/confirm"), other))
+                .andExpect(status().isGone());
+        JsonNode booked = read(mvc.perform(auth(post("/api/v1/support/actions/" + book.token() + "/confirm"), token))
+                .andExpect(status().isOk()));
+        assertThat(booked.get("kind").asText()).isEqualTo("BOOK");
+        assertThat(booked.get("booking").get("status").asText()).isEqualTo("HOLDING");
+        assertThat(booked.get("booking").get("seat").asText()).isEqualTo(seat);
+        mvc.perform(auth(post("/api/v1/support/actions/" + book.token() + "/confirm"), token))
+                .andExpect(status().isGone());
+
+        // Bỏ qua đề xuất rồi xác nhận lại: bị từ chối
+        var skipped = assistantActions.proposeBooking(userId, "PT2200", TRAVEL, freeSeat("PT2200"), "Phạm Thu Trang",
+                "0987654321", "tóm tắt");
+        mvc.perform(auth(delete("/api/v1/support/actions/" + skipped.token()), token)).andExpect(status().isNoContent());
+        mvc.perform(auth(post("/api/v1/support/actions/" + skipped.token() + "/confirm"), token))
+                .andExpect(status().isGone());
+
+        // Hủy vé qua trợ lý: hoàn 80% vì còn xa giờ đi
+        String code = buyTicket(token, null);
+        var cancel = assistantActions.proposeCancel(userId, code, "tóm tắt");
+        JsonNode cancelled = read(mvc.perform(auth(post("/api/v1/support/actions/" + cancel.token() + "/confirm"), token))
+                .andExpect(status().isOk()));
+        assertThat(cancelled.get("kind").asText()).isEqualTo("CANCEL");
+        assertThat(cancelled.get("ticket").get("status").asText()).isEqualTo("CANCELLED");
+        assertThat(cancelled.get("ticket").get("refundPercent").asInt()).isEqualTo(80);
+
+        // Đổi ghế qua trợ lý
+        String code2 = buyTicket(token, null);
+        String oldSeat = read(mvc.perform(auth(get("/api/v1/tickets/" + code2), token)).andExpect(status().isOk()))
+                .get("seat").asText();
+        String newSeat = freeSeat("PT2200", TRAVEL, oldSeat);
+        var exchange = assistantActions.proposeExchange(userId, code2, "PT2200", TRAVEL, newSeat, "tóm tắt");
+        JsonNode exchanged = read(mvc.perform(auth(post("/api/v1/support/actions/" + exchange.token() + "/confirm"), token))
+                .andExpect(status().isOk()));
+        assertThat(exchanged.get("kind").asText()).isEqualTo("EXCHANGE");
+        assertThat(exchanged.get("ticket").get("seat").asText()).isEqualTo(newSeat);
+        assertThat(exchanged.get("ticket").get("exchangeCount").asInt()).isEqualTo(1);
     }
 }

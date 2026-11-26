@@ -166,7 +166,7 @@
                         android:textColor="@color/vego_text_secondary"
                         android:textSize="12sp" />
 
-                    <!-- 4 chip câu hỏi, thêm bằng code -->
+                    <!-- Các chip câu hỏi, thêm bằng code -->
                     <LinearLayout
                         android:id="@+id/list_quick"
                         android:layout_width="match_parent"

@@ -100,7 +100,7 @@ Nghiệp vụ tự động:
 ## Trợ lý hỗ trợ (RAG + Gemini)
 
 `POST /api/v1/support/chat` (cần token) `{message, history?: [{role: user|bot, text}]}` →
-`{title?, paragraphs[], source?, contactButton, escalate, tickets[], mode}`.
+`{title?, paragraphs[], source?, contactButton, escalate, tickets[], mode, action?, suggestions[]}`.
 
 1. Câu hỏi về vé / số xu của người dùng và việc cần nhân viên được xử lý ngay trên server, không gửi cho mô hình.
 2. Câu hỏi còn lại: tìm đoạn liên quan trong `src/main/resources/knowledge/*.md` + bến xe và mã giảm giá trong CSDL,
@@ -108,7 +108,28 @@ Nghiệp vụ tự động:
 3. `gemini-3.5-flash-lite` chỉ được trả lời từ các đoạn đó và phải chỉ ra nguồn; không có nguồn thì chuyển nhân viên.
 4. Không có khóa / Gemini lỗi → trả nguyên đoạn tài liệu khớp (`mode: DOCS`).
 
-`mode`: `RULE`, `AI`, `DOCS`, `NONE`. Đổi chính sách thì sửa tệp trong `knowledge/` (và code nghiệp vụ tương ứng).
+### Trợ lý thao tác (đặt / hủy / đổi vé qua chat)
+
+Khi có khóa Gemini, câu có ý muốn tìm chuyến, đặt, hủy hoặc đổi vé (hoặc đang giữa một cuộc đặt vé dở) được đưa cho
+`SupportAgent` dùng function calling của Gemini, trước khi rơi về tài liệu (nếu mô hình thấy chỉ là câu hỏi chính sách
+thì gọi `defer_to_knowledge`):
+
+| Công cụ | Việc làm | Thay đổi dữ liệu? |
+|---|---|---|
+| `search_trips`, `get_available_seats`, `list_my_tickets`, `list_exchange_options` | Tra cứu qua `TripService` / `TicketService` | Không (chỉ vé của đúng người đang chat) |
+| `propose_booking`, `propose_cancel`, `propose_exchange` | Kiểm tra điều kiện rồi tạo **đề xuất chờ xác nhận** | Không |
+
+- Mô hình không tự đặt / hủy / đổi được gì. Câu trả lời kèm `action {token, kind, title, summary, confirmLabel}`; app hiện
+  nút **Xác nhận** và chỉ khi khách bấm, app gọi `POST /api/v1/support/actions/{token}/confirm` thì
+  `BookingService.create` / `TicketService.cancel` / `TicketService.exchange` mới chạy (đúng các quy tắc nghiệp vụ cũ).
+  `DELETE /api/v1/support/actions/{token}` là nút Bỏ qua.
+- Token gắn với một người dùng, dùng một lần, hết hạn sau 10 phút (lỗi `410 ACTION_EXPIRED`).
+- Đặt vé chỉ **giữ ghế 5 phút** (`kind = BOOK` trả `booking`); app mở màn Thanh toán, khách tự trả qua VNPay.
+- `suggestions[]` là các gợi ý bấm để gửi (chọn chuyến); `history[].mode = "AGENT"` báo câu trả lời trước thuộc một cuộc
+  thao tác đang dở để các câu ngắn kế tiếp ("ngày mai", "ghế A05") vẫn tới trợ lý.
+- Mỗi tin nhắn tối đa 6 vòng gọi công cụ. Không có khóa / Gemini lỗi thì bỏ qua trợ lý thao tác và trả lời theo tài liệu.
+
+`mode`: `RULE`, `AI`, `DOCS`, `NONE`, `AGENT`. Đổi chính sách thì sửa tệp trong `knowledge/` (và code nghiệp vụ tương ứng).
 Bật Gemini: thêm `GEMINI_API_KEY=...` vào `.env` rồi chạy lại `update.sh`.
 **Máy chủ phải nằm ở vùng Gemini API hỗ trợ** (Hong Kong / Azure East Asia không được hỗ trợ).
 

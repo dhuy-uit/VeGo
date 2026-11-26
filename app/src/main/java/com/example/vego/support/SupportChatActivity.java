@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 
@@ -28,6 +29,8 @@ import com.example.vego.common.BaseActivity;
 import com.example.vego.common.UserSession;
 import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.common.ui.VeGoDialog;
+import com.example.vego.booking.PaymentActivity;
+import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
 import com.example.vego.data.Ticket;
 import com.example.vego.data.TicketStore;
@@ -51,6 +54,7 @@ public class SupportChatActivity extends BaseActivity {
 
     /** Câu hỏi nhanh ở màn chào: icon + nội dung (gửi đi đúng như chữ trên chip). */
     private static final int[][] QUICK = {
+            { R.drawable.ic_bus_front, R.string.chat_quick_book },
             { R.drawable.ic_receipt_text, R.string.chat_quick_cancel },
             { R.drawable.ic_luggage, R.string.chat_quick_luggage },
             { R.drawable.ic_ticket, R.string.chat_quick_ticket },
@@ -71,6 +75,8 @@ public class SupportChatActivity extends BaseActivity {
     private final List<ApiModels.SupportTurn> history = new ArrayList<>();
     private static final int HISTORY_TURNS = 6;
     private View typingView;
+    /** Các gợi ý bấm để gửi (vd chọn chuyến) đang hiện; mất đi khi khách gửi tin tiếp theo. */
+    private View suggestionsView;
     private final List<ValueAnimator> typingAnims = new ArrayList<>();
 
     @Override
@@ -158,6 +164,7 @@ public class SupportChatActivity extends BaseActivity {
             time.setText(getString(R.string.chat_today, now()));
             content.addView(time);
         }
+        removeSuggestions();
         addUserMessage(text);
 
         waiting = true;
@@ -177,8 +184,8 @@ public class SupportChatActivity extends BaseActivity {
                             return;
                         }
                         SupportAssistant.Reply reply = SupportAssistant.from(body, TicketStore.get());
-                        remember("user", text);
-                        remember("bot", TextUtils.join("\n", reply.paragraphs));
+                        remember("user", text, null);
+                        remember("bot", TextUtils.join("\n", reply.paragraphs), reply.agent ? "AGENT" : null);
                         showReply(reply);
                     }
 
@@ -196,8 +203,8 @@ public class SupportChatActivity extends BaseActivity {
         btnSend.setAlpha(1f);
     }
 
-    private void remember(String role, String text) {
-        history.add(new ApiModels.SupportTurn(role, text.length() > 500 ? text.substring(0, 500) : text));
+    private void remember(String role, String text, @Nullable String mode) {
+        history.add(new ApiModels.SupportTurn(role, text.length() > 500 ? text.substring(0, 500) : text, mode));
         while (history.size() > HISTORY_TURNS) history.remove(0);
     }
 
@@ -223,6 +230,7 @@ public class SupportChatActivity extends BaseActivity {
             bubble.addView(para);
         }
         for (Ticket t : reply.tickets) bubble.addView(miniTicket(bubble, t));
+        if (reply.action != null) bubble.addView(actionCard(bubble, reply.action));
         if (reply.contactButton) {
             View contact = inflater.inflate(R.layout.item_chat_contact, bubble, false);
             contact.setOnClickListener(v -> {
@@ -241,7 +249,97 @@ public class SupportChatActivity extends BaseActivity {
         setupFeedback(row);
         appendAnimated(row);
 
+        if (!reply.suggestions.isEmpty()) showSuggestions(reply.suggestions);
         if (reply.escalate) addEscalationCard();
+    }
+
+    // ---------- Thao tác do trợ lý đề xuất (đặt / hủy / đổi vé) ----------
+
+    /** Thẻ tóm tắt thao tác kèm nút Xác nhận / Bỏ qua. Chỉ khi bấm Xác nhận server mới thực hiện. */
+    private View actionCard(LinearLayout parent, ApiModels.SupportAction action) {
+        View card = inflater.inflate(R.layout.view_chat_action, parent, false);
+        ((TextView) card.findViewById(R.id.tv_action_title)).setText(action.title);
+        ((TextView) card.findViewById(R.id.tv_action_summary)).setText(action.summary);
+        ((TextView) card.findViewById(R.id.btn_action_confirm)).setText(action.confirmLabel);
+        card.findViewById(R.id.btn_action_confirm).setOnClickListener(v -> confirmAction(card, action));
+        card.findViewById(R.id.btn_action_skip).setOnClickListener(v -> dismissAction(card, action));
+        return card;
+    }
+
+    private void closeActionCard(View card, @androidx.annotation.StringRes int state) {
+        card.findViewById(R.id.btn_action_confirm).setVisibility(View.GONE);
+        card.findViewById(R.id.btn_action_skip).setVisibility(View.GONE);
+        TextView label = card.findViewById(R.id.tv_action_state);
+        label.setText(state);
+        label.setVisibility(View.VISIBLE);
+    }
+
+    private void confirmAction(View card, ApiModels.SupportAction action) {
+        View confirm = card.findViewById(R.id.btn_action_confirm);
+        View skip = card.findViewById(R.id.btn_action_skip);
+        confirm.setEnabled(false);
+        skip.setEnabled(false);
+        confirm.setAlpha(0.6f);
+        ((TextView) confirm).setText(R.string.chat_action_working);
+        // Token dùng một lần: dù thành công hay lỗi, thẻ này không bấm lại được
+        ApiClient.api().confirmSupportAction(action.token).enqueue(new ApiCallback<ApiModels.ActionResult>(this) {
+            @Override
+            protected void onSuccess(@Nullable ApiModels.ActionResult result) {
+                if (result == null) {
+                    closeActionCard(card, R.string.chat_action_failed);
+                    return;
+                }
+                closeActionCard(card, R.string.chat_action_done);
+                SupportAssistant.Reply reply = SupportAssistant.fromResult(result, TicketStore.get());
+                remember("bot", result.message, "AGENT");
+                addBotReply(reply);
+                // Giữ ghế xong: sang màn Thanh toán như luồng đặt vé thường (ghế giữ 5 phút)
+                if ("BOOK".equals(result.kind) && result.booking != null) {
+                    BookingDraft.get().loadFromBooking(result.booking);
+                    startActivity(new Intent(SupportChatActivity.this, PaymentActivity.class));
+                }
+            }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) {
+                closeActionCard(card, R.string.chat_action_failed);
+                remember("bot", error.message, "AGENT");
+                addBotReply(SupportAssistant.message(error.message));
+            }
+        });
+    }
+
+    private void dismissAction(View card, ApiModels.SupportAction action) {
+        closeActionCard(card, R.string.chat_action_skipped);
+        remember("user", "Mình không làm việc này nữa", null);
+        ApiClient.api().dismissSupportAction(action.token).enqueue(new ApiCallback<Void>(this) {
+            @Override
+            protected void onSuccess(@Nullable Void body) { }
+
+            @Override
+            protected void onError(ApiModels.ApiError error) { }
+        });
+    }
+
+    private void showSuggestions(List<String> suggestions) {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setDividerDrawable(ContextCompat.getDrawable(this, R.drawable.space_8));
+        box.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        for (String text : suggestions) {
+            View chip = inflater.inflate(R.layout.item_quick_question, box, false);
+            chip.findViewById(R.id.iv_quick_icon).setVisibility(View.GONE);
+            ((TextView) chip.findViewById(R.id.tv_quick_text)).setText(text);
+            chip.setOnClickListener(v -> send(text));
+            box.addView(chip);
+        }
+        suggestionsView = box;
+        appendAnimated(box);
+    }
+
+    private void removeSuggestions() {
+        if (suggestionsView != null) content.removeView(suggestionsView);
+        suggestionsView = null;
     }
 
     /** Figma "Vé thu nhỏ": tóm tắt vé ngay trong chat, bấm để mở Vé điện tử. */

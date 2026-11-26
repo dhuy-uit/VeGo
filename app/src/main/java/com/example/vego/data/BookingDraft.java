@@ -117,6 +117,24 @@ public final class BookingDraft {
 
     public static final String SHUTTLE_LABEL = "Xe trung chuyển (nhân viên sẽ liên hệ)";
 
+    /** Nạp đơn vừa được giữ ghế (do trợ lý đặt hộ) để tiếp tục ở màn Thanh toán như luồng đặt vé thường. */
+    public void loadFromBooking(ApiModels.Booking b) {
+        releaseHold();
+        selectTrip(Trip.from(b.trip));
+        java.util.Calendar d = com.example.vego.common.UserSession.parseIsoDate(b.travelDate);
+        if (d != null) date.setTimeInMillis(d.getTimeInMillis());
+        seat = b.seat;
+        passengerName = b.passengerName;
+        passengerPhone = b.passengerPhone;
+        stops = null;
+        pickupShuttle = SHUTTLE_LABEL.equals(b.pickupLabel);
+        dropoffShuttle = SHUTTLE_LABEL.equals(b.dropoffLabel);
+        pickupStation = pickupShuttle ? null : b.pickupLabel;
+        dropoffStation = dropoffShuttle ? null : b.dropoffLabel;
+        paymentMethod = PaymentMethod.VNPAY;
+        applyServerBooking(b);
+    }
+
     public void releaseHold() {
         holdUntil = 0;
         clearBooking();

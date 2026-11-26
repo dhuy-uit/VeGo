@@ -29,15 +29,25 @@ public final class SupportAssistant {
         public final List<Ticket> tickets;
         /** Hiện thẻ "Để nhân viên hỗ trợ bạn" sau câu trả lời. */
         public final boolean escalate;
+        /** Câu trả lời của trợ lý thao tác (đặt / hủy / đổi vé) nên các câu sau vẫn gửi về trợ lý đó. */
+        public final boolean agent;
+        /** Thao tác chờ khách bấm Xác nhận. */
+        @Nullable public final ApiModels.SupportAction action;
+        /** Gợi ý bấm để gửi (vd chọn chuyến). */
+        public final List<String> suggestions;
 
         Reply(@Nullable String title, List<String> paragraphs, @Nullable String source,
-              boolean contactButton, List<Ticket> tickets, boolean escalate) {
+              boolean contactButton, List<Ticket> tickets, boolean escalate, boolean agent,
+              @Nullable ApiModels.SupportAction action, List<String> suggestions) {
             this.title = title;
             this.paragraphs = paragraphs;
             this.source = source;
             this.contactButton = contactButton;
             this.tickets = tickets;
             this.escalate = escalate;
+            this.agent = agent;
+            this.action = action;
+            this.suggestions = suggestions;
         }
     }
 
@@ -49,11 +59,28 @@ public final class SupportAssistant {
         if (r.tickets != null) {
             for (ApiModels.Ticket t : r.tickets) tickets.add(store.put(t));
         }
-        return new Reply(r.title, r.paragraphs, r.source, r.contactButton, tickets, r.escalate);
+        return new Reply(r.title, r.paragraphs, r.source, r.contactButton, tickets, r.escalate,
+                "AGENT".equals(r.mode), r.action,
+                r.suggestions != null ? r.suggestions : Collections.emptyList());
+    }
+
+    /** Kết quả sau khi khách bấm Xác nhận: thông báo + vé (nếu có) để xem ngay trong chat. */
+    public static Reply fromResult(ApiModels.ActionResult r, TicketStore store) {
+        List<Ticket> tickets = new ArrayList<>();
+        if (r.ticket != null) tickets.add(store.put(r.ticket));
+        return new Reply(null, Collections.singletonList(r.message), null, false, tickets, false, true, null,
+                Collections.emptyList());
+    }
+
+    /** Một tin nhắn chữ đơn giản của trợ lý (vd lý do không thực hiện được). */
+    public static Reply message(String text) {
+        return new Reply(null, Collections.singletonList(text), null, false, Collections.emptyList(), false, true,
+                null, Collections.emptyList());
     }
 
     /** Không gọi được server: báo rõ và vẫn cho liên hệ nhân viên. */
     public static Reply error(String message) {
-        return new Reply(null, Collections.singletonList(message), null, true, Collections.emptyList(), false);
+        return new Reply(null, Collections.singletonList(message), null, true, Collections.emptyList(), false, false,
+                null, Collections.emptyList());
     }
 }
