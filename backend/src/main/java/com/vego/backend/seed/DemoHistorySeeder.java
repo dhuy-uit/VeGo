@@ -40,7 +40,7 @@ import java.util.Set;
 
 /**
  * Lịch sử mẫu cho tài khoản demo Nguyễn Minh Anh (giống dữ liệu mẫu trong Figma): 1 vé đã đi (chưa đánh giá),
- * 1 vé đã hủy, 1 vé sắp đi, Ví xu 1.250 xu với lịch sử giao dịch, chuỗi điểm danh 3 ngày, 1 voucher và thông báo.
+ * 1 vé đã hủy, 1 vé sắp đi, Ví xu 808 xu với lịch sử giao dịch, chuỗi điểm danh 3 ngày, 1 voucher và thông báo.
  * Chỉ chạy một lần: khi tài khoản demo chưa có giao dịch xu nào.
  */
 @Component
@@ -116,16 +116,16 @@ public class DemoHistorySeeder implements ApplicationRunner {
         upcoming.setCoinsEarned(320);
         bookings.saveAll(List.of(done, cancelled, upcoming));
 
-        // ---------- Ví xu (tổng 1.250 xu) ----------
+        // ---------- Ví xu (tổng 808 xu) ----------
         coin(uid, CoinTransaction.Source.WELCOME, 500, "Quà chào mừng thành viên mới", null, at(-40, 9, 0));
         coin(uid, CoinTransaction.Source.BOOKING, 320, "Đặt vé " + done.getCode(), done.getCode(), at(-35, 14, 6));
         coin(uid, CoinTransaction.Source.BOOKING, 280, "Đặt vé " + cancelled.getCode(), cancelled.getCode(), at(-25, 19, 41));
         coin(uid, CoinTransaction.Source.REFUND, -280, "Thu hồi xu vé " + cancelled.getCode(), cancelled.getCode(), at(-23, 10, 15));
-        game(uid, -9, 1050, 100);
-        game(uid, -8, 700, 70);
-        game(uid, -7, 1060, 100);
-        game(uid, -5, 1000, 100);
-        game(uid, -4, 1000, 100);
+        game(uid, -9, 500, 20);
+        game(uid, -8, 350, 14);
+        game(uid, -7, 500, 20);
+        game(uid, -5, 450, 18);
+        game(uid, -4, 500, 20);
 
         String voucherCode = "XU20K-" + random(4);
         offers.findById("V20").ifPresent(o -> userVouchers.save(
@@ -136,7 +136,7 @@ public class DemoHistorySeeder implements ApplicationRunner {
             checkIns.save(new CheckIn(uid, today.minusDays(d), 4 - d, 4 - d, 20, when));
             coin(uid, CoinTransaction.Source.CHECK_IN, 20, "Điểm danh ngày " + (4 - d) + "/7", null, when);
         }
-        game(uid, -2, 800, 80);
+        game(uid, -2, 400, 16);
         coin(uid, CoinTransaction.Source.BOOKING, 320, "Đặt vé " + upcoming.getCode(), upcoming.getCode(),
                 upcoming.getPaidAt());
 
@@ -144,10 +144,10 @@ public class DemoHistorySeeder implements ApplicationRunner {
         note(uid, Notification.Kind.PROMO, "Chào mừng bạn đến với VéGo!",
                 "Tặng bạn 500 xu trong Ví xu và mã CHAOBANMOI giảm 50.000đ cho chuyến đầu tiên.", null, at(-40, 9, 0), true);
         note(uid, Notification.Kind.TICKET, "Vé của bạn đã được xác nhận",
-                "Mã vé " + done.getCode() + " · Ghế B08. Thanh toán MoMo thành công: 320.000đ.", done.getCode(),
+                "Mã vé " + done.getCode() + " · Ghế B08. Thanh toán VNPay thành công: 320.000đ.", done.getCode(),
                 at(-35, 14, 6), true);
         note(uid, Notification.Kind.TICKET, "Đã hủy vé " + cancelled.getCode(),
-                "Hoàn 224.000đ về MoMo trong 3–5 ngày làm việc. Ghế A03 đã được mở bán lại.", cancelled.getCode(),
+                "Hoàn 224.000đ về nguồn thanh toán trong 3–5 ngày làm việc. Ghế A03 đã được mở bán lại.", cancelled.getCode(),
                 at(-23, 10, 15), true);
         note(uid, Notification.Kind.REVIEW, "Cảm ơn bạn đã đồng hành",
                 "Hành trình ngày " + dm(done.getTravelDate()) + " cùng Phương Trang đã hoàn thành. "
@@ -156,7 +156,7 @@ public class DemoHistorySeeder implements ApplicationRunner {
                 "Giảm 15%, tối đa 50.000đ tuyến TP. Hồ Chí Minh – Đà Lạt với mã VEGIN15.", null, at(-1, 8, 30), true);
         note(uid, Notification.Kind.TICKET, "Vé của bạn đã được xác nhận",
                 "Mã vé " + upcoming.getCode() + " · Ghế " + upcoming.getSeatCode()
-                        + ". Thanh toán MoMo thành công: 320.000đ. Bạn được cộng 320 xu.",
+                        + ". Thanh toán VNPay thành công: 320.000đ. Bạn được cộng 320 xu.",
                 upcoming.getCode(), upcoming.getPaidAt(), false);
 
         log.info("Đã tạo lịch sử mẫu cho tài khoản demo: vé {}, {}, {}", done.getCode(), cancelled.getCode(),
@@ -177,7 +177,7 @@ public class DemoHistorySeeder implements ApplicationRunner {
         b.setDropoffLabel(trip.getDropoffStation().getName());
         b.setFare(trip.getPrice());
         b.setStatus(Booking.Status.PAID);
-        b.setPaymentMethod("MOMO");
+        b.setPaymentMethod("VNPAY");
         b.setHoldExpiresAt(paidAt);
         b.setPaidAt(paidAt);
         return b;

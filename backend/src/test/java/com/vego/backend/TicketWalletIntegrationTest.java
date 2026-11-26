@@ -73,14 +73,21 @@ class TicketWalletIntegrationTest {
         return login(phone, "matkhau123");
     }
 
-    /** Ghế trống đầu tiên trong sơ đồ ghế. */
+    /** Ghế trống đầu tiên trong sơ đồ ghế (ngày đi mặc định của test). */
     private String freeSeat(String tripId) throws Exception {
-        JsonNode map = read(mvc.perform(get("/api/v1/trips/" + tripId + "/seats").param("date", TRAVEL.toString()))
+        return freeSeat(tripId, TRAVEL, null);
+    }
+
+    /** Ghế trống đầu tiên trong sơ đồ ghế của một chuyến / ngày, bỏ qua ghế `except`. */
+    private String freeSeat(String tripId, LocalDate date, String except) throws Exception {
+        JsonNode map = read(mvc.perform(get("/api/v1/trips/" + tripId + "/seats").param("date", date.toString()))
                 .andExpect(status().isOk()));
         for (JsonNode deck : map.get("decks")) {
             for (JsonNode row : deck.get("rows")) {
                 for (JsonNode seat : row) {
-                    if (seat.get("available").asBoolean()) return seat.get("code").asText();
+                    if (seat.get("available").asBoolean() && !seat.get("code").asText().equals(except)) {
+                        return seat.get("code").asText();
+                    }
                 }
             }
         }
@@ -100,7 +107,7 @@ class TicketWalletIntegrationTest {
                     .andExpect(status().isOk());
         }
         String ref = read(mvc.perform(auth(post("/api/v1/bookings/" + code + "/payments"), token)
-                        .content("{\"method\":\"MOMO\"}"))
+                        .content("{\"method\":\"VNPAY\"}"))
                 .andExpect(status().isCreated())).get("txnRef").asText();
         mvc.perform(post("/api/v1/payments/simulated/" + ref).param("result", "success"))
                 .andExpect(status().isOk());
@@ -185,7 +192,7 @@ class TicketWalletIntegrationTest {
         mvc.perform(auth(get("/api/v1/wallet"), token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.balance").value(500))
-                .andExpect(jsonPath("$.gameTurnsLeft").value(2))
+                .andExpect(jsonPath("$.gameTurnsLeft").value(1))
                 .andExpect(jsonPath("$.history[0].source").value("WELCOME"));
         mvc.perform(auth(get("/api/v1/notifications"), token))
                 .andExpect(jsonPath("$.unreadCount").value(1))
@@ -206,29 +213,32 @@ class TicketWalletIntegrationTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("ALREADY_CHECKED_IN"));
 
-        // Game: 2 lượt / ngày, điểm bị giới hạn theo thời gian chơi
+        // Game: 1 lượt / ngày, 25 điểm = 1 xu
         long play1 = read(mvc.perform(auth(post("/api/v1/wallet/game/start"), token))
-                .andExpect(status().isOk())).get("playId").asLong();
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.turnsLeft").value(0))).get("playId").asLong();
         JsonNode result = read(mvc.perform(auth(post("/api/v1/wallet/game/" + play1 + "/finish"), token)
                         .content("{\"score\":150}"))
                 .andExpect(status().isOk()));
-        assertThat(result.get("coins").asInt()).isEqualTo(15);
+        assertThat(result.get("coins").asInt()).isEqualTo(6);
         assertThat(result.get("newBest").asBoolean()).isTrue();
-        assertThat(result.get("balance").asInt()).isEqualTo(535);
+        assertThat(result.get("balance").asInt()).isEqualTo(526);
         mvc.perform(auth(post("/api/v1/wallet/game/" + play1 + "/finish"), token).content("{\"score\":150}"))
                 .andExpect(status().isConflict());
-        long play2 = read(mvc.perform(auth(post("/api/v1/wallet/game/start"), token))
-                .andExpect(jsonPath("$.turnsLeft").value(0))).get("playId").asLong();
-        JsonNode cheat = read(mvc.perform(auth(post("/api/v1/wallet/game/" + play2 + "/finish"), token)
-                        .content("{\"score\":999999}"))
-                .andExpect(status().isOk()));
-        assertThat(cheat.get("score").asInt()).isLessThan(999999);
-        assertThat(cheat.get("coins").asInt()).isBetween(0, 100);
-        int balance = cheat.get("balance").asInt();
-        assertThat(balance).isEqualTo(535 + cheat.get("coins").asInt());
         mvc.perform(auth(post("/api/v1/wallet/game/start"), token))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("NO_TURNS_LEFT"));
+        int balance = 526;
+
+        // Điểm gian lận bị chặn: không quá 500 điểm / 20 xu mỗi lượt (và giới hạn theo thời gian chơi)
+        String cheater = newUser();
+        long cheatPlay = read(mvc.perform(auth(post("/api/v1/wallet/game/start"), cheater))
+                .andExpect(status().isOk())).get("playId").asLong();
+        JsonNode cheat = read(mvc.perform(auth(post("/api/v1/wallet/game/" + cheatPlay + "/finish"), cheater)
+                        .content("{\"score\":999999}"))
+                .andExpect(status().isOk()));
+        assertThat(cheat.get("score").asInt()).isLessThanOrEqualTo(500);
+        assertThat(cheat.get("coins").asInt()).isBetween(0, 20);
 
         // Đổi voucher: V50 thiếu xu, V20 đủ xu
         mvc.perform(auth(post("/api/v1/wallet/vouchers/V50/redeem"), token))
@@ -285,7 +295,7 @@ class TicketWalletIntegrationTest {
         assertThat(t.get("cancellable").asBoolean()).isTrue();
         assertThat(t.get("refundPercent").asInt()).isEqualTo(80);
         assertThat(t.get("refundAmount").asInt()).isEqualTo(256000);
-        assertThat(t.get("paymentMethodLabel").asText()).isEqualTo("MoMo");
+        assertThat(t.get("paymentMethodLabel").asText()).isEqualTo("VNPay");
         assertThat(t.get("canReview").asBoolean()).isFalse();
 
         // Thông báo "Vé đã được xác nhận" + chào mừng
@@ -332,6 +342,99 @@ class TicketWalletIntegrationTest {
     }
 
     @Test
+    void exchangeTicket() throws Exception {
+        String token = newUser();
+        String code = buyTicket(token, null);
+        JsonNode ticket = read(mvc.perform(auth(get("/api/v1/tickets/" + code), token)).andExpect(status().isOk()));
+        assertThat(ticket.get("exchangeable").asBoolean()).isTrue();
+        assertThat(ticket.get("exchangeCount").asInt()).isEqualTo(0);
+        String oldSeat = ticket.get("seat").asText();
+        String oldQr = ticket.get("qrData").asText();
+
+        // Chuyến đổi được: cùng tuyến, cùng giá 320.000đ
+        LocalDate newDate = TRAVEL.plusDays(1);
+        JsonNode options = read(mvc.perform(auth(get("/api/v1/tickets/" + code + "/exchange/trips"), token)
+                        .param("date", newDate.toString()))
+                .andExpect(status().isOk()));
+        List<String> ids = new ArrayList<>();
+        options.forEach(t -> {
+            ids.add(t.get("id").asText());
+            assertThat(t.get("price").asInt()).isEqualTo(320000);
+        });
+        assertThat(ids).contains("PT2200", "PT2300", "PT0800").doesNotContain("TB2100", "DL2000", "PT2130");
+
+        // Khác giá / khác tuyến / không đổi gì -> từ chối
+        String seatOther = freeSeat("TB2100", newDate, null);
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "TB2100", "travelDate", newDate.toString(),
+                                "seat", seatOther))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EXCHANGE_DIFFERENT_FARE"));
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2130", "travelDate", newDate.toString(),
+                                "seat", freeSeat("PT2130", newDate, null)))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EXCHANGE_DIFFERENT_ROUTE"));
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2200", "travelDate", TRAVEL.toString(),
+                                "seat", oldSeat))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EXCHANGE_NO_CHANGE"));
+
+        // Người khác không đổi được vé của mình
+        String other = newUser();
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), other)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2300", "travelDate", newDate.toString(),
+                                "seat", "A01"))))
+                .andExpect(status().isNotFound());
+
+        // Đổi sang chuyến PT2300 ngày hôm sau
+        String newSeat = freeSeat("PT2300", newDate, null);
+        JsonNode exchanged = read(mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2300", "travelDate", newDate.toString(),
+                                "seat", newSeat))))
+                .andExpect(status().isOk()));
+        assertThat(exchanged.get("trip").get("id").asText()).isEqualTo("PT2300");
+        assertThat(exchanged.get("travelDate").asText()).isEqualTo(newDate.toString());
+        assertThat(exchanged.get("seat").asText()).isEqualTo(newSeat);
+        assertThat(exchanged.get("exchangeable").asBoolean()).isFalse();
+        assertThat(exchanged.get("exchangeCount").asInt()).isEqualTo(1);
+        assertThat(exchanged.get("qrData").asText()).isNotEqualTo(oldQr).contains(newSeat);
+
+        // Ghế cũ được mở bán lại, ghế mới đã bị chiếm, thông báo đã gửi
+        JsonNode oldMap = read(mvc.perform(get("/api/v1/trips/PT2200/seats").param("date", TRAVEL.toString())));
+        List<String> oldTaken = new ArrayList<>();
+        oldMap.get("taken").forEach(x -> oldTaken.add(x.asText()));
+        assertThat(oldTaken).doesNotContain(oldSeat);
+        JsonNode newMap = read(mvc.perform(get("/api/v1/trips/PT2300/seats").param("date", newDate.toString())));
+        List<String> newTaken = new ArrayList<>();
+        newMap.get("taken").forEach(x -> newTaken.add(x.asText()));
+        assertThat(newTaken).contains(newSeat);
+        mvc.perform(auth(get("/api/v1/notifications"), token))
+                .andExpect(jsonPath("$.items[0].title").value("Đã đổi vé " + code));
+
+        // Mỗi vé đổi 1 lần
+        mvc.perform(auth(get("/api/v1/tickets/" + code + "/exchange/trips"), token).param("date", newDate.toString()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EXCHANGE_LIMIT"));
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2200", "travelDate", TRAVEL.toString(),
+                                "seat", oldSeat))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("EXCHANGE_LIMIT"));
+
+        // Hủy vé sau khi đổi: tính theo chuyến mới, vẫn hoàn 80%
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/cancel"), token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.refundAmount").value(256000));
+        mvc.perform(auth(post("/api/v1/tickets/" + code + "/exchange"), token)
+                        .content(json.writeValueAsString(Map.of("tripId", "PT2200", "travelDate", TRAVEL.toString(),
+                                "seat", oldSeat))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TICKET_CANCELLED"));
+    }
+
+    @Test
     void demoUserHistoryReviewAndSuggestions() throws Exception {
         String token = login("0901234567", "vego123456");
         JsonNode list = read(mvc.perform(auth(get("/api/v1/tickets"), token)).andExpect(status().isOk()));
@@ -348,7 +451,7 @@ class TicketWalletIntegrationTest {
         assertThat(completed).isNotNull();
         assertThat(upcoming).isEqualTo(1);
         assertThat(cancelled).isEqualTo(1);
-        mvc.perform(auth(get("/api/v1/wallet"), token)).andExpect(jsonPath("$.balance").value(1250));
+        mvc.perform(auth(get("/api/v1/wallet"), token)).andExpect(jsonPath("$.balance").value(808));
         mvc.perform(auth(get("/api/v1/wallet/check-in"), token))
                 .andExpect(jsonPath("$.streak").value(3))
                 .andExpect(jsonPath("$.todayIndex").value(3));

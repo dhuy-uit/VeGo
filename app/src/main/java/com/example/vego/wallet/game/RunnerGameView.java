@@ -55,6 +55,8 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
     private static final float MAX_SPEED = 720f;
     private static final float ACCELERATION = 10f;         // dp/s mỗi giây
     private static final float DP_PER_POINT = 12f;          // 12dp quãng đường = 1 điểm
+    /** Điểm tối đa mỗi lượt (đạt mức này thì ván tự kết thúc, khớp giới hạn của server). */
+    public static final int MAX_SCORE = 500;
     private static final int COIN_BONUS = 30;               // điểm cộng khi ăn xu trên đường
     private static final float COIN_RADIUS = 11f;
     private static final float MAX_DT = 0.05f;
@@ -127,6 +129,9 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
     private String pausedText = "Paused";
     private String continueText = "Tap to continue";
     private String overText = "Game over";
+    private String maxText = "Max score";
+    /** Ván kết thúc vì đạt điểm tối đa (không phải va chạm). */
+    private boolean reachedMax;
 
     private State state = State.READY;
     private boolean looping = false;
@@ -233,12 +238,17 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
         invalidate();
     }
 
+    /** Chữ hiện khi đạt điểm tối đa của lượt chơi. */
+    public void setMaxText(String max) {
+        maxText = max;
+    }
+
     public State getState() {
         return state;
     }
 
     public int getScore() {
-        return (int) (distance / DP_PER_POINT) + bonus;
+        return Math.min(MAX_SCORE, (int) (distance / DP_PER_POINT) + bonus);
     }
 
     /** Tạm dừng (vd khi rời app hoặc mở hộp thoại). Chạm vào khung để chơi tiếp. */
@@ -292,6 +302,7 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
         speed = START_SPEED;
         distance = 0;
         bonus = 0;
+        reachedMax = false;
         dinoY = 0;
         dinoVy = 0;
         onGround = true;
@@ -458,6 +469,10 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
             return;
         }
         reportScore();
+        if (getScore() >= MAX_SCORE) {
+            reachedMax = true;
+            gameOver(false);
+        }
     }
 
     private float randomDashY() {
@@ -703,7 +718,7 @@ public class RunnerGameView extends View implements Choreographer.FrameCallback 
             title = pausedText;
             sub = continueText;
         } else if (state == State.OVER) {
-            title = overText;
+            title = reachedMax ? maxText : overText;
         }
         if (title == null) return;
 

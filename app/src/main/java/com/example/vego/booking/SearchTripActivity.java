@@ -16,7 +16,9 @@ import com.example.vego.common.BaseActivity;
 import com.example.vego.common.UserSession;
 import com.example.vego.common.ui.VeGoDialog;
 import com.example.vego.data.BookingDraft;
+import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.data.Format;
+import com.example.vego.data.RouteCatalog;
 import com.example.vego.data.TripRepository;
 import com.example.vego.data.api.ApiCallback;
 import com.example.vego.data.api.ApiClient;
@@ -57,13 +59,71 @@ public class SearchTripActivity extends BaseActivity {
         etTo.setText(draft.destination);
         showDate();
         loadStations();
-        // Đổi điểm đi -> tải lại danh sách bến đón
-        etFrom.setOnFocusChangeListener((v, focused) -> { if (!focused) loadStations(); });
+
+        // Điểm đi / điểm đến chỉ được chọn trong danh sách tuyến có thật
+        View.OnClickListener pickFrom = v -> pickOrigin();
+        View.OnClickListener pickTo = v -> pickDestination();
+        etFrom.setOnClickListener(pickFrom);
+        findViewById(R.id.ic_from).setOnClickListener(pickFrom);
+        etTo.setOnClickListener(pickTo);
+        findViewById(R.id.ic_to).setOnClickListener(pickTo);
+        // Giá trị cũ (vd gõ ở bản trước) không có tuyến -> xóa để người dùng chọn lại
+        RouteCatalog.withRoutes(this, this::fixInvalidSelection);
 
         // Theo prototype: quay lại -> Trang chủ (màn trước đó)
         setupBackButton(this::finish);
         onClick(R.id.field_date, v -> pickDate());
         btnSearch.setOnClickListener(v -> search());
+    }
+
+    // ---------- Chọn điểm đi / điểm đến ----------
+
+    private void pickOrigin() {
+        RouteCatalog.pickOrigin(this, textOf(etFrom), city -> {
+            etFrom.setText(city);
+            etFrom.setError(null);
+            // Điểm đến cũ không đi được từ điểm đi mới -> bỏ chọn
+            if (!RouteCatalog.hasRoute(city, textOf(etTo))) etTo.setText("");
+            loadStations();
+        });
+    }
+
+    private void pickDestination() {
+        RouteCatalog.pickDestination(this, textOf(etFrom), textOf(etTo), city -> {
+            etTo.setText(city);
+            etTo.setError(null);
+        });
+    }
+
+    private void fixInvalidSelection() {
+        String from = textOf(etFrom);
+        String to = textOf(etTo);
+        if (RouteCatalog.hasRoute(from, to)) {
+            etFrom.setText(RouteCatalog.canonical(from));
+            etTo.setText(RouteCatalog.canonical(to));
+            loadStations();
+            return;
+        }
+        if (!RouteCatalog.origins().contains(RouteCatalog.canonical(from))) {
+            etFrom.setText("");
+            stationsCity = null;
+            stations.clear();
+            buildPickupOptions();
+        }
+        etTo.setText("");
+    }
+
+    /** Cả hai ô đã chọn chưa; chưa thì báo và trả về false. */
+    private boolean requireChoices() {
+        if (textOf(etFrom).isEmpty()) {
+            VeGoBanner.show(this, R.string.pick_origin_first, VeGoBanner.Type.WARNING);
+            return false;
+        }
+        if (textOf(etTo).isEmpty()) {
+            VeGoBanner.show(this, R.string.pick_destination_first, VeGoBanner.Type.WARNING);
+            return false;
+        }
+        return true;
     }
 
     // ---------- Điểm đón ----------
@@ -148,12 +208,7 @@ public class SearchTripActivity extends BaseActivity {
     // ---------- Tìm chuyến ----------
 
     private void search() {
-        if (!requireText(etFrom) || !requireText(etTo)) return;
-        if (textOf(etFrom).equalsIgnoreCase(textOf(etTo))) {
-            etTo.setError(getString(R.string.error_same_place));
-            etTo.requestFocus();
-            return;
-        }
+        if (!requireChoices()) return;
         String origin = textOf(etFrom);
         String destination = textOf(etTo);
         setBusy(R.id.btn_search, true);

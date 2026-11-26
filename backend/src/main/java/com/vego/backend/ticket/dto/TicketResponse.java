@@ -12,6 +12,7 @@ import java.util.List;
  * cancellable + refundPercent + refundAmount: nếu hủy ngay lúc này thì hoàn bao nhiêu
  * (vé đã hủy thì refundAmount là số đã hoàn).
  * qrData: nội dung mã QR có chữ ký để nhà xe soát vé.
+ * exchangeable: còn đổi được sang chuyến / ngày / ghế khác (chưa đổi lần nào, còn từ 6 giờ trước giờ đi).
  */
 public record TicketResponse(
         String code,
@@ -39,7 +40,9 @@ public record TicketResponse(
         int coinsEarned,
         boolean canReview,
         ReviewInfo review,
-        String qrData) {
+        String qrData,
+        boolean exchangeable,
+        int exchangeCount) {
 
     public record ReviewInfo(int rating, List<String> tags, String comment, Instant createdAt) { }
 }

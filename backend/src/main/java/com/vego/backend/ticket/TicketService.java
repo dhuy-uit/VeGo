@@ -2,13 +2,20 @@ package com.vego.backend.ticket;
 
 import com.vego.backend.booking.Booking;
 import com.vego.backend.booking.BookingRepository;
+import com.vego.backend.booking.BookingService;
 import com.vego.backend.common.ApiException;
 import com.vego.backend.config.AppProperties;
 import com.vego.backend.home.HomeService;
+import com.vego.backend.home.Route;
+import com.vego.backend.home.Trip;
+import com.vego.backend.home.TripRepository;
+import com.vego.backend.home.dto.TripResponse;
 import com.vego.backend.notification.Notification;
 import com.vego.backend.notification.NotificationService;
+import com.vego.backend.ticket.dto.ExchangeRequest;
 import com.vego.backend.ticket.dto.ReviewRequest;
 import com.vego.backend.ticket.dto.TicketResponse;
+import com.vego.backend.trip.TripService;
 import com.vego.backend.trip.TripTimes;
 import com.vego.backend.wallet.CoinLedger;
 import com.vego.backend.wallet.CoinTransaction;
@@ -21,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -36,6 +44,8 @@ import java.util.stream.Collectors;
  * Vé của tôi: danh sách vé đã thanh toán, hủy vé (hoàn tiền theo chính sách), đánh giá nhà xe.
  * Chính sách hoàn tiền: hủy trước giờ khởi hành từ 24 giờ hoàn 80%, sát giờ hơn hoàn 50%;
  * đã qua giờ khởi hành thì không hủy được.
+ * Đổi vé: sang chuyến / ngày / ghế khác cùng tuyến và cùng giá vé, miễn phí, mỗi vé 1 lần,
+ * khi còn ít nhất 6 giờ trước giờ khởi hành (khác giá thì hủy vé và đặt lại).
  */
 @Service
 public class TicketService {
@@ -44,10 +54,16 @@ public class TicketService {
     public static final int REFUND_PERCENT_EARLY = 80;
     public static final int REFUND_PERCENT_LATE = 50;
     private static final Duration EARLY_CANCEL = Duration.ofHours(24);
+    /** Chỉ đổi vé khi còn ít nhất chừng này trước giờ khởi hành, và mỗi vé đổi tối đa MAX_EXCHANGES lần. */
+    public static final Duration EXCHANGE_MIN_LEAD = Duration.ofHours(6);
+    public static final int MAX_EXCHANGES = 1;
     private static final Set<String> TAGS = Set.of("CLEAN", "ONTIME", "STAFF");
     private static final DateTimeFormatter DAY = DateTimeFormatter.ofPattern("dd/MM");
 
     private final BookingRepository bookings;
+    private final BookingService bookingService;
+    private final TripRepository tripRepo;
+    private final TripService tripService;
     private final ReviewRepository reviews;
     private final NotificationService notifications;
     private final CoinLedger ledger;
@@ -55,9 +71,13 @@ public class TicketService {
     private final ZoneId zone;
     private final Clock clock;
 
-    public TicketService(BookingRepository bookings, ReviewRepository reviews, NotificationService notifications,
+    public TicketService(BookingRepository bookings, BookingService bookingService, TripRepository tripRepo,
+                         TripService tripService, ReviewRepository reviews, NotificationService notifications,
                          CoinLedger ledger, TicketQr qr, AppProperties props, Clock clock) {
         this.bookings = bookings;
+        this.bookingService = bookingService;
+        this.tripRepo = tripRepo;
+        this.tripService = tripService;
         this.reviews = reviews;
         this.notifications = notifications;
         this.ledger = ledger;
@@ -150,6 +170,74 @@ public class TicketService {
         return toResponse(b, r, now);
     }
 
+    // ---------- Đổi vé ----------
+
+    /** Các chuyến cùng tuyến, cùng giá vé trong một ngày để chọn khi đổi vé (gồm cả chuyến hiện tại, để đổi ghế). */
+    @Transactional(readOnly = true)
+    public List<TripResponse> exchangeTrips(long userId, String code, LocalDate date) {
+        Booking b = load(userId, code);
+        requireExchangeable(b, clock.instant());
+        Route route = b.getTrip().getRoute();
+        return tripService.search(route.getOriginCity(), route.getDestinationCity(), date,
+                new TripService.Filter(null, null, null, b.getFare(), b.getFare(), "DEPARTURE")).trips();
+    }
+
+    @Transactional
+    public TicketResponse exchange(long userId, String code, ExchangeRequest req) {
+        Booking b = load(userId, code);
+        bookings.lockById(b.getId());
+        Instant now = clock.instant();
+        requireExchangeable(b, now);
+
+        Trip target = tripRepo.findActiveWithDetails(req.tripId().trim())
+                .orElseThrow(() -> ApiException.notFound("TRIP_NOT_FOUND", "Không tìm thấy chuyến xe"));
+        if (!target.getRoute().getId().equals(b.getTrip().getRoute().getId())) {
+            throw ApiException.conflict("EXCHANGE_DIFFERENT_ROUTE", "tripId",
+                    "Chỉ đổi được sang chuyến cùng tuyến. Muốn đi tuyến khác, hãy hủy vé và đặt vé mới.");
+        }
+        if (target.getPrice() != b.getFare()) {
+            throw ApiException.conflict("EXCHANGE_DIFFERENT_FARE", "tripId",
+                    "Chỉ đổi được sang chuyến cùng giá vé (" + TicketEvents.money(b.getFare())
+                            + "). Chuyến khác giá thì hủy vé và đặt vé mới.");
+        }
+        String newSeat = BookingService.normalizeSeat(req.seat());
+        if (target.getId().equals(b.getTrip().getId()) && req.travelDate().equals(b.getTravelDate())
+                && newSeat.equals(b.getSeatCode())) {
+            throw ApiException.conflict("EXCHANGE_NO_CHANGE", "tripId", "Bạn chưa chọn chuyến, ngày hoặc ghế khác với vé hiện tại");
+        }
+
+        String before = describe(b);
+        bookingService.moveTo(b, target, req.travelDate(), newSeat, req.pickupLabel(), req.dropoffLabel());
+        notifications.push(userId, Notification.Kind.TICKET, "Đã đổi vé " + b.getCode(),
+                "Vé đã đổi sang " + describe(b) + " (trước đó: " + before + "). Mã QR cũ không còn dùng được, hãy dùng mã mới trong Vé điện tử.",
+                b.getCode());
+        log.info("Đổi vé {}: {} -> {}", b.getCode(), before, describe(b));
+        return toResponse(b, reviews.findByBookingId(b.getId()).orElse(null), now);
+    }
+
+    private String describe(Booking b) {
+        return b.getTrip().getOperator().getName() + " " + b.getTrip().getDepartTime().toString().substring(0, 5)
+                + " ngày " + DAY.format(b.getTravelDate()) + ", ghế " + b.getSeatCode();
+    }
+
+    private void requireExchangeable(Booking b, Instant now) {
+        if (b.isRefunded()) {
+            throw new ApiException(HttpStatus.CONFLICT, "TICKET_CANCELLED", "Vé này đã được hủy, không thể đổi");
+        }
+        Instant departure = TripTimes.departure(b.getTrip(), b.getTravelDate(), zone);
+        if (!departure.isAfter(now)) {
+            throw new ApiException(HttpStatus.CONFLICT, "TICKET_DEPARTED", "Chuyến xe đã khởi hành, không thể đổi vé");
+        }
+        if (b.getExchangeCount() >= MAX_EXCHANGES) {
+            throw new ApiException(HttpStatus.CONFLICT, "EXCHANGE_LIMIT",
+                    "Mỗi vé chỉ được đổi 1 lần. Muốn đổi tiếp, hãy hủy vé và đặt vé mới.");
+        }
+        if (Duration.between(now, departure).compareTo(EXCHANGE_MIN_LEAD) < 0) {
+            throw new ApiException(HttpStatus.CONFLICT, "EXCHANGE_TOO_LATE",
+                    "Chỉ đổi được vé khi còn ít nhất 6 giờ trước giờ khởi hành.");
+        }
+    }
+
     // ---------- Dùng chung ----------
 
     private Booking load(long userId, String code) {
@@ -178,6 +266,8 @@ public class TicketService {
         String status = status(b, now);
         Instant departure = TripTimes.departure(b.getTrip(), b.getTravelDate(), zone);
         boolean cancellable = "UPCOMING".equals(status);
+        boolean exchangeable = cancellable && b.getExchangeCount() < MAX_EXCHANGES
+                && Duration.between(now, departure).compareTo(EXCHANGE_MIN_LEAD) >= 0;
         int percent = cancellable ? refundPercent(departure, now) : 0;
         int refund = b.isRefunded() ? (b.getRefundAmount() == null ? 0 : b.getRefundAmount())
                 : cancellable ? refundAmount(b, departure, now) : 0;
@@ -190,6 +280,7 @@ public class TicketService {
                 b.getDropoffLabel(), b.getFare(), b.getDiscount(), b.getTotal(), b.getVoucherCode(),
                 b.getPaymentMethod(), TicketEvents.methodLabel(b.getPaymentMethod()), b.getPaidAt(), departure,
                 TripTimes.arrival(b.getTrip(), b.getTravelDate(), zone), cancellable, percent, refund,
-                b.getCancelledAt(), b.getCoinsEarned(), "COMPLETED".equals(status), reviewInfo, qr.payload(b));
+                b.getCancelledAt(), b.getCoinsEarned(), "COMPLETED".equals(status), reviewInfo, qr.payload(b), exchangeable,
+                b.getExchangeCount());
     }
 }

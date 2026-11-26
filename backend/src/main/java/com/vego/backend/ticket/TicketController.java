@@ -1,19 +1,24 @@
 package com.vego.backend.ticket;
 
 import com.vego.backend.security.AuthUser;
+import com.vego.backend.home.dto.TripResponse;
+import com.vego.backend.ticket.dto.ExchangeRequest;
 import com.vego.backend.ticket.dto.ReviewRequest;
 import com.vego.backend.ticket.dto.TicketResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -43,6 +48,20 @@ public class TicketController {
     @PostMapping("/{code}/cancel")
     public TicketResponse cancel(@AuthenticationPrincipal AuthUser me, @PathVariable String code) {
         return service.cancel(me.id(), code);
+    }
+
+    @Operation(summary = "Các chuyến có thể đổi sang trong một ngày (cùng tuyến, cùng giá vé)")
+    @GetMapping("/{code}/exchange/trips")
+    public List<TripResponse> exchangeTrips(@AuthenticationPrincipal AuthUser me, @PathVariable String code,
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return service.exchangeTrips(me.id(), code, date);
+    }
+
+    @Operation(summary = "Đổi vé sang chuyến / ngày / ghế khác cùng tuyến, cùng giá (miễn phí, 1 lần, còn từ 6 giờ)")
+    @PostMapping("/{code}/exchange")
+    public TicketResponse exchange(@AuthenticationPrincipal AuthUser me, @PathVariable String code,
+                                   @Valid @RequestBody ExchangeRequest req) {
+        return service.exchange(me.id(), code, req);
     }
 
     @Operation(summary = "Đánh giá nhà xe sau chuyến đi (gửi lại để sửa)")

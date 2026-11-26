@@ -70,7 +70,7 @@
 | **03** | Tìm chuyến → Danh sách → Bộ lọc → Chi tiết → Chọn ghế → Hành khách → Xác nhận → Thanh toán → Kết quả | Sắp xếp và lọc chuyến, chọn chuyến rồi mới hiện nút "Chọn chuyến", sơ đồ ghế 2 tầng, giữ chỗ 5 phút có đếm ngược và cảnh báo, cổng thanh toán giả lập thành công/thất bại |
 | **04** | Vé của tôi · Vé điện tử · Hủy vé · Đánh giá · Thông báo | Mã QR thật, lưu vé vào thư viện ảnh, tính tiền hoàn theo chính sách, đánh giá sao, đánh dấu đã đọc |
 | **05** | Gợi ý · Dành riêng cho bạn | Gợi ý chuyến dựa trên lịch sử đi: cùng tuyến, cùng nhà xe, cùng buổi |
-| **06** | Ví xu · Điểm danh · Game · Kết quả game · Đổi voucher | Chuỗi điểm danh 7 ngày, game chạy nhảy kiểu khủng long Chrome (10 điểm = 1 xu), đổi xu lấy voucher, đặt vé được cộng xu |
+| **06** | Ví xu · Điểm danh · Game · Kết quả game · Đổi voucher | Chuỗi điểm danh 7 ngày, game chạy nhảy kiểu khủng long Chrome (25 điểm = 1 xu, tối đa 500 điểm/lượt, 1 lượt/ngày), đổi xu lấy voucher, đặt vé được cộng xu |
 | **07** | Hỗ trợ AI | Câu hỏi nhanh, trả lời có ghi nguồn, tra cứu vé ngay trong chat, chuyển nhân viên (gọi hotline / gửi yêu cầu), đánh giá câu trả lời |
 
 ---

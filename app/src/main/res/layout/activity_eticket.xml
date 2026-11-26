@@ -219,6 +219,11 @@
                 android:text="@string/eticket_save" />
 
             <TextView
+                android:id="@+id/btn_exchange_ticket"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/eticket_exchange" />
+
+            <TextView
                 android:id="@+id/btn_cancel_ticket"
                 style="@style/VeGo.Button.Outline"
                 android:text="@string/eticket_cancel"

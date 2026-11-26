@@ -2381,7 +2381,7 @@
     },
     {
       "name": "5. Đặt vé, mã giảm giá & thanh toán",
-      "description": "Giữ ghế 5 phút, áp mã giảm giá, tạo thanh toán MoMo / VNPay (sandbox). Trên CI server chạy chế độ mô phỏng để đi hết luồng thanh toán thành công.",
+      "description": "Giữ ghế 5 phút, áp mã giảm giá, tạo thanh toán VNPay (sandbox). Trên CI server chạy chế độ mô phỏng để đi hết luồng thanh toán thành công.",
       "item": [
         {
           "name": "Mã giảm giá đang có",
@@ -3216,6 +3216,65 @@
           ]
         },
         {
+          "name": "Tạo thanh toán MoMo (đã bỏ, bị từ chối)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingCode}}",
+                "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"method\": \"MOMO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 400 (Bad Request)', () => pm.response.to.have.status(400));",
+                  "",
+                  "const err = pm.response.json();",
+                  "pm.test('Mã lỗi VALIDATION_ERROR', () => pm.expect(err.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('Báo lỗi ở ô method', () => pm.expect(err.fieldErrors).to.have.property('method'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Tạo thanh toán VNPay",
           "request": {
             "method": "POST",
@@ -3273,67 +3332,6 @@
                   "    if (p.provider === 'VNPAY') {",
                   "        pm.expect(p.payUrl).to.include('vnp_Amount=29000000').and.include('vnp_SecureHash=');",
                   "    }",
-                  "});"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "Tạo thanh toán MoMo",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/bookings/{{bookingCode}}/payments",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "bookings",
-                "{{bookingCode}}",
-                "payments"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"method\": \"MOMO\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Mã trạng thái 201 (Created)', () => pm.response.to.have.status(201));",
-                  "",
-                  "const p = pm.response.json();",
-                  "pm.test('Có link thanh toán MoMo', () => {",
-                  "    pm.expect(p.provider).to.be.oneOf(['MOMO', 'SIMULATED']);",
-                  "    if (p.provider === 'MOMO') pm.expect(p.payUrl).to.include('momo.vn');",
                   "});",
                   "pm.collectionVariables.set('txnRef', p.txnRef);",
                   "pm.collectionVariables.set('payProvider', p.provider);"
@@ -3369,7 +3367,7 @@
             "auth": {
               "type": "noauth"
             },
-            "description": "Chỉ chạy khi server bật PAYMENT_SIMULATE=true (CI). Trên server thật, thanh toán qua trang MoMo/VNPay."
+            "description": "Chỉ chạy khi server bật PAYMENT_SIMULATE=true (CI). Trên server thật, thanh toán qua trang VNPay."
           },
           "event": [
             {
@@ -3441,7 +3439,7 @@
                   "const b = pm.response.json();",
                   "pm.test('Đã thanh toán', () => {",
                   "    pm.expect(b.status).to.eql('PAID');",
-                  "    pm.expect(b.paymentMethod).to.eql('MOMO');",
+                  "    pm.expect(b.paymentMethod).to.eql('VNPAY');",
                   "    pm.expect(b.lastPayment.status).to.eql('SUCCESS');",
                   "});"
                 ]
@@ -3639,7 +3637,7 @@
                   "pm.test('Đúng vé, đã cộng xu', () => {",
                   "    pm.expect(t.code).to.eql(pm.collectionVariables.get('bookingCode'));",
                   "    pm.expect(t.coinsEarned).to.eql(Math.floor(t.total / 1000));",
-                  "    pm.expect(t.paymentMethodLabel).to.eql('MoMo');",
+                  "    pm.expect(t.paymentMethodLabel).to.eql('VNPay');",
                   "});",
                   "pm.collectionVariables.set('refundExpected', t.refundAmount);"
                 ]
@@ -3915,6 +3913,268 @@
           ]
         },
         {
+          "name": "Chuyến có thể đổi sang (cùng tuyến, cùng giá)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/exchange/trips?date={{travelDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "exchange",
+                "trips"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{travelDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Chỉ chạy khi server bật PAYMENT_SIMULATE=true (CI), vì cần vé đã thanh toán."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const trips = pm.response.json();",
+                  "pm.test('Chỉ gồm chuyến cùng giá 320.000đ, có chuyến hiện tại để đổi ghế', () => {",
+                  "    pm.expect(trips).to.be.an('array').and.not.empty;",
+                  "    trips.forEach(t => pm.expect(t.price).to.eql(320000));",
+                  "    pm.expect(trips.map(t => t.id)).to.include('PT2200');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sơ đồ ghế để chọn ghế mới",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trips/PT2200/seats?date={{travelDate}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "trips",
+                "PT2200",
+                "seats"
+              ],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{travelDate}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const m = pm.response.json();",
+                  "const mine = pm.collectionVariables.get('seat');",
+                  "const free = m.decks.flatMap(d => d.rows.flat()).filter(s => s.available && s.code !== mine);",
+                  "pm.test('Còn ghế trống khác để đổi', () => pm.expect(free).to.not.be.empty);",
+                  "pm.collectionVariables.set('newSeat', free.length ? free[0].code : '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đổi vé sang ghế khác",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/exchange",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "exchange"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{newSeat}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
+                  "const t = pm.response.json();",
+                  "pm.test('Vé đã đổi ghế, đã dùng hết lượt đổi', () => {",
+                  "    pm.expect(t.seat).to.eql(pm.collectionVariables.get('newSeat'));",
+                  "    pm.expect(t.status).to.eql('UPCOMING');",
+                  "    pm.expect(t.exchangeable).to.eql(false);",
+                  "    pm.expect(t.exchangeCount).to.eql(1);",
+                  "    pm.expect(t.qrData).to.include(t.seat);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Đổi vé lần nữa (bị chặn)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tickets/{{bookingCode}}/exchange",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "tickets",
+                "{{bookingCode}}",
+                "exchange"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"PT2200\",\n  \"travelDate\": \"{{travelDate}}\",\n  \"seat\": \"{{seat}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('payProvider') !== 'SIMULATED') { pm.execution.skipRequest(); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Mã trạng thái 409 (Conflict)', () => pm.response.to.have.status(409));",
+                  "pm.test('Mã lỗi EXCHANGE_LIMIT', () => pm.expect(pm.response.json().code).to.eql('EXCHANGE_LIMIT'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Hủy vé (hoàn 80%)",
           "request": {
             "method": "POST",
@@ -4104,7 +4364,7 @@
                   "const w = pm.response.json();",
                   "pm.test('Có quà chào mừng 500 xu trong lịch sử', () =>",
                   "    pm.expect(w.history.map(h => h.source)).to.include('WELCOME'));",
-                  "pm.test('2 lượt chơi mỗi ngày', () => pm.expect(w.gameTurnsPerDay).to.eql(2));",
+                  "pm.test('1 lượt chơi mỗi ngày', () => pm.expect(w.gameTurnsPerDay).to.eql(1));",
                   "pm.collectionVariables.set('coinBalance', w.balance);"
                 ]
               }
@@ -4282,7 +4542,7 @@
                 "exec": [
                   "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
                   "const g = pm.response.json();",
-                  "pm.test('Còn 1 lượt', () => pm.expect(g.turnsLeft).to.eql(1));",
+                  "pm.test('Hết lượt trong ngày (1 lượt/ngày)', () => pm.expect(g.turnsLeft).to.eql(0));",
                   "pm.collectionVariables.set('playId', g.playId);"
                 ]
               }
@@ -4341,11 +4601,11 @@
                 "exec": [
                   "pm.test('Mã trạng thái 200 (OK)', () => pm.response.to.have.status(200));",
                   "const r = pm.response.json();",
-                  "pm.test('10 điểm = 1 xu', () => {",
+                  "pm.test('25 điểm = 1 xu', () => {",
                   "    pm.expect(r.score).to.eql(150);",
-                  "    pm.expect(r.coins).to.eql(15);",
+                  "    pm.expect(r.coins).to.eql(6);",
                   "    pm.expect(r.newBest).to.eql(true);",
-                  "    pm.expect(r.balance).to.eql(Number(pm.collectionVariables.get('coinBalance')) + 15);",
+                  "    pm.expect(r.balance).to.eql(Number(pm.collectionVariables.get('coinBalance')) + 6);",
                   "});",
                   "pm.collectionVariables.set('coinBalance', r.balance);"
                 ]
@@ -5652,6 +5912,10 @@
     },
     {
       "key": "adminDate",
+      "value": ""
+    },
+    {
+      "key": "newSeat",
       "value": ""
     }
   ]

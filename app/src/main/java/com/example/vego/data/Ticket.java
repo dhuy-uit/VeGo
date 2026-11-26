@@ -39,6 +39,8 @@ public class Ticket {
     public final int refundAmount;
     public final int refundPercent;
     public final boolean cancellable;
+    /** Còn đổi được sang chuyến / ngày / ghế khác (chưa đổi lần nào, còn từ 6 giờ trước giờ đi). */
+    public final boolean exchangeable;
     public final boolean canReview;
     /** Số sao đã đánh giá, 0 = chưa đánh giá. */
     public final int rating;
@@ -72,6 +74,7 @@ public class Ticket {
         refundAmount = t.refundAmount;
         refundPercent = t.refundPercent;
         cancellable = t.cancellable;
+        exchangeable = t.exchangeable;
         canReview = t.canReview;
         rating = t.review != null ? t.review.rating : 0;
         reviewTags = t.review != null && t.review.tags != null ? new ArrayList<>(t.review.tags) : new ArrayList<>();

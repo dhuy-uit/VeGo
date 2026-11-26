@@ -48,7 +48,7 @@ public class GameResultActivity extends BaseActivity {
         boolean newBest = getIntent().getBooleanExtra(EXTRA_NEW_BEST, false);
 
         ((TextView) findViewById(R.id.tv_result_heading)).setText(
-                score >= 500 ? R.string.game_result_great
+                score >= CoinWallet.MAX_SCORE_PER_GAME ? R.string.game_result_great
                         : earned > 0 ? R.string.game_result_ok : R.string.game_result_low);
         ((TextView) findViewById(R.id.tv_result_body)).setText(
                 earned > 0 ? R.string.game_result_body : R.string.game_result_body_zero);

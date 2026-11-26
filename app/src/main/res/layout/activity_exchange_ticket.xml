@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Đổi vé: đổi ngày, giờ (chuyến khác) hoặc ghế; chuyến mới cùng tuyến và cùng giá vé -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vego_surface"
+    tools:context=".tickets.ExchangeTicketActivity">
+
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/VeGo.Header"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            style="@style/VeGo.HeaderIconButton"
+            android:layout_marginStart="-10dp"
+            android:contentDescription="@string/cd_back"
+            android:src="@drawable/ic_arrow_left" />
+
+        <TextView
+            style="@style/VeGo.Text.ScreenTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:text="@string/exchange_title" />
+    </LinearLayout>
+
+    <ScrollView
+        style="@style/VeGo.ScrollArea"
+        android:layout_below="@id/header">
+
+        <LinearLayout style="@style/VeGo.Content">
+
+            <TextView
+                style="@style/VeGo.Text.H2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exchange_heading" />
+
+            <TextView
+                style="@style/VeGo.Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exchange_subtitle" />
+
+            <!-- Vé hiện tại -->
+            <LinearLayout style="@style/VeGo.Card">
+
+                <TextView
+                    style="@style/VeGo.Badge.Mint"
+                    android:text="@string/exchange_badge" />
+
+                <TextView
+                    android:id="@+id/tv_route"
+                    style="@style/VeGo.Text.BodyStrong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="TP. Hồ Chí Minh → Đà Lạt" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_ticket_code"
+                    app:irValue="VG18102605" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_operator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_operator"
+                    app:irValue="Phương Trang" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_depart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_depart"
+                    app:irValue="22:00 · 18/10/2026" />
+
+                <com.example.vego.common.widget.InfoRowView
+                    android:id="@+id/row_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:irLabel="@string/label_booked_seat"
+                    app:irValue="A05" />
+            </LinearLayout>
+
+            <!-- Điều kiện đổi vé -->
+            <LinearLayout style="@style/VeGo.InfoBox">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_info" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:divider="@drawable/space_4"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <TextView
+                        style="@style/VeGo.Text.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/exchange_rules_title" />
+
+                    <TextView
+                        style="@style/VeGo.Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/exchange_rules_body" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Ngày đi mới -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exchange_label_date" />
+
+                <RelativeLayout
+                    android:id="@+id/field_date"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_date"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_calendar_days" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_date"
+                        android:paddingEnd="10dp"
+                        tools:text="Chủ nhật, 18/10/2026" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <!-- Chuyến cùng tuyến, cùng giá -->
+            <TextView
+                style="@style/VeGo.Text.Section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exchange_choose_trip" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                style="@style/VeGo.Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/exchange_loading"
+                android:textSize="13sp" />
+
+            <!-- Các dòng chuyến được thêm trong ExchangeTicketActivity -->
+            <LinearLayout
+                android:id="@+id/list_trips"
+                style="@style/VeGo.Card"
+                android:visibility="gone" />
+
+            <!-- Ghế mới -->
+            <LinearLayout style="@style/VeGo.Field">
+
+                <TextView
+                    style="@style/VeGo.Text.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exchange_label_seat" />
+
+                <RelativeLayout
+                    android:id="@+id/field_seat"
+                    style="@style/VeGo.InputBox"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:id="@+id/ic_seat"
+                        style="@style/VeGo.InputIcon"
+                        android:src="@drawable/ic_chevron_down" />
+
+                    <TextView
+                        android:id="@+id/tv_seat"
+                        style="@style/VeGo.InputText"
+                        android:layout_toStartOf="@id/ic_seat"
+                        android:hint="@string/exchange_hint_seat"
+                        android:paddingEnd="10dp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_confirm_exchange"
+                style="@style/VeGo.Button.Primary"
+                android:text="@string/exchange_confirm" />
+
+            <TextView
+                android:id="@+id/btn_keep"
+                style="@style/VeGo.Button.Outline"
+                android:text="@string/exchange_keep" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

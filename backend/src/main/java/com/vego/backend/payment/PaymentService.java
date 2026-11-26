@@ -35,20 +35,18 @@ public class PaymentService {
     private final BookingRepository bookings;
     private final BookingService bookingService;
     private final VnPayGateway vnpay;
-    private final MoMoGateway momo;
     private final PaymentProperties props;
     private final UrlBuilder urls;
     private final TicketEvents ticketEvents;
     private final Clock clock;
 
     public PaymentService(PaymentRepository payments, BookingRepository bookings, BookingService bookingService,
-                          VnPayGateway vnpay, MoMoGateway momo, PaymentProperties props, UrlBuilder urls,
+                          VnPayGateway vnpay, PaymentProperties props, UrlBuilder urls,
                           TicketEvents ticketEvents, Clock clock) {
         this.payments = payments;
         this.bookings = bookings;
         this.bookingService = bookingService;
         this.vnpay = vnpay;
-        this.momo = momo;
         this.props = props;
         this.urls = urls;
         this.ticketEvents = ticketEvents;
@@ -75,9 +73,6 @@ public class PaymentService {
         String payUrl = switch (provider) {
             case VNPAY -> vnpay.createPayUrl(payment, orderInfo,
                     urls.absolute("/api/v1/payments/vnpay/return"), clientIp, now, booking.getHoldExpiresAt());
-            case MOMO -> momo.createPayUrl(payment, orderInfo,
-                    urls.absolute("/api/v1/payments/momo/return"), urls.absolute("/api/v1/payments/momo/ipn"),
-                    Duration.between(now, booking.getHoldExpiresAt()).toMinutes());
             case SIMULATED -> urls.absolute("/payment-sim.html?ref=" + payment.getTxnRef()
                     + "&method=" + method.name() + "&amount=" + payment.getAmount());
         };
@@ -136,7 +131,6 @@ public class PaymentService {
     private Payment.Provider providerFor(Payment.Method method) {
         if (props.simulate()) return Payment.Provider.SIMULATED;
         return switch (method) {
-            case MOMO -> momo.configured() ? Payment.Provider.MOMO : Payment.Provider.SIMULATED;
             case VNPAY, CARD -> vnpay.configured() ? Payment.Provider.VNPAY : Payment.Provider.SIMULATED;
         };
     }

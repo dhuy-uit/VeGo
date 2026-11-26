@@ -137,7 +137,19 @@ public class TripService {
         return CityNames.normalize(query).equals(CityNames.normalize(city)) ? 0 : 1;
     }
 
-    /** Các thành phố có tuyến (gợi ý khi gõ điểm đi / đến). */
+    /** Cặp điểm đi - điểm đến đang có tuyến (để app cho chọn điểm đi / đến, không cho gõ tự do). */
+    @Transactional(readOnly = true)
+    public List<RoutePair> routePairs() {
+        return routes.findByActiveTrue().stream()
+                .map(r -> new RoutePair(r.getOriginCity(), r.getDestinationCity()))
+                .distinct()
+                .sorted(Comparator.comparing(RoutePair::origin).thenComparing(RoutePair::destination))
+                .toList();
+    }
+
+    public record RoutePair(String origin, String destination) { }
+
+    /** Các thành phố có tuyến. */
     @Transactional(readOnly = true)
     public List<String> cities() {
         return routes.findByActiveTrue().stream()

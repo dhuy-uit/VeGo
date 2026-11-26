@@ -129,6 +129,45 @@ public class BookingService {
         return toResponse(b);
     }
 
+    /**
+     * Chuyển một vé đã thanh toán sang chuyến / ngày / ghế khác (đổi vé). Kiểm tra giống lúc giữ ghế:
+     * chuyến chạy ngày đó, còn xa giờ đi, ghế có trên xe và còn trống. Trả về lỗi SEAT_TAKEN nếu ghế vừa bị người khác lấy.
+     */
+    @Transactional
+    public void moveTo(Booking b, Trip trip, LocalDate date, String rawSeat, String pickup, String dropoff) {
+        Instant now = clock.instant();
+        if (!trip.runsOn(date)) {
+            throw ApiException.field("TRIP_NOT_RUNNING", "travelDate", "Chuyến này không chạy vào ngày đã chọn");
+        }
+        LocalDateTime departure = date.atTime(trip.getDepartTime());
+        if (departure.isBefore(LocalDateTime.now(clock.withZone(zone)).plus(MIN_LEAD_TIME))) {
+            throw ApiException.field("TRIP_DEPARTED", "travelDate",
+                    "Chuyến này đã khởi hành hoặc sắp khởi hành, vui lòng chọn chuyến khác");
+        }
+        if (date.isAfter(LocalDate.now(clock.withZone(zone)).plusDays(60))) {
+            throw ApiException.field("DATE_TOO_FAR", "travelDate", "Chỉ đặt vé trước tối đa 60 ngày");
+        }
+        String seat = normalizeSeat(rawSeat);
+        if (!seats.exists(trip, seat)) {
+            throw ApiException.field("INVALID_SEAT", "seat", "Xe này không có ghế " + seat);
+        }
+        if (seats.presold(trip, date).contains(seat)) throw seatTaken(seat);
+        bookings.expireHolds(now);
+        if (bookings.seatTaken(trip.getId(), date, seat, b.getId(), now)) throw seatTaken(seat);
+
+        b.setTrip(trip);
+        b.setTravelDate(date);
+        b.setSeatCode(seat);
+        b.setPickupLabel(orDefault(pickup, trip.getPickupStation().getName()));
+        b.setDropoffLabel(orDefault(dropoff, trip.getDropoffStation().getName()));
+        b.markExchanged(now);
+        try {
+            bookings.saveAndFlush(b);
+        } catch (DataIntegrityViolationException e) {
+            throw seatTaken(seat);
+        }
+    }
+
     @Transactional
     public BookingResponse get(long userId, String code) {
         return toResponse(refresh(load(userId, code)));
@@ -239,7 +278,7 @@ public class BookingService {
     }
 
     /** "a5" / "A05" -> "A05". */
-    static String normalizeSeat(String raw) {
+    public static String normalizeSeat(String raw) {
         String s = raw.trim().toUpperCase(Locale.ROOT);
         return s.length() == 2 ? s.charAt(0) + "0" + s.charAt(1) : s;
     }

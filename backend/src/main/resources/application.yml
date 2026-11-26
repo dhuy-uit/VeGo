@@ -79,14 +79,6 @@ app:
       tmn-code: ${VNPAY_TMN_CODE:}
       hash-secret: ${VNPAY_HASH_SECRET:}
       pay-url: ${VNPAY_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
-    momo:
-      # Mặc định: tài khoản test dùng chung của MoMo (môi trường test-payment.momo.vn, không phải tiền thật)
-      partner-code: ${MOMO_PARTNER_CODE:MOMO}
-      access-key: ${MOMO_ACCESS_KEY:F8BBA842ECF85}
-      secret-key: ${MOMO_SECRET_KEY:K951B6PE1waDMi640xX08PD3vg6EkVlz}
-      endpoint: ${MOMO_ENDPOINT:https://test-payment.momo.vn/v2/gateway/api/create}
-      # payWithMethod: trang MoMo cho chọn ví (quét QR) / thẻ ATM / thẻ quốc tế
-      request-type: ${MOMO_REQUEST_TYPE:payWithMethod}
   # Dữ liệu minh họa cho dashboard web admin: khách mẫu + vé đã đi 365 ngày gần nhất, lượt xem đề xuất,
   # phân công tài xế 7 ngày tới. Tắt bằng ADMIN_DEMO=false (dữ liệu đã tạo vẫn giữ; khách mẫu có users.demo = true).
   admin-demo:

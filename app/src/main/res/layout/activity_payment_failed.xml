@@ -60,7 +60,7 @@
                 <TextView
                     android:id="@+id/tv_failed_body"
                     style="@style/VeGo.Text.ResultBody"
-                    tools:text="Giao dịch MoMo không hoàn tất. Bạn chưa có vé được xác nhận." />
+                    tools:text="Giao dịch VNPay không hoàn tất. Bạn chưa có vé được xác nhận." />
             </LinearLayout>
 
             <TextView

@@ -19,7 +19,7 @@ public final class BookingDraft {
     public static final long HOLD_DURATION_MS = 5 * 60 * 1000L;
 
     public enum PaymentMethod {
-        MOMO("MoMo"), VNPAY("VNPay"), CARD("Thẻ ngân hàng");
+        VNPAY("VNPay");
 
         public final String label;
 
@@ -59,7 +59,7 @@ public final class BookingDraft {
     // Bước 4: giữ chỗ và thanh toán
     /** Mốc hết giờ giữ ghế (theo SystemClock.elapsedRealtime), 0 = chưa giữ. */
     private long holdUntil = 0;
-    public PaymentMethod paymentMethod = PaymentMethod.MOMO;
+    public PaymentMethod paymentMethod = PaymentMethod.VNPAY;
 
     // Đơn trên server (POST /api/v1/bookings)
     /** Mã vé của đơn đang giữ trên server, null = chưa giữ ghế trên server. */

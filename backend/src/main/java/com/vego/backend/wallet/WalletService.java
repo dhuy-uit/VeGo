@@ -28,10 +28,11 @@ public class WalletService {
 
     /** Thưởng điểm danh theo ngày trong chu kỳ 7 ngày (ngày 7 thưởng lớn). */
     public static final int[] CHECK_IN_REWARDS = {20, 20, 20, 20, 20, 20, 50};
-    public static final int GAME_TURNS_PER_DAY = 2;
-    /** 10 điểm = 1 xu, tối đa 100 xu mỗi lượt. */
-    public static final int POINTS_PER_COIN = 10;
-    public static final int MAX_COINS_PER_GAME = 100;
+    public static final int GAME_TURNS_PER_DAY = 1;
+    /** Mỗi lượt chơi tối đa 500 điểm; 25 điểm = 1 xu nên tối đa 20 xu mỗi lượt (voucher không còn quá rẻ). */
+    public static final int MAX_SCORE_PER_GAME = 500;
+    public static final int POINTS_PER_COIN = 25;
+    public static final int MAX_COINS_PER_GAME = MAX_SCORE_PER_GAME / POINTS_PER_COIN;
     /** Giới hạn điểm hợp lý: tối đa 100 điểm mỗi giây chơi (chống gửi điểm giả). */
     private static final int MAX_POINTS_PER_SECOND = 100;
     private static final int HISTORY_LIMIT = 50;
@@ -172,7 +173,7 @@ public class WalletService {
         int bestBefore = games.bestScore(userId);
         Instant now = clock.instant();
         long seconds = Math.max(1, Duration.between(play.getStartedAt(), now).toSeconds());
-        int score = (int) Math.min(rawScore, seconds * MAX_POINTS_PER_SECOND + 100);
+        int score = (int) Math.max(0, Math.min(Math.min(rawScore, MAX_SCORE_PER_GAME), seconds * MAX_POINTS_PER_SECOND + 100));
         int coins = coinsForScore(score);
         play.finish(now, score, coins);
         games.saveAndFlush(play);

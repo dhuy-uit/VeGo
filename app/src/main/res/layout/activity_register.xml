@@ -65,8 +65,7 @@
                         style="@style/VeGo.InputText"
                         android:autofillHints="name"
                         android:hint="@string/hint_full_name"
-                        android:inputType="textPersonName|textCapWords"
-                        android:text="Nguyễn Minh Anh" />
+                        android:inputType="textPersonName|textCapWords" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -94,8 +93,7 @@
                         android:autofillHints="phone"
                         android:hint="@string/hint_phone"
                         android:inputType="phone"
-                        android:paddingEnd="10dp"
-                        android:text="090 123 4567" />
+                        android:paddingEnd="10dp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -123,8 +121,7 @@
                         android:autofillHints="emailAddress"
                         android:hint="@string/hint_email"
                         android:inputType="textEmailAddress"
-                        android:paddingEnd="10dp"
-                        android:text="minhanh@gmail.com" />
+                        android:paddingEnd="10dp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -153,8 +150,7 @@
                         android:autofillHints="newPassword"
                         android:hint="@string/hint_password"
                         android:inputType="textPassword"
-                        android:paddingEnd="2dp"
-                        android:text="vego123456" />
+                        android:paddingEnd="2dp" />
                 </RelativeLayout>
 
                 <TextView
@@ -191,8 +187,7 @@
                         android:hint="@string/hint_confirm_password"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
-                        android:paddingEnd="2dp"
-                        android:text="vego123456" />
+                        android:paddingEnd="2dp" />
                 </RelativeLayout>
             </LinearLayout>
 

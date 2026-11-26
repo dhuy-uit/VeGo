@@ -62,7 +62,6 @@ public class TicketEvents {
     public static String methodLabel(String method) {
         if (method == null) return "";
         return switch (method) {
-            case "MOMO" -> "MoMo";
             case "VNPAY" -> "VNPay";
             case "CARD" -> "Thẻ ngân hàng";
             default -> method;

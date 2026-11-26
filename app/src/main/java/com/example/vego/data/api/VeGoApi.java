@@ -123,6 +123,10 @@ public interface VeGoApi {
     @GET("api/v1/trips/{id}/stops")
     Call<ApiModels.TripStops> tripStops(@Path("id") String tripId);
 
+    /** Các tuyến đang bán: app chỉ cho chọn điểm đi / đến trong danh sách này. */
+    @GET("api/v1/routes")
+    Call<List<ApiModels.RoutePair>> routes();
+
     @GET("api/v1/stations")
     Call<List<ApiModels.Station>> stations(@Query("city") String city);
 
@@ -144,6 +148,13 @@ public interface VeGoApi {
 
     @POST("api/v1/tickets/{code}/cancel")
     Call<ApiModels.Ticket> cancelTicket(@Path("code") String code);
+
+    /** Chuyến cùng tuyến, cùng giá vé trong một ngày để đổi vé (409 nếu vé không còn đổi được). */
+    @GET("api/v1/tickets/{code}/exchange/trips")
+    Call<List<ApiModels.TripDto>> exchangeTrips(@Path("code") String code, @Query("date") String date);
+
+    @POST("api/v1/tickets/{code}/exchange")
+    Call<ApiModels.Ticket> exchangeTicket(@Path("code") String code, @Body ApiModels.ExchangeRequest body);
 
     @POST("api/v1/tickets/{code}/review")
     Call<ApiModels.Ticket> reviewTicket(@Path("code") String code, @Body ApiModels.ReviewRequest body);

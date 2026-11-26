@@ -108,7 +108,7 @@ public final class ApiModels {
     }
 
     public static class CreatePaymentRequest {
-        /** MOMO | VNPAY | CARD */
+        /** VNPAY */
         public final String method;
 
         public CreatePaymentRequest(String method) {
@@ -291,6 +291,11 @@ public final class ApiModels {
         public boolean available;
     }
 
+    /** Một tuyến đang bán (GET /api/v1/routes). */
+    public static class RoutePair {
+        public String origin, destination;
+    }
+
     public static class Station {
         public int id;
         public String city, name, address;
@@ -322,10 +327,21 @@ public final class ApiModels {
         public String travelDate, seat, passengerName, passengerPhone, pickupLabel, dropoffLabel;
         public int fare, discount, total;
         @Nullable public String voucherCode, paymentMethod, paymentMethodLabel;
-        public boolean cancellable, canReview;
-        public int refundPercent, refundAmount, coinsEarned;
+        public boolean cancellable, canReview, exchangeable;
+        public int refundPercent, refundAmount, coinsEarned, exchangeCount;
         @Nullable public ReviewInfo review;
         public String qrData;
+    }
+
+    /** Body của POST /api/v1/tickets/{code}/exchange. */
+    public static class ExchangeRequest {
+        public final String tripId, travelDate, seat;
+
+        public ExchangeRequest(String tripId, String travelDate, String seat) {
+            this.tripId = tripId;
+            this.travelDate = travelDate;
+            this.seat = seat;
+        }
     }
 
     public static class ReviewInfo {

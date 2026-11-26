@@ -71,6 +71,12 @@ public class TripController {
         return trips.cities();
     }
 
+    @Operation(summary = "Các tuyến đang bán (điểm đi → điểm đến) để app cho chọn, không cho gõ tự do")
+    @GetMapping("/api/v1/routes")
+    public List<TripService.RoutePair> routes() {
+        return trips.routePairs();
+    }
+
     @Operation(summary = "Chi tiết một chuyến trong ngày (số ghế trống theo ngày)")
     @GetMapping("/api/v1/trips/{tripId}")
     public TripResponse get(@PathVariable String tripId,

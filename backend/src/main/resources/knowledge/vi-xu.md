@@ -4,7 +4,7 @@ source: Theo Hướng dẫn Ví xu
 ## Cách kiếm xu
 Đặt vé: cứ 1.000đ thanh toán được 1 xu.
 Điểm danh hằng ngày: 20 xu mỗi ngày, riêng ngày thứ 7 liên tiếp được 50 xu. Bỏ một ngày thì chuỗi điểm danh tính lại từ đầu.
-Game Khủng long phiêu lưu: 2 lượt mỗi ngày, 10 điểm đổi được 1 xu, tối đa 100 xu mỗi lượt.
+Game Khủng long phiêu lưu: mỗi ngày chơi 1 lượt, mỗi lượt tối đa 500 điểm, 25 điểm đổi được 1 xu nên tối đa 20 xu mỗi lượt.
 Tài khoản mới được tặng 500 xu chào mừng.
 
 ## Đổi xu lấy voucher

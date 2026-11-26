@@ -12,14 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,15 +33,13 @@ public class PaymentCallbackController {
     private final PaymentService payments;
     private final PaymentRepository paymentRepo;
     private final VnPayGateway vnpay;
-    private final MoMoGateway momo;
     private final UrlBuilder urls;
 
     public PaymentCallbackController(PaymentService payments, PaymentRepository paymentRepo, VnPayGateway vnpay,
-                                     MoMoGateway momo, UrlBuilder urls) {
+                                     UrlBuilder urls) {
         this.payments = payments;
         this.paymentRepo = paymentRepo;
         this.vnpay = vnpay;
-        this.momo = momo;
         this.urls = urls;
     }
 
@@ -93,41 +89,6 @@ public class PaymentCallbackController {
             case "13", "79" -> "Nhập sai mật khẩu/OTP quá số lần quy định";
             default -> "Thanh toán VNPay không thành công (mã " + code + ")";
         };
-    }
-
-    // ---------- MoMo ----------
-
-    @Operation(summary = "MoMo IPN (MoMo tự gọi theo ipnUrl gửi kèm khi tạo giao dịch)")
-    @PostMapping("/api/v1/payments/momo/ipn")
-    public ResponseEntity<Void> momoIpn(@RequestBody Map<String, Object> body) {
-        Map<String, String> p = new HashMap<>();
-        body.forEach((k, v) -> p.put(k, v == null ? "" : String.valueOf(v)));
-        if (momo.verify(p)) {
-            completeMomo(p);
-        } else {
-            log.warn("MoMo IPN sai chữ ký: {}", p.get("orderId"));
-        }
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "MoMo chuyển người dùng về sau khi thanh toán")
-    @GetMapping("/api/v1/payments/momo/return")
-    public ResponseEntity<Void> momoReturn(@RequestParam Map<String, String> params) {
-        if (!momo.verify(params)) {
-            log.warn("MoMo return sai chữ ký: {}", params.get("orderId"));
-            return redirect(null, "invalid");
-        }
-        PaymentService.Result r = completeMomo(params);
-        return redirect(r.bookingCode(), r.success() ? "success" : "failed");
-    }
-
-    private PaymentService.Result completeMomo(Map<String, String> p) {
-        String code = p.getOrDefault("resultCode", "");
-        boolean success = "0".equals(code) || "9000".equals(code);
-        String message = success ? "Thanh toán MoMo thành công"
-                : "1006".equals(code) ? "Bạn đã hủy giao dịch" : "MoMo: " + p.getOrDefault("message", "giao dịch thất bại");
-        return payments.complete(p.getOrDefault("orderId", ""), parseLong(p.get("amount")), success,
-                p.get("transId"), code, message);
     }
 
     // ---------- Mô phỏng (demo / CI) ----------
