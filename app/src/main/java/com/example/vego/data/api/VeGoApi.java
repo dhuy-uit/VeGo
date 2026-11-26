@@ -162,6 +162,11 @@ public interface VeGoApi {
     @POST("api/v1/notifications/read-all")
     Call<Void> markAllNotificationsRead();
 
+    // ---------- Hỗ trợ AI ----------
+
+    @POST("api/v1/support/chat")
+    Call<ApiModels.SupportReply> supportChat(@Body ApiModels.SupportRequest body);
+
     // ---------- Ví xu ----------
 
     @GET("api/v1/wallet")

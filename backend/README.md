@@ -96,10 +96,25 @@ Nghiệp vụ tự động:
 - Sơ đồ ghế giả lập ghế đã bán ở quầy (`total_seats - seats_left`, cố định theo chuyến + ngày);
   tắt bằng `BOOKING_PRESOLD_SEATS=false`.
 
+## Trợ lý hỗ trợ (RAG + Gemini)
+
+`POST /api/v1/support/chat` (cần token) `{message, history?: [{role: user|bot, text}]}` →
+`{title?, paragraphs[], source?, contactButton, escalate, tickets[], mode}`.
+
+1. Câu hỏi về vé / số xu của người dùng và việc cần nhân viên được xử lý ngay trên server, không gửi cho mô hình.
+2. Câu hỏi còn lại: tìm đoạn liên quan trong `src/main/resources/knowledge/*.md` + bến xe và mã giảm giá trong CSDL,
+   kết hợp BM25 (bỏ dấu) và embedding `gemini-embedding-2` (lưu ở bảng `kb_embeddings`, so cosine trong server).
+3. `gemini-3.5-flash-lite` chỉ được trả lời từ các đoạn đó và phải chỉ ra nguồn; không có nguồn thì chuyển nhân viên.
+4. Không có khóa / Gemini lỗi → trả nguyên đoạn tài liệu khớp (`mode: DOCS`).
+
+`mode`: `RULE`, `AI`, `DOCS`, `NONE`. Đổi chính sách thì sửa tệp trong `knowledge/` (và code nghiệp vụ tương ứng).
+Bật Gemini: thêm `GEMINI_API_KEY=...` vào `.env` rồi chạy lại `update.sh`.
+**Máy chủ phải nằm ở vùng Gemini API hỗ trợ** (Hong Kong / Azure East Asia không được hỗ trợ).
+
 ## Web admin
 
 Web admin là trang HTML/CSS/JavaScript thuần (không cần build) nằm trong `src/main/resources/static/admin`,
-chạy cùng server API: **https://vego-api-3g15i.eastasia.cloudapp.azure.com/admin**.
+chạy cùng server API: **https://vego-api-dhfhi.indonesiacentral.cloudapp.azure.com/admin**.
 Giao diện theo Figma (section 08–14): đăng nhập / quên mật khẩu, Tổng quan doanh thu, Quản lý xe, Tuyến & chuyến,
 Lập lịch chuyến, Tài xế, Top tuyến bán chạy, Báo cáo đề xuất, Đổi mật khẩu.
 
@@ -138,9 +153,9 @@ Dashboard hiện nhãn "Số liệu minh họa" khi kỳ đang xem có dữ li�
 
 Backend chạy trên máy ảo Azure, app Android gọi API qua Internet:
 
-- API: **https://vego-api-3g15i.eastasia.cloudapp.azure.com**
-- Tài liệu API: https://vego-api-3g15i.eastasia.cloudapp.azure.com/swagger-ui.html
-- Trạng thái: https://vego-api-3g15i.eastasia.cloudapp.azure.com/actuator/health
+- API: **https://vego-api-dhfhi.indonesiacentral.cloudapp.azure.com**
+- Tài liệu API: https://vego-api-dhfhi.indonesiacentral.cloudapp.azure.com/swagger-ui.html
+- Trạng thái: https://vego-api-dhfhi.indonesiacentral.cloudapp.azure.com/actuator/health
 
 App lấy địa chỉ này từ khóa `vego.apiBaseUrl` trong `gradle.properties` (mặc định đang trỏ tới server Azure),
 nên chỉ cần bấm Run trong Android Studio là app gọi server thật.

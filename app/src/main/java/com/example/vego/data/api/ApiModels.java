@@ -443,4 +443,33 @@ public final class ApiModels {
         public MyVoucher voucher;
         public int balance;
     }
+
+    // ---------- Hỗ trợ AI ----------
+
+    /** Một lượt trò chuyện đã qua, role = "user" | "bot". */
+    public static class SupportTurn {
+        public final String role, text;
+
+        public SupportTurn(String role, String text) {
+            this.role = role;
+            this.text = text;
+        }
+    }
+
+    public static class SupportRequest {
+        public final String message;
+        public final List<SupportTurn> history;
+
+        public SupportRequest(String message, List<SupportTurn> history) {
+            this.message = message;
+            this.history = history;
+        }
+    }
+
+    public static class SupportReply {
+        public String title, source, mode;
+        public List<String> paragraphs;
+        public boolean contactButton, escalate;
+        public List<Ticket> tickets;
+    }
 }

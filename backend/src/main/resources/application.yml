@@ -92,6 +92,13 @@ app:
   admin-demo:
     enabled: ${ADMIN_DEMO:true}
     days: ${ADMIN_DEMO_DAYS:365}
+  # Trợ lý hỗ trợ (RAG + Gemini). Khóa lấy tại aistudio.google.com, chỉ đặt trong .env trên server, KHÔNG đưa lên GitHub.
+  # Để trống thì trợ lý trả lời bằng cách trích đúng đoạn tài liệu (resources/knowledge).
+  rag:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-3.5-flash-lite}
+    embedding-model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-2}
+    rate-per-minute: ${SUPPORT_RATE_PER_MINUTE:10}
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
 
