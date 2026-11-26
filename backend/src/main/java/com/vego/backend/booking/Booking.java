@@ -99,6 +99,12 @@ public class Booking {
     @Column(name = "review_invited", nullable = false)
     private boolean reviewInvited;
 
+    @Column(name = "exchange_count", nullable = false)
+    private int exchangeCount;
+
+    @Column(name = "exchanged_at")
+    private Instant exchangedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -170,6 +176,17 @@ public class Booking {
     public void setReminderSent(boolean reminderSent) { this.reminderSent = reminderSent; }
     public boolean isReviewInvited() { return reviewInvited; }
     public void setReviewInvited(boolean reviewInvited) { this.reviewInvited = reviewInvited; }
+    public int getExchangeCount() { return exchangeCount; }
+    public Instant getExchangedAt() { return exchangedAt; }
+
+    /** Ghi nhận một lần đổi vé (chuyến / ngày / ghế mới đã được gán). */
+    public void markExchanged(Instant at) {
+        this.exchangeCount++;
+        this.exchangedAt = at;
+        // Giờ đi mới: nhắc lịch và mời đánh giá tính lại
+        this.reminderSent = false;
+        this.reviewInvited = false;
+    }
 
     /** Vé đã thanh toán rồi bị hủy (khác với hủy giữ chỗ chưa trả tiền). */
     public boolean isRefunded() {

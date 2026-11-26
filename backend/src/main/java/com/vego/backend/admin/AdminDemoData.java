@@ -220,7 +220,7 @@ public class AdminDemoData implements ApplicationRunner {
                    p.pickup, p.dropoff, p.price, x.discount, p.price - x.discount,
                    CASE WHEN x.discount > 0 THEN 'VEGO10' END,
                    CASE WHEN p.r1 < 30 THEN 'CANCELLED' ELSE 'PAID' END,
-                   (ARRAY['MOMO', 'VNPAY', 'CARD'])[1 + p.r2 % 3],
+                   (ARRAY['VNPAY', 'VNPAY', 'CARD'])[1 + p.r2 % 3],
                    x.paid + interval '2 minutes', x.paid, x.paid - interval '3 minutes', x.paid,
                    CASE WHEN p.r1 < 30 THEN x.paid + (p.depart_at - x.paid) / 2 END,
                    CASE WHEN p.r1 < 30 THEN (p.price - x.discount) * 8 / 10 END,

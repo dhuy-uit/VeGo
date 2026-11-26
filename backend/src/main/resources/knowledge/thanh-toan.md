@@ -2,7 +2,7 @@
 source: Theo Hướng dẫn thanh toán
 
 ## Phương thức thanh toán
-VéGo hỗ trợ thanh toán bằng ví MoMo, VNPay và thẻ ngân hàng. Các cổng thanh toán đang chạy ở chế độ thử nghiệm (sandbox), không trừ tiền thật.
+VéGo thanh toán qua cổng VNPay: trên trang VNPay bạn chọn thẻ ngân hàng nội địa hoặc quét mã QR bằng ứng dụng ngân hàng. VéGo hiện không hỗ trợ MoMo. Cổng thanh toán đang chạy ở chế độ thử nghiệm (sandbox), không trừ tiền thật.
 
 ## Thanh toán không thành công
 Nếu thanh toán thất bại, bạn có thể thử lại hoặc đổi phương thức khác khi ghế vẫn còn trong thời gian giữ 5 phút. Quá thời gian này cần đặt lại vé.

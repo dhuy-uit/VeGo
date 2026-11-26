@@ -17,6 +17,7 @@ import com.example.vego.common.UserSession;
 import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.data.BookingDraft;
 import com.example.vego.data.Format;
+import com.example.vego.data.RouteCatalog;
 import com.example.vego.data.Trip;
 import com.example.vego.data.api.ApiCallback;
 import com.example.vego.data.api.ApiClient;
@@ -76,8 +77,13 @@ public class MainActivity extends BaseActivity {
             draft.date.setTimeInMillis((suggestedDate != null ? suggestedDate : departureDate).getTimeInMillis());
             open(SeatSelectActivity.class);
         });
-        etFrom.setOnFocusChangeListener((v, focused) -> { if (focused) searchTouched = true; });
-        etTo.setOnFocusChangeListener((v, focused) -> { if (focused) searchTouched = true; });
+        // Điểm đi / điểm đến chỉ được chọn trong danh sách tuyến có thật (không gõ tự do)
+        View.OnClickListener pickFrom = v -> pickOrigin();
+        View.OnClickListener pickTo = v -> pickDestination();
+        etFrom.setOnClickListener(pickFrom);
+        findViewById(R.id.ic_from).setOnClickListener(pickFrom);
+        etTo.setOnClickListener(pickTo);
+        findViewById(R.id.ic_to).setOnClickListener(pickTo);
     }
 
     @Override
@@ -226,11 +232,27 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void pickOrigin() {
+        searchTouched = true;
+        RouteCatalog.pickOrigin(this, textOf(etFrom), city -> {
+            etFrom.setText(city);
+            // Điểm đến cũ không đi được từ điểm đi mới -> bỏ chọn
+            if (!RouteCatalog.hasRoute(city, textOf(etTo))) etTo.setText("");
+        });
+    }
+
+    private void pickDestination() {
+        searchTouched = true;
+        RouteCatalog.pickDestination(this, textOf(etFrom), textOf(etTo), etTo::setText);
+    }
+
     private void searchTrips() {
-        if (!requireText(etFrom) || !requireText(etTo)) return;
-        if (textOf(etFrom).equalsIgnoreCase(textOf(etTo))) {
-            etTo.setError(getString(R.string.error_same_place));
-            etTo.requestFocus();
+        if (textOf(etFrom).isEmpty()) {
+            VeGoBanner.show(this, R.string.pick_origin_first, VeGoBanner.Type.WARNING);
+            return;
+        }
+        if (textOf(etTo).isEmpty()) {
+            VeGoBanner.show(this, R.string.pick_destination_first, VeGoBanner.Type.WARNING);
             return;
         }
         // Theo prototype: Tìm chuyến xe -> "Đặt vé · Tìm chuyến"

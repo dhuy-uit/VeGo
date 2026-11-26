@@ -58,16 +58,21 @@
                     <ImageView
                         android:id="@+id/ic_from"
                         style="@style/VeGo.InputIcon"
-                        android:src="@drawable/ic_map_pin" />
+                        android:src="@drawable/ic_chevron_down" />
 
                     <EditText
                         android:id="@+id/et_from"
                         style="@style/VeGo.InputText"
                         android:layout_toStartOf="@id/ic_from"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:focusable="false"
                         android:hint="@string/hint_from"
                         android:importantForAutofill="no"
-                        android:inputType="textCapWords"
-                        android:paddingEnd="10dp" />
+                        android:inputType="none"
+                        android:longClickable="false"
+                        android:paddingEnd="10dp"
+                        android:textIsSelectable="false" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -86,17 +91,21 @@
                     <ImageView
                         android:id="@+id/ic_to"
                         style="@style/VeGo.InputIcon"
-                        android:src="@drawable/ic_map_pin" />
+                        android:src="@drawable/ic_chevron_down" />
 
                     <EditText
                         android:id="@+id/et_to"
                         style="@style/VeGo.InputText"
                         android:layout_toStartOf="@id/ic_to"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:focusable="false"
                         android:hint="@string/hint_to"
-                        android:imeOptions="actionDone"
                         android:importantForAutofill="no"
-                        android:inputType="textCapWords"
-                        android:paddingEnd="10dp" />
+                        android:inputType="none"
+                        android:longClickable="false"
+                        android:paddingEnd="10dp"
+                        android:textIsSelectable="false" />
                 </RelativeLayout>
             </LinearLayout>
 

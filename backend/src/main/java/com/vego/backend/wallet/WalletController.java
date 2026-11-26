@@ -42,13 +42,13 @@ public class WalletController {
         return service.checkIn(me.id());
     }
 
-    @Operation(summary = "Bắt đầu một lượt chơi game (trừ 1 lượt, mỗi ngày 2 lượt)")
+    @Operation(summary = "Bắt đầu một lượt chơi game (trừ 1 lượt, mỗi ngày 1 lượt)")
     @PostMapping("/game/start")
     public WalletDtos.GameStart startGame(@AuthenticationPrincipal AuthUser me) {
         return service.startGame(me.id());
     }
 
-    @Operation(summary = "Kết thúc lượt chơi: gửi điểm, nhận xu (10 điểm = 1 xu, tối đa 100 xu)")
+    @Operation(summary = "Kết thúc lượt chơi: gửi điểm, nhận xu (25 điểm = 1 xu, tối đa 500 điểm = 20 xu)")
     @PostMapping("/game/{playId}/finish")
     public WalletDtos.GameResult finishGame(@AuthenticationPrincipal AuthUser me, @PathVariable long playId,
                                             @Valid @RequestBody WalletDtos.GameFinishRequest req) {

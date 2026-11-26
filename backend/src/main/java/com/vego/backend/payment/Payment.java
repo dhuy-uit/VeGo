@@ -22,10 +22,10 @@ import java.time.Instant;
 @Table(name = "payments")
 public class Payment {
 
-    public enum Provider { MOMO, VNPAY, SIMULATED }
+    public enum Provider { VNPAY, SIMULATED }
 
     /** Phương thức người dùng chọn trong app. */
-    public enum Method { MOMO, VNPAY, CARD }
+    public enum Method { VNPAY, CARD }
 
     public enum Status { PENDING, SUCCESS, FAILED }
 

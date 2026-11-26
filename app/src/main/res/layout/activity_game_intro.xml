@@ -164,7 +164,7 @@
                 <TextView
                     android:id="@+id/tv_turns"
                     style="@style/VeGo.Text.CenterCaption"
-                    tools:text="Còn 2 lượt chơi hôm nay" />
+                    tools:text="Còn 1 lượt chơi hôm nay" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

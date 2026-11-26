@@ -63,6 +63,11 @@
     <string name="label_departure_date">Ngày khởi hành</string>
     <string name="hint_from">Chọn điểm đi</string>
     <string name="hint_to">Chọn điểm đến</string>
+    <string name="pick_origin_title">Chọn điểm đi</string>
+    <string name="pick_destination_title">Chọn điểm đến</string>
+    <string name="pick_origin_first">Hãy chọn điểm đi trước</string>
+    <string name="pick_destination_first">Hãy chọn điểm đến</string>
+    <string name="pick_no_destination">Chưa có tuyến nào xuất phát từ %1$s.</string>
     <string name="home_search_button">Tìm chuyến xe</string>
     <string name="home_promo_badge">MÙA THU THẢNH THƠI</string>
     <string name="home_promo_title" formatted="false">Đà Lạt gọi, giảm 15%</string>
@@ -267,14 +272,9 @@
     <string name="label_fare">Giá vé</string>
     <string name="label_service_fee">Phí dịch vụ</string>
     <string name="payment_choose_method">Chọn phương thức thanh toán</string>
-    <string name="payment_momo_desc">Ví điện tử · Mở ứng dụng để xác nhận</string>
-    <string name="payment_vnpay_desc">Quét mã QR hoặc ứng dụng ngân hàng</string>
-    <string name="payment_card_label">Thẻ ngân hàng</string>
-    <string name="payment_card_desc">Thẻ nội địa / Visa / Mastercard</string>
+    <string name="payment_vnpay_desc">Thẻ ngân hàng hoặc quét mã QR bằng ứng dụng ngân hàng</string>
     <string name="payment_info_title">Thanh toán bằng %1$s</string>
-    <string name="payment_info_momo">Bạn sẽ được chuyển sang MoMo. Vé chỉ xác nhận sau khi giao dịch thành công; không cung cấp mã OTP cho người khác.</string>
-    <string name="payment_info_vnpay">Quét mã QR VNPay bằng ứng dụng ngân hàng. Vé chỉ xác nhận sau khi giao dịch thành công.</string>
-    <string name="payment_info_card">Nhập thông tin thẻ trên cổng thanh toán bảo mật. Không cung cấp mã OTP cho người khác.</string>
+    <string name="payment_info_vnpay">Bạn sẽ được chuyển sang cổng VNPay để chọn thẻ ngân hàng hoặc quét mã QR. Vé chỉ xác nhận sau khi giao dịch thành công; không cung cấp mã OTP cho người khác.</string>
     <string name="payment_pay">Thanh toán %1$s · %2$s</string>
     <string name="payment_hold_note">%1$s đang giữ, chưa chuyển thành ghế đã đặt.</string>
     <string name="payment_sim_title">Mô phỏng cổng %1$s</string>
@@ -372,6 +372,8 @@
     <string name="eticket_info_body">Điểm đón: %1$s. Mang theo giấy tờ tùy thân và xuất trình mã vé cho nhân viên.</string>
     <string name="eticket_save">Lưu vé vào thiết bị</string>
     <string name="eticket_cancel">Yêu cầu hủy vé</string>
+    <string name="eticket_exchange">Đổi vé (ngày, giờ hoặc ghế)</string>
+    <string name="eticket_cannot_exchange">Vé này không còn đổi được: mỗi vé chỉ đổi 1 lần và phải còn ít nhất 6 giờ trước giờ khởi hành.</string>
     <string name="eticket_saved">Đã lưu vé vào thư viện ảnh (Pictures/VeGo)</string>
     <string name="eticket_save_failed">Không lưu được vé, vui lòng thử lại</string>
     <string name="eticket_cannot_cancel">Chuyến đã khởi hành nên không thể hủy vé</string>
@@ -493,7 +495,7 @@
     <string name="game_rule_jump_title">Chạm để nhảy</string>
     <string name="game_rule_jump_body">Giúp khủng long vượt qua chướng ngại vật.</string>
     <string name="game_rule_coins_title">Chạy xa, nhận thêm xu</string>
-    <string name="game_rule_coins_body">Mỗi 10 điểm đổi thành 1 xu, tối đa 100 xu/lượt.</string>
+    <string name="game_rule_coins_body">Mỗi 25 điểm đổi thành 1 xu. Mỗi lượt tối đa 500 điểm (20 xu), mỗi ngày chơi 1 lượt.</string>
     <string name="game_start">Bắt đầu chơi</string>
     <string name="game_turns_left">Còn %1$d lượt chơi hôm nay</string>
     <string name="game_no_turns">Bạn đã hết lượt chơi hôm nay</string>
@@ -507,6 +509,7 @@
     <string name="cd_game_stage">Khung chơi game, chạm để nhảy</string>
     <string name="game_tap_to_start">Chạm để bắt đầu</string>
     <string name="game_over">Va chạm rồi!</string>
+    <string name="game_max_score">Đạt điểm tối đa 500!</string>
     <string name="game_paused">Tạm dừng</string>
     <string name="game_tap_to_continue">Chạm để chơi tiếp</string>
     <string name="game_quit_title">Kết thúc lượt chơi?</string>
@@ -523,12 +526,12 @@
     <string name="game_result_ok">Khởi động tốt!</string>
     <string name="game_result_low">Cố lên lần sau nhé!</string>
     <string name="game_result_body">Bạn vừa hoàn thành một lượt chơi. Xu thưởng đã được cộng vào Ví xu.</string>
-    <string name="game_result_body_zero">Bạn cần ít nhất 10 điểm để nhận xu. Thử lại và nhảy thật khéo nhé!</string>
+    <string name="game_result_body_zero">Bạn cần ít nhất 25 điểm để nhận xu. Thử lại và nhảy thật khéo nhé!</string>
     <string name="game_result_score_label">Số điểm đạt được</string>
     <string name="game_result_new_best">Kỷ lục mới!</string>
     <string name="game_result_coins_label">Xu nhận được</string>
-    <string name="game_result_rule">10 điểm = 1 xu · Thưởng cho lượt chơi này</string>
-    <string name="game_result_rule_capped">10 điểm = 1 xu · Đã đạt tối đa 100 xu/lượt</string>
+    <string name="game_result_rule">25 điểm = 1 xu · Thưởng cho lượt chơi này</string>
+    <string name="game_result_rule_capped">25 điểm = 1 xu · Đã đạt tối đa 500 điểm (20 xu)/lượt</string>
     <string name="game_result_balance_label">Số dư Ví xu mới</string>
     <string name="game_play_again">Chơi lại</string>
     <string name="game_back_wallet">Về Ví xu</string>
@@ -661,4 +664,33 @@
     <string name="voucher_copy">Sao chép mã</string>
     <string name="suggest_none_title">Chưa có gợi ý</string>
     <string name="suggest_none_body">Hiện chưa có chuyến phù hợp. Bạn thử tìm chuyến ở Trang chủ nhé.</string>
+    <!-- Đổi vé -->
+    <string name="exchange_title">Đổi vé</string>
+    <string name="exchange_heading">Đổi ngày, giờ hoặc ghế</string>
+    <string name="exchange_subtitle">Chọn chuyến mới cùng tuyến, cùng giá vé với vé hiện tại.</string>
+    <string name="exchange_badge">Vé hiện tại</string>
+    <string name="exchange_rules_title">Điều kiện đổi vé</string>
+    <string name="exchange_rules_body">Miễn phí, không phải trả thêm. Mỗi vé đổi 1 lần, còn ít nhất 6 giờ trước giờ khởi hành. Chuyến khác giá thì hủy vé và đặt lại.</string>
+    <string name="exchange_label_date">Ngày đi mới</string>
+    <string name="exchange_choose_trip">Chọn chuyến</string>
+    <string name="exchange_label_seat">Ghế mới</string>
+    <string name="exchange_hint_seat">Chọn ghế</string>
+    <string name="exchange_seat_dialog_title">Chọn ghế trống</string>
+    <string name="exchange_current">Chuyến hiện tại</string>
+    <string name="exchange_seats_left">còn %1$d ghế</string>
+    <string name="exchange_sold_out">hết ghế</string>
+    <string name="exchange_loading">Đang tải chuyến…</string>
+    <string name="exchange_no_trips">Không có chuyến cùng giá vào ngày này. Hãy chọn ngày khác.</string>
+    <string name="exchange_pick_trip_first">Hãy chọn chuyến mới trước</string>
+    <string name="exchange_pick_trip">Hãy chọn chuyến mới</string>
+    <string name="exchange_pick_seat">Hãy chọn ghế mới</string>
+    <string name="exchange_no_free_seat">Chuyến này không còn ghế trống</string>
+    <string name="exchange_confirm">Xác nhận đổi vé</string>
+    <string name="exchange_keep">Giữ vé hiện tại</string>
+    <string name="exchange_dialog_title">Đổi vé %1$s?</string>
+    <string name="exchange_dialog_message">Vé sẽ đổi sang %1$s lúc %2$s ngày %3$s, ghế %4$s. Mã QR cũ không còn dùng được, hãy dùng mã mới trong Vé điện tử.</string>
+    <string name="exchange_dialog_confirm">Đổi vé</string>
+    <string name="exchange_dialog_review">Xem lại</string>
+    <string name="exchange_done_title">Đã đổi vé</string>
+    <string name="exchange_done_message">Vé %1$s đã đổi sang %2$s lúc %3$s ngày %4$s, ghế %5$s.</string>
 </resources>

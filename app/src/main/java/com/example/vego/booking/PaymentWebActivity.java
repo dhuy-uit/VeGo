@@ -24,7 +24,7 @@ import com.example.vego.common.BaseActivity;
 import java.net.URISyntaxException;
 
 /**
- * Mở trang thanh toán của cổng (MoMo / VNPay / trang mô phỏng) trong WebView.
+ * Mở trang thanh toán của cổng (VNPay / trang mô phỏng) trong WebView.
  * Khi cổng chuyển về trang kết quả của server (resultUrl), màn này đóng lại;
  * màn Thanh toán sẽ hỏi server để biết kết quả thật (không tin kết quả hiển thị trên trang).
  */
@@ -117,7 +117,7 @@ public class PaymentWebActivity extends BaseActivity {
             return true;
         }
         if (url.startsWith("http://") || url.startsWith("https://")) return false;
-        // Link mở ứng dụng ngoài (momo://, intent:// của app ngân hàng...)
+        // Link mở ứng dụng ngoài (intent:// của app ngân hàng...)
         try {
             Intent intent = url.startsWith("intent:")
                     ? Intent.parseUri(url, Intent.URI_INTENT_SCHEME)

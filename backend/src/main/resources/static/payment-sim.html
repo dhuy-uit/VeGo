@@ -27,7 +27,7 @@
 </main>
 <script>
   const q = new URLSearchParams(location.search);
-  const names = { MOMO: 'MoMo', VNPAY: 'VNPay', CARD: 'Thẻ ngân hàng' };
+  const names = { VNPAY: 'VNPay', CARD: 'Thẻ ngân hàng' };
   document.getElementById('title').textContent = 'Thanh toán ' + (names[q.get('method')] || '');
   document.getElementById('amount').textContent = Number(q.get('amount') || 0).toLocaleString('vi-VN') + 'đ';
   async function send(result) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Trang thanh toán của cổng MoMo / VNPay mở ngay trong app -->
+<!-- Trang thanh toán của cổng VNPay mở ngay trong app -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
@@ -27,7 +27,7 @@
                 style="@style/VeGo.Text.ScreenTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Thanh toán MoMo" />
+                tools:text="Thanh toán VNPay" />
 
             <TextView
                 android:id="@+id/tv_subtitle"

@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:irLabel="@string/label_payment"
-                    app:irValue="MoMo · 320.000đ" />
+                    app:irValue="VNPay · 320.000đ" />
 
                 <com.example.vego.common.widget.InfoRowView
                     android:layout_width="match_parent"

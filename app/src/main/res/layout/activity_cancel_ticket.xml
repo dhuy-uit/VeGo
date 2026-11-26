@@ -171,7 +171,7 @@
                     style="@style/VeGo.Text.Caption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="Hoàn về MoMo trong 3–5 ngày làm việc." />
+                    tools:text="Hoàn về VNPay trong 3–5 ngày làm việc." />
             </LinearLayout>
 
             <TextView

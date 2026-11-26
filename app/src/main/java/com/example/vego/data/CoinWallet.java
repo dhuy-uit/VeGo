@@ -64,10 +64,11 @@ public final class CoinWallet {
     /** Thưởng điểm danh theo ngày trong chuỗi 7 ngày (ngày 7 thưởng lớn) — giống server. */
     public static final int[] CHECK_IN_REWARDS = { 20, 20, 20, 20, 20, 20, 50 };
     /** Số lượt chơi game mỗi ngày. */
-    public static final int GAME_TURNS_PER_DAY = 2;
-    /** 10 điểm = 1 xu, tối đa 100 xu mỗi lượt. */
-    public static final int POINTS_PER_COIN = 10;
-    public static final int MAX_COINS_PER_GAME = 100;
+    public static final int GAME_TURNS_PER_DAY = 1;
+    /** Mỗi lượt tối đa 500 điểm; 25 điểm = 1 xu nên tối đa 20 xu mỗi lượt — giống server. */
+    public static final int MAX_SCORE_PER_GAME = 500;
+    public static final int POINTS_PER_COIN = 25;
+    public static final int MAX_COINS_PER_GAME = MAX_SCORE_PER_GAME / POINTS_PER_COIN;
 
     private static final ZoneId VN = ZoneId.of("Asia/Ho_Chi_Minh");
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("dd/MM/yyyy · HH:mm");

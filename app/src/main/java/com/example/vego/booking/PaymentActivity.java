@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * Figma: "Đặt vé · Thanh toán".
- * Áp mã giảm giá (server kiểm tra và tính tiền), tạo giao dịch MoMo / VNPay rồi mở trang của cổng;
+ * Áp mã giảm giá (server kiểm tra và tính tiền), tạo giao dịch VNPay rồi mở trang của cổng;
  * kết quả lấy từ server (đã được cổng xác nhận bằng chữ ký), không tin kết quả hiển thị trên trang.
  */
 public class PaymentActivity extends BaseActivity {
@@ -62,9 +62,7 @@ public class PaymentActivity extends BaseActivity {
         ((InfoRowView) findViewById(R.id.row_fare)).setValue(Format.money(draft.fare()));
         ((TextView) findViewById(R.id.tv_hold_note)).setText(getString(R.string.payment_hold_note, draft.seat));
 
-        onClick(R.id.option_momo, v -> selectMethod(PaymentMethod.MOMO));
         onClick(R.id.option_vnpay, v -> selectMethod(PaymentMethod.VNPAY));
-        onClick(R.id.option_card, v -> selectMethod(PaymentMethod.CARD));
 
         etVoucher = findViewById(R.id.et_voucher);
         onClick(R.id.btn_apply_voucher, v -> applyVoucher(textOf(etVoucher)));
@@ -103,19 +101,11 @@ public class PaymentActivity extends BaseActivity {
 
     private void selectMethod(PaymentMethod method) {
         draft.paymentMethod = method;
-        styleOption(R.id.option_momo, R.id.radio_momo, method == PaymentMethod.MOMO);
         styleOption(R.id.option_vnpay, R.id.radio_vnpay, method == PaymentMethod.VNPAY);
-        styleOption(R.id.option_card, R.id.radio_card, method == PaymentMethod.CARD);
 
-        int body;
-        switch (method) {
-            case VNPAY: body = R.string.payment_info_vnpay; break;
-            case CARD: body = R.string.payment_info_card; break;
-            default: body = R.string.payment_info_momo; break;
-        }
         ((TextView) findViewById(R.id.tv_method_info_title))
                 .setText(getString(R.string.payment_info_title, method.label));
-        ((TextView) findViewById(R.id.tv_method_info_body)).setText(body);
+        ((TextView) findViewById(R.id.tv_method_info_body)).setText(R.string.payment_info_vnpay);
         bindPayButton();
     }
 

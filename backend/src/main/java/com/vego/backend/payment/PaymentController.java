@@ -25,7 +25,7 @@ public class PaymentController {
         this.service = service;
     }
 
-    @Operation(summary = "Tạo giao dịch thanh toán cho đơn đang giữ (MOMO / VNPAY / CARD) -> payUrl để app mở")
+    @Operation(summary = "Tạo giao dịch thanh toán cho đơn đang giữ (VNPAY / CARD) -> payUrl để app mở")
     @PostMapping("/api/v1/bookings/{code}/payments")
     public ResponseEntity<PaymentResponse> create(@AuthenticationPrincipal AuthUser me, @PathVariable String code,
                                                   @Valid @RequestBody CreatePaymentRequest req,

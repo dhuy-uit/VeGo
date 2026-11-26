@@ -16,7 +16,7 @@ backend/
 │   ├── home/       Trang chủ: khuyến mãi, tuyến phổ biến, chuyến gợi ý
 │   ├── trip/       Tìm chuyến, sơ đồ ghế (SeatInventory), bến xe, gợi ý "Dành riêng cho bạn"
 │   ├── booking/    Giữ ghế, mã giảm giá (khuyến mãi + voucher Ví xu)
-│   ├── payment/    MoMo / VNPay sandbox, IPN có kiểm chữ ký, chế độ mô phỏng
+│   ├── payment/    VNPay sandbox, IPN có kiểm chữ ký, chế độ mô phỏng
 │   ├── ticket/     Vé của tôi: hủy vé hoàn tiền, đánh giá, QR có chữ ký, job nhắc lịch / mời đánh giá
 │   ├── notification/  Thông báo trong app
 │   ├── wallet/     Ví xu: sổ xu, điểm danh 7 ngày, game, đổi voucher, quà chào mừng
@@ -61,16 +61,18 @@ Tiền tố `/api/v1`. Lỗi luôn có dạng:
 | GET | `/bookings`, `/bookings/{code}` | ✔ | Đơn của tôi / một đơn (trạng thái HOLDING, PAID, EXPIRED, CANCELLED) |
 | POST / DELETE | `/bookings/{code}/voucher` | ✔ | Áp / bỏ mã giảm giá `{code}` |
 | POST | `/bookings/{code}/cancel` | ✔ | Hủy giữ chỗ |
-| POST | `/bookings/{code}/payments` | ✔ | `{method: MOMO \| VNPAY \| CARD}` → `payUrl` để app mở |
+| POST | `/bookings/{code}/payments` | ✔ | `{method: VNPAY}` (CARD vẫn nhận, cũng đi qua VNPay) → `payUrl` để app mở |
 | GET | `/vouchers` | tùy chọn | Mã giảm giá đang có (đăng nhập thì kèm voucher Ví xu của mình, `source: WALLET`) |
 | GET | `/trips/search?origin=&destination=&date=` | – | Tìm chuyến; gõ không dấu / "HCM" vẫn khớp. Lọc tùy chọn: `operator`, `busType`, `slot` (0–3), `minPrice`, `maxPrice`; `sort` = RECOMMENDED \| DEPARTURE \| PRICE \| RATING |
 | GET | `/trips/{id}?date=` | – | Chi tiết chuyến, số ghế trống theo ngày |
 | GET | `/trips/{id}/seats?date=` | – | Sơ đồ ghế: `decks[].rows[][]{code, available}`, `taken`, `seatsLeft` |
 | GET | `/trips/{id}/stops` | – | Điểm đón / trả (bến chính của chuyến đứng đầu) |
-| GET | `/stations?city=`, `/cities` | – | Bến xe theo thành phố, các thành phố có tuyến |
+| GET | `/stations?city=`, `/cities`, `/routes` | – | Bến xe theo thành phố, các thành phố có tuyến, các cặp điểm đi → điểm đến đang bán (app cho chọn, không cho gõ) |
 | GET | `/suggestions?date=` | tùy chọn | Gợi ý theo chuyến đã đi gần nhất (cùng tuyến, nhà xe, buổi); khách: chuyến đánh giá cao |
 | GET | `/tickets`, `/tickets/{code}` | ✔ | Vé đã thanh toán: `status` UPCOMING / COMPLETED / CANCELLED, số tiền hoàn nếu hủy lúc này, `qrData` |
 | POST | `/tickets/{code}/cancel` | ✔ | Hủy vé: trước giờ đi ≥ 24 giờ hoàn 80%, sát giờ 50%; thu hồi xu đã cộng |
+| GET | `/tickets/{code}/exchange/trips?date=` | ✔ | Chuyến cùng tuyến, cùng giá vé trong ngày để đổi vé (409 nếu vé không còn đổi được) |
+| POST | `/tickets/{code}/exchange` | ✔ | `{tripId, travelDate, seat}` đổi sang chuyến/ngày/ghế khác: miễn phí, mỗi vé 1 lần, còn ≥ 6 giờ trước giờ đi; QR đổi theo |
 | POST | `/tickets/{code}/review` | ✔ | `{rating 1–5, tags[CLEAN, ONTIME, STAFF], comment?}` sau khi xe đã chạy |
 | GET | `/notifications`, `/notifications/unread-count` | ✔ | Thông báo (mới nhất trước) + số chưa đọc |
 | POST | `/notifications/{id}/read`, `/notifications/read-all` | ✔ | Đánh dấu đã đọc |
@@ -80,14 +82,13 @@ Tiền tố `/api/v1`. Lỗi luôn có dạng:
 | GET | `/wallet/vouchers` | ✔ | Voucher đổi được (V20 / V50 / V100) + voucher của tôi |
 | POST | `/wallet/vouchers/{offerId}/redeem` | ✔ | Đổi xu lấy mã `XU20K-xxxx`, nhập ở bước thanh toán |
 | GET | `/payments/vnpay/ipn`, `/payments/vnpay/return` | – | VNPay gọi về (kiểm tra chữ ký HMAC-SHA512) |
-| POST / GET | `/payments/momo/ipn`, `/payments/momo/return` | – | MoMo gọi về (kiểm tra chữ ký HMAC-SHA256) |
 
 Token: `Authorization: Bearer <accessToken>`. Access token sống 15 phút, refresh token 30 ngày.
 Bảo mật: mật khẩu BCrypt; chỉ lưu SHA-256 của refresh token / mã khôi phục; sai mật khẩu 5 lần khóa đăng nhập 15 phút;
 ảnh tải lên kiểm tra theo nội dung tệp; quên mật khẩu không tiết lộ tài khoản có tồn tại hay không.
 
 Tài khoản mẫu: **0901234567 / vego123456** (Nguyễn Minh Anh) — có sẵn 1 vé đã đi (chưa đánh giá), 1 vé đã hủy,
-1 vé sắp đi, 1.250 xu, chuỗi điểm danh 3 ngày, 1 voucher và thông báo mẫu.
+1 vé sắp đi, 808 xu, chuỗi điểm danh 3 ngày, 1 voucher và thông báo mẫu.
 
 Nghiệp vụ tự động:
 - Thanh toán thành công → cộng xu (1.000đ = 1 xu), đánh dấu voucher Ví xu đã dùng, thông báo "Vé đã được xác nhận".
@@ -176,9 +177,9 @@ Muốn app trên máy ảo gọi bản local này thì thêm vào `local.propert
 
 ## Thanh toán (sandbox)
 
-- **MoMo**: dùng tài khoản test dùng chung của MoMo (`test-payment.momo.vn`), không cần đăng ký.
-  Trang MoMo cho chọn quét QR bằng app MoMo test, thẻ ATM hoặc thẻ quốc tế test.
-- **VNPay / Thẻ ngân hàng**: cần `VNPAY_TMN_CODE` + `VNPAY_HASH_SECRET` (đăng ký tại sandbox.vnpayment.vn/devreg)
+- Chỉ còn cổng **VNPay** (đã bỏ MoMo; migration `V7` chuyển giao dịch MoMo cũ sang VNPay).
+  Trên trang VNPay người dùng chọn thẻ nội địa hoặc quét QR bằng app ngân hàng.
+- **VNPay**: cần `VNPAY_TMN_CODE` + `VNPAY_HASH_SECRET` (đăng ký tại sandbox.vnpayment.vn/devreg)
   trong `.env` trên server. Thẻ test: NCB `9704198526191432198`, tên `NGUYEN VAN A`, ngày phát hành `07/15`, OTP `123456`.
   IPN URL khai báo trong trang quản lý merchant: `https://<server>/api/v1/payments/vnpay/ipn`.
 - **Mô phỏng**: `PAYMENT_SIMULATE=true` cho mọi phương thức đi qua trang mô phỏng của server (dùng khi demo mà cổng sandbox lỗi, và trên CI).

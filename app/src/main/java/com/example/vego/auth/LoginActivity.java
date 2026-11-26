@@ -41,6 +41,12 @@ public class LoginActivity extends BaseActivity {
 
         etAccount = findViewById(R.id.et_account);
         etPassword = findViewById(R.id.et_password);
+        // Nhớ tên đăng nhập của lần trước; lần đầu mở app thì để trống (không bao giờ nhớ mật khẩu)
+        String last = ApiClient.tokens().lastAccount();
+        if (last != null && !last.isEmpty()) {
+            etAccount.setText(last);
+            etPassword.requestFocus();
+        }
         setupPasswordToggle(etPassword, findViewById(R.id.btn_toggle_password));
 
         // Theo prototype Figma: mũi tên quay lại -> Trang chủ (xem với tư cách khách)
@@ -73,6 +79,7 @@ public class LoginActivity extends BaseActivity {
                     protected void onSuccess(@Nullable ApiModels.AuthResponse auth) {
                         if (auth == null) return;
                         ApiClient.tokens().save(auth);
+                        ApiClient.tokens().saveLastAccount(textOf(etAccount));
                         UserSession.get().set(auth.user);
                         VeGoBanner.post(getString(R.string.welcome_back, UserSession.get().getGivenName()),
                                 VeGoBanner.Type.SUCCESS);

@@ -42,6 +42,7 @@ public class GameActivity extends BaseActivity implements RunnerGameView.Listene
         game.setListener(this);
         game.setTexts(getString(R.string.game_tap_to_start), getString(R.string.game_paused),
                 getString(R.string.game_tap_to_continue), getString(R.string.game_over));
+        game.setMaxText(getString(R.string.game_max_score));
 
         setupBackButton(this::askQuit);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -139,7 +140,7 @@ public class GameActivity extends BaseActivity implements RunnerGameView.Listene
         sendScore(score);
     }
 
-    /** Gửi điểm lên server: server đổi ra xu (10 điểm = 1 xu, tối đa 100 xu) và cộng vào ví. */
+    /** Gửi điểm lên server: server đổi ra xu (25 điểm = 1 xu, tối đa 500 điểm = 20 xu) và cộng vào ví. */
     private void sendScore(int score) {
         ApiClient.api().finishGame(playId, new ApiModels.ScoreRequest(score))
                 .enqueue(new ApiCallback<ApiModels.GameResult>(this) {

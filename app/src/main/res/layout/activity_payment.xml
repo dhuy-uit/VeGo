@@ -213,48 +213,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/payment_choose_method" />
 
-            <!-- Các phương thức thanh toán -->
-            <LinearLayout
-                android:id="@+id/option_momo"
-                style="@style/VeGo.PaymentOption">
-
-                <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_wallet" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_weight="1"
-                    android:divider="@drawable/space_4"
-                    android:orientation="vertical"
-                    android:showDividers="middle">
-
-                    <TextView
-                        style="@style/VeGo.Text.BodyStrong"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="MoMo" />
-
-                    <TextView
-                        style="@style/VeGo.Text.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/payment_momo_desc" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/radio_momo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_circle" />
-            </LinearLayout>
-
+            <!-- Phương thức thanh toán: chỉ còn VNPay -->
             <LinearLayout
                 android:id="@+id/option_vnpay"
                 style="@style/VeGo.PaymentOption">
@@ -296,47 +255,6 @@
                     android:src="@drawable/ic_circle" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/option_card"
-                style="@style/VeGo.PaymentOption">
-
-                <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_credit_card" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_weight="1"
-                    android:divider="@drawable/space_4"
-                    android:orientation="vertical"
-                    android:showDividers="middle">
-
-                    <TextView
-                        style="@style/VeGo.Text.BodyStrong"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/payment_card_label" />
-
-                    <TextView
-                        style="@style/VeGo.Text.Caption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/payment_card_desc" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/radio_card"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_circle" />
-            </LinearLayout>
-
             <!-- Lời nhắc theo phương thức đang chọn -->
             <LinearLayout style="@style/VeGo.InfoBox">
 
@@ -360,21 +278,21 @@
                         style="@style/VeGo.Text.Label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Thanh toán bằng MoMo" />
+                        tools:text="Thanh toán bằng VNPay" />
 
                     <TextView
                         android:id="@+id/tv_method_info_body"
                         style="@style/VeGo.Text.Caption"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="@string/payment_info_momo" />
+                        tools:text="@string/payment_info_vnpay" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/btn_pay"
                 style="@style/VeGo.Button.Primary"
-                tools:text="Thanh toán MoMo · 320.000đ" />
+                tools:text="Thanh toán VNPay · 320.000đ" />
 
             <TextView
                 android:id="@+id/tv_hold_note"

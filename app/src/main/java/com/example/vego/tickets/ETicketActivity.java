@@ -58,6 +58,14 @@ public class ETicketActivity extends BaseActivity {
 
         setupBackButton(this::finish);
         onClick(R.id.btn_save_ticket, v -> { if (ticket != null) saveToGallery(); });
+        onClick(R.id.btn_exchange_ticket, v -> {
+            if (ticket == null) return;
+            if (!ticket.exchangeable) {
+                VeGoBanner.show(this, R.string.eticket_cannot_exchange, VeGoBanner.Type.WARNING);
+                return;
+            }
+            startActivity(ExchangeTicketActivity.intent(this, ticket.code));
+        });
         onClick(R.id.btn_cancel_ticket, v -> {
             if (ticket == null) return;
             if (!ticket.cancellable) {
@@ -94,6 +102,7 @@ public class ETicketActivity extends BaseActivity {
         if (t == null) return;
         TextView badge = findViewById(R.id.tv_eticket_badge);
         View cancelButton = findViewById(R.id.btn_cancel_ticket);
+        View exchangeButton = findViewById(R.id.btn_exchange_ticket);
         View reminder = findViewById(R.id.group_reminder);
         ImageView qr = findViewById(R.id.iv_qr);
 
@@ -110,6 +119,7 @@ public class ETicketActivity extends BaseActivity {
             qr.setAlpha(1f);
         }
         cancelButton.setVisibility(t.status == Ticket.Status.UPCOMING ? View.VISIBLE : View.GONE);
+        exchangeButton.setVisibility(t.status == Ticket.Status.UPCOMING ? View.VISIBLE : View.GONE);
         reminder.setVisibility(t.status == Ticket.Status.UPCOMING ? View.VISIBLE : View.GONE);
 
         ((TextView) findViewById(R.id.tv_ticket_code)).setText(t.code);
