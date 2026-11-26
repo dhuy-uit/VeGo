@@ -122,8 +122,10 @@ public class SupportActions {
     }
 
     private Pending take(long userId, String token) {
-        Pending p = token == null ? null : pending.remove(token);
-        if (p == null || p.userId() != userId || p.until().isBefore(clock.instant())) {
+        // Chỉ chủ đề xuất mới "tiêu thụ" được token: người khác thử token này thì bị từ chối mà không làm mất đề xuất.
+        Pending p = token == null ? null : pending.get(token);
+        // remove(key, value) là nguyên tử: hai yêu cầu xác nhận cùng lúc thì chỉ một yêu cầu thắng
+        if (p == null || p.userId() != userId || !pending.remove(token, p) || p.until().isBefore(clock.instant())) {
             throw new ApiException(HttpStatus.GONE, "ACTION_EXPIRED",
                     "Yêu cầu này đã hết hạn hoặc đã được xử lý. Bạn nhờ trợ lý làm lại giúp nhé.");
         }
