@@ -564,6 +564,7 @@
     <string name="chat_quick_ticket">Kiểm tra vé của tôi</string>
     <string name="chat_quick_change">Cách đổi giờ/chuyến</string>
     <string name="chat_disclaimer">Trợ lý AI có thể sai sót. Với vấn đề quan trọng, vui lòng liên hệ nhân viên.</string>
+    <string name="chat_error_message">Trợ lý chưa trả lời được, bạn thử lại sau nhé.</string>
     <string name="chat_hint">Nhập tin nhắn của bạn...</string>
     <string name="cd_send">Gửi tin nhắn</string>
     <string name="chat_today">Hôm nay · %1$s</string>

@@ -53,6 +53,10 @@ services:
       MOMO_PARTNER_CODE: ${MOMO_PARTNER_CODE:-MOMO}
       MOMO_ACCESS_KEY: ${MOMO_ACCESS_KEY:-F8BBA842ECF85}
       MOMO_SECRET_KEY: ${MOMO_SECRET_KEY:-K951B6PE1waDMi640xX08PD3vg6EkVlz}
+      # Trợ lý hỗ trợ RAG (để trống GEMINI_API_KEY thì trả lời theo tài liệu)
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-2}
       TZ: Asia/Ho_Chi_Minh
     volumes:
       - uploads:/data/uploads

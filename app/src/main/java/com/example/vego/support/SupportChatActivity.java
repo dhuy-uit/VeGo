@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,6 +30,10 @@ import com.example.vego.common.ui.VeGoBanner;
 import com.example.vego.common.ui.VeGoDialog;
 import com.example.vego.data.Format;
 import com.example.vego.data.Ticket;
+import com.example.vego.data.TicketStore;
+import com.example.vego.data.api.ApiCallback;
+import com.example.vego.data.api.ApiClient;
+import com.example.vego.data.api.ApiModels;
 import com.example.vego.data.support.SupportAssistant;
 import com.example.vego.tickets.ETicketActivity;
 
@@ -40,6 +45,7 @@ import java.util.Locale;
 /**
  * Figma nhóm 07 · Hỗ trợ AI. Một màn duy nhất đổi theo nội dung trò chuyện:
  * màn chào + câu hỏi nhanh → hỏi đáp có ghi nguồn → tra cứu vé ngay trong chat → chuyển nhân viên.
+ * Câu trả lời do server soạn (RAG + Gemini).
  */
 public class SupportChatActivity extends BaseActivity {
 
@@ -61,6 +67,9 @@ public class SupportChatActivity extends BaseActivity {
 
     private boolean started = false;
     private boolean waiting = false;
+    /** Vài lượt gần nhất gửi kèm để server hiểu câu hỏi nối tiếp. */
+    private final List<ApiModels.SupportTurn> history = new ArrayList<>();
+    private static final int HISTORY_TURNS = 6;
     private View typingView;
     private final List<ValueAnimator> typingAnims = new ArrayList<>();
 
@@ -154,15 +163,42 @@ public class SupportChatActivity extends BaseActivity {
         waiting = true;
         btnSend.setAlpha(0.5f);
         showTyping();
-        // Trả lời ngay trên máy (offline). Hơi chờ một nhịp cho tự nhiên, câu dài chờ lâu hơn chút.
-        long delay = Math.min(1400, 650 + text.length() * 8L);
-        content.postDelayed(() -> {
-            if (isFinishing()) return;
-            hideTyping();
-            addBotReply(SupportAssistant.reply(text));
-            waiting = false;
-            btnSend.setAlpha(1f);
-        }, delay);
+        ask(text);
+    }
+
+    /** Hỏi trợ lý trên server (POST /api/v1/support/chat); máy chỉ việc hiển thị. */
+    private void ask(String text) {
+        ApiClient.api().supportChat(new ApiModels.SupportRequest(text, new ArrayList<>(history)))
+                .enqueue(new ApiCallback<ApiModels.SupportReply>(this) {
+                    @Override
+                    protected void onSuccess(ApiModels.SupportReply body) {
+                        if (body == null || body.paragraphs == null) {
+                            showReply(SupportAssistant.error(getString(R.string.chat_error_message)));
+                            return;
+                        }
+                        SupportAssistant.Reply reply = SupportAssistant.from(body, TicketStore.get());
+                        remember("user", text);
+                        remember("bot", TextUtils.join("\n", reply.paragraphs));
+                        showReply(reply);
+                    }
+
+                    @Override
+                    protected void onError(ApiModels.ApiError error) {
+                        showReply(SupportAssistant.error(error.message));
+                    }
+                });
+    }
+
+    private void showReply(SupportAssistant.Reply reply) {
+        hideTyping();
+        addBotReply(reply);
+        waiting = false;
+        btnSend.setAlpha(1f);
+    }
+
+    private void remember(String role, String text) {
+        history.add(new ApiModels.SupportTurn(role, text.length() > 500 ? text.substring(0, 500) : text));
+        while (history.size() > HISTORY_TURNS) history.remove(0);
     }
 
     private void addUserMessage(String text) {
